@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { PRICE_RANGES } from '../../lib/prices';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  brandName: string;
+  url: string;
+  imageUrl: string;
+}
+const { product, brandName, url, imageUrl } = Astro.props;
+const p = product.data;
+const range = PRICE_RANGES[p.priceRange];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.title,
+  description: p.shortDescription,
+  image: imageUrl,
+  brand: { '@type': 'Brand', name: brandName },
+  sku: p.asin,
+  mpn: p.asin,
+  url,
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'USD',
+    lowPrice: range.min,
+    highPrice: range.max,
+    availability: 'https://schema.org/InStock',
+    url: p.amazonUrl,
+    seller: { '@type': 'Organization', name: 'Amazon.com' },
+  },
+  review: {
+    '@type': 'Review',
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: p.editorScore.overall,
+      bestRating: 10,
+    },
+    author: { '@type': 'Organization', name: 'HomeSpaGuide Editors' },
+    reviewBody: p.editorScore.notes || p.shortDescription,
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

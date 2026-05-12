@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import ProductGrid from '../../components/product/ProductGrid.astro';
+
+export async function getStaticPaths() {
+  const brands = await getCollection('brands');
+  return brands.map((b) => ({
+    params: { slug: b.slug },
+    props: { brand: b },
+  }));
+}
+const { brand } = Astro.props;
+const products = (await getCollection('products', ({ data }) => data.status === 'active'))
+  .filter((p) => p.data.brand.id === brand.id);
+const { Content } = await brand.render();
+---
+
+<BaseLayout title={`${brand.data.name} — Reviews & Products`} description={brand.data.description}>
+  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Brands', href: '/products' }, { label: brand.data.name }]} />
+    <header style="margin: 1.5rem 0 2rem; max-width: 56ch;">
+      <h1>{brand.data.name}</h1>
+      <p style="color: var(--color-ink-muted); margin-top: 0.5rem;">{brand.data.description}</p>
+    </header>
+    {products.length > 0 ? (
+      <ProductGrid products={products} campaign={`brand-${brand.slug}`} columns={4} />
+    ) : (
+      <p style="color: var(--color-ink-subtle);">No products listed yet.</p>
+    )}
+    <div class="prose" style="margin-top: 3rem;">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>

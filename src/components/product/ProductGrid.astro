@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: CollectionEntry<'products'>[];
+  campaign?: string;
+  columns?: 2 | 3 | 4;
+}
+const { products, campaign, columns = 4 } = Astro.props;
+const colClass = {
+  2: 'grid-cols-1 sm:grid-cols-2',
+  3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+}[columns];
+---
+
+{products.length === 0 ? (
+  <div class="empty-state">
+    <p>No products match your filters yet.</p>
+  </div>
+) : (
+  <div class={`grid gap-5 ${colClass}`}>
+    {products.map((p) => <ProductCard product={p} campaign={campaign} />)}
+  </div>
+)}
+
+<style>
+  .empty-state { padding: 3rem 1.5rem; text-align: center; border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg); color: var(--color-ink-subtle); }
+</style>

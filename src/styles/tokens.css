@@ -1,0 +1,92 @@
+/* Design tokens — calm, spa-like, trustworthy palette. */
+:root {
+  /* Brand */
+  --color-primary-50: #f0f7f9;
+  --color-primary-100: #d9eaef;
+  --color-primary-200: #b3d4dc;
+  --color-primary-300: #7eb1bf;
+  --color-primary-400: #4d8a9d;
+  --color-primary-500: #2e6c80;
+  --color-primary-600: #1d5a6d;
+  --color-primary-700: #144a5b;
+  --color-primary: #0f4c5c;
+  --color-primary-800: #0c3d4a;
+  --color-primary-900: #082b35;
+
+  /* Accent (warm sand for highlights) */
+  --color-accent-50: #fdf7e3;
+  --color-accent-100: #faecbd;
+  --color-accent-300: #f0d77a;
+  --color-accent: #e8c547;
+  --color-accent-600: #c8a727;
+  --color-accent-700: #9c8316;
+
+  /* Amazon orange — reserved exclusively for Amazon CTAs */
+  --color-amazon: #ff9900;
+  --color-amazon-hover: #f08804;
+  --color-amazon-ink: #131921;
+
+  /* Neutrals (warm-tinted) */
+  --color-bg: #fafaf7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f3ee;
+  --color-border: #e6e3da;
+  --color-border-strong: #cfc9bb;
+  --color-ink: #1a1a1a;
+  --color-ink-muted: #4a4a44;
+  --color-ink-subtle: #7a7a72;
+
+  /* Semantic */
+  --color-success: #2f7d4f;
+  --color-success-soft: #e1f1e6;
+  --color-warning: #b87f1a;
+  --color-warning-soft: #fbf1d9;
+  --color-error: #b03a3a;
+  --color-error-soft: #f7e0e0;
+
+  /* Typography */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-serif: 'Fraunces', ui-serif, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --text-xs: clamp(0.75rem, 0.72rem + 0.1vw, 0.8rem);
+  --text-sm: clamp(0.875rem, 0.84rem + 0.15vw, 0.95rem);
+  --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.6vw, 1.875rem);
+  --text-3xl: clamp(1.875rem, 1.65rem + 0.9vw, 2.4rem);
+  --text-4xl: clamp(2.25rem, 1.9rem + 1.4vw, 3rem);
+  --text-5xl: clamp(2.75rem, 2.3rem + 1.8vw, 3.75rem);
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 14px;
+  --radius-2xl: 22px;
+  --radius-full: 999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 76, 92, 0.06);
+  --shadow-sm: 0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
+  --shadow-md: 0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
+  --shadow-lg: 0 18px 36px -12px rgba(15, 76, 92, 0.22);
+  --shadow-focus: 0 0 0 3px rgba(15, 76, 92, 0.22);
+
+  /* Layout */
+  --container-max: 1280px;
+  --container-narrow: 880px;
+  --header-height: 72px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

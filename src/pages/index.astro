@@ -1,0 +1,172 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { ArrowRight } from 'lucide-react';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductGrid from '../components/product/ProductGrid.astro';
+import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
+import Button from '../components/ui/Button.astro';
+import heroImage from '../assets/placeholder-hero.svg';
+
+const allProducts = await getCollection('products', ({ data }) => data.status === 'active');
+const editorsPicks = allProducts.filter((p) => p.data.editorPick).slice(0, 6);
+const bestSellers = allProducts
+  .filter((p) => p.data.editorBadges.includes('Best Seller'))
+  .concat(allProducts)
+  .filter((p, i, a) => a.findIndex((x) => x.id === p.id) === i)
+  .slice(0, 4);
+
+const categories = (await getCollection('categories'))
+  .filter((c) => !c.data.parent)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 6);
+
+const blogPosts = (await getCollection('blog').catch(() => []))
+  .sort((a, b) => +b.data.publishedAt - +a.data.publishedAt)
+  .slice(0, 3);
+
+const guides = (await getCollection('guides').catch(() => []))
+  .sort((a, b) => +b.data.updatedAt - +a.data.updatedAt)
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="HomeSpaGuide — Honest Hot Tub Reviews & Buying Guides"
+  description="Expert reviews, buying guides, and curated picks for home spas, hot tubs, chemicals, and accessories. Find the right product, then buy on Amazon."
+>
+  <section class="home-hero">
+    <div class="home-hero__bg">
+      <Image src={heroImage} alt="" loading="eager" widths={[800, 1600]} format="webp" />
+    </div>
+    <div class="container-page home-hero__inner">
+      <p class="home-hero__eyebrow">Honest reviews · Curated picks · No fluff</p>
+      <h1>Your trusted guide to <span>home spas &amp; hot tubs.</span></h1>
+      <p class="home-hero__lede">
+        We test, score, and recommend the home spa products worth your money — from $300 inflatables to chemicals that actually work.
+      </p>
+      <div class="home-hero__cta">
+        <Button href="/category/hot-tubs" variant="primary" size="lg">Shop Hot Tubs</Button>
+        <Button href="/guides" variant="outline" size="lg">Buying Guides</Button>
+      </div>
+    </div>
+  </section>
+
+  <div class="container-page home-stack">
+    {editorsPicks.length > 0 && (
+      <section>
+        <header class="home-section-head">
+          <div>
+            <h2>Editor's Picks</h2>
+            <p>Hand-curated by our team — the products we'd buy ourselves.</p>
+          </div>
+          <a href="/products" class="home-link">Browse all <ArrowRight size={16} aria-hidden="true" /></a>
+        </header>
+        <ProductGrid products={editorsPicks} campaign="home-picks" columns={3} />
+      </section>
+    )}
+
+    <section>
+      <header class="home-section-head">
+        <h2>Shop by Category</h2>
+      </header>
+      <div class="home-cats">
+        {categories.map((cat) => (
+          <a href={`/category/${cat.slug}`} class="home-cat">
+            <h3>{cat.data.name}</h3>
+            <p>{cat.data.shortDescription}</p>
+            <span class="home-cat__cta">Browse <ArrowRight size={14} aria-hidden="true" /></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    {guides.length > 0 && (
+      <section>
+        <header class="home-section-head">
+          <div>
+            <h2>Latest Buying Guides</h2>
+            <p>Methodical, no-fluff guides for buyers who want to choose once and choose well.</p>
+          </div>
+          <a href="/guides" class="home-link">All guides <ArrowRight size={16} aria-hidden="true" /></a>
+        </header>
+        <ul class="home-guides">
+          {guides.map((g) => (
+            <li>
+              <a href={`/guides/${g.slug}`}>
+                <h3>{g.data.title}</h3>
+                <p>{g.data.intro}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {bestSellers.length > 0 && (
+      <section>
+        <header class="home-section-head">
+          <h2>Bestsellers</h2>
+        </header>
+        <ProductGrid products={bestSellers} campaign="home-bestsellers" columns={4} />
+      </section>
+    )}
+
+    {blogPosts.length > 0 && (
+      <section>
+        <header class="home-section-head">
+          <div>
+            <h2>From the Blog</h2>
+          </div>
+          <a href="/blog" class="home-link">All posts <ArrowRight size={16} aria-hidden="true" /></a>
+        </header>
+        <ul class="home-posts">
+          {blogPosts.map((post) => (
+            <li>
+              <a href={`/blog/${post.slug}`}>
+                <span class="home-posts__category">{post.data.category.replace('-', ' ')}</span>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.excerpt}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <AffiliateDisclosure variant="banner" />
+  </div>
+</BaseLayout>
+
+<style>
+  .home-hero { position: relative; isolation: isolate; padding: 5rem 0 4rem; overflow: hidden; }
+  .home-hero__bg { position: absolute; inset: 0; z-index: -1; }
+  .home-hero__bg img { width: 100%; height: 100%; object-fit: cover; }
+  .home-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,43,53,0.65) 0%, rgba(8,43,53,0.45) 100%); }
+  .home-hero__inner { position: relative; color: white; max-width: 720px; }
+  .home-hero__eyebrow { color: var(--color-accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem; }
+  .home-hero h1 { color: white; font-size: clamp(2.25rem, 5vw, 3.5rem); }
+  .home-hero h1 span { color: var(--color-accent); }
+  .home-hero__lede { color: #d9eaef; font-size: var(--text-lg); margin: 1rem 0 1.75rem; max-width: 56ch; }
+  .home-hero__cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+  .home-stack { display: flex; flex-direction: column; gap: 4rem; padding-top: 4rem; padding-bottom: 4rem; }
+
+  .home-section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .home-section-head h2 { font-size: var(--text-3xl); margin-bottom: 0.25rem; }
+  .home-section-head p { color: var(--color-ink-muted); max-width: 60ch; }
+  .home-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-weight: 500; }
+
+  .home-cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .home-cat { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); color: var(--color-ink); transition: all 0.2s; }
+  .home-cat:hover { border-color: var(--color-primary); background: var(--color-primary-50); }
+  .home-cat h3 { font-size: var(--text-xl); }
+  .home-cat p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: 1.5; flex: 1; }
+  .home-cat__cta { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+
+  .home-guides, .home-posts { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .home-guides a, .home-posts a { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); color: var(--color-ink); transition: all 0.2s; height: 100%; }
+  .home-guides a:hover, .home-posts a:hover { border-color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .home-guides h3, .home-posts h3 { font-size: var(--text-xl); margin: 0; }
+  .home-guides p, .home-posts p { color: var(--color-ink-muted); font-size: 0.95rem; }
+  .home-posts__category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-accent-700); font-weight: 600; }
+</style>

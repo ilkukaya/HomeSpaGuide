@@ -1,0 +1,72 @@
+---
+import { ChevronRight } from 'lucide-react';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items?: Crumb[];
+}
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+
+let crumbs: Crumb[] = Astro.props.items ?? [];
+if (crumbs.length === 0) {
+  const parts = Astro.url.pathname.split('/').filter(Boolean);
+  crumbs = parts.map((part, idx) => ({
+    label: part.replace(/-/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
+    href: idx < parts.length - 1 ? '/' + parts.slice(0, idx + 1).join('/') : undefined,
+  }));
+}
+const fullCrumbs: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: fullCrumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: c.href ? new URL(c.href, siteUrl).toString() : undefined,
+  })),
+};
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {fullCrumbs.map((c, i) => (
+      <li>
+        {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+        {i < fullCrumbs.length - 1 && <ChevronRight size={14} aria-hidden="true" />}
+      </li>
+    ))}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  .breadcrumbs ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-ink-subtle);
+    font-size: 0.85rem;
+  }
+  .breadcrumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .breadcrumbs a {
+    color: var(--color-ink-muted);
+  }
+  .breadcrumbs a:hover { color: var(--color-primary); }
+  .breadcrumbs [aria-current='page'] {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+</style>

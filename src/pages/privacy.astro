@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+---
+
+<BaseLayout title="Privacy Policy — HomeSpaGuide" description="What HomeSpaGuide stores about you (almost nothing) and how affiliate clicks work.">
+  <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Privacy' }]} />
+    <article class="prose" style="margin-top: 1.5rem;">
+      <h1>Privacy Policy</h1>
+      <p><em>Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</em></p>
+
+      <h2>The short version</h2>
+      <p>HomeSpaGuide does not collect personal data. We don't use cookies, we don't require sign-ups, we don't track you across the web. We use Plausible Analytics, which is cookie-free and does not store IP addresses or any identifier that could identify you personally.</p>
+
+      <h2>What is stored, and where</h2>
+      <ul>
+        <li><strong>Your wishlist, compare list and recently-viewed list</strong> are stored entirely in your browser's localStorage. We never see them. Clearing your browser data clears them.</li>
+        <li><strong>Aggregate analytics</strong> (page views per URL, country at the country level, top referrers) are tracked by Plausible. No cookies. No PII.</li>
+        <li><strong>Contact form submissions</strong> are emailed to us via Netlify Forms. Netlify stores them in their dashboard. We delete messages after responding.</li>
+      </ul>
+
+      <h2>Affiliate links</h2>
+      <p>HomeSpaGuide participates in the Amazon Associates program. When you click a "View on Amazon" link, Amazon sees a referral parameter (our tracking ID) so they can credit any subsequent purchase to us. Amazon's own privacy policy then applies. We do not control or have access to your activity on Amazon.com.</p>
+
+      <h2>Your rights</h2>
+      <p>Because we don't store personal data, there's nothing to request, export or delete on our end. If you'd like Amazon to forget you, manage that through your Amazon account settings.</p>
+
+      <h2>Changes</h2>
+      <p>If we ever change how this works, we'll update this page and the "last updated" date above.</p>
+    </article>
+  </div>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+---
+
+<BaseLayout title="About HomeSpaGuide" description="Who we are, how we test, and how we make money — transparently.">
+  <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'About' }]} />
+    <article class="prose" style="margin-top: 1.5rem;">
+      <h1>About HomeSpaGuide</h1>
+      <p>HomeSpaGuide is a small, independent editorial team obsessed with the home spa category. We test products, write detailed reviews, and recommend what we'd actually buy ourselves.</p>
+
+      <h2>How we score products</h2>
+      <p>Every product we cover gets an <strong>Editor's Score</strong> from 0–10, broken into five sub-scores: quality, value, setup, durability and energy efficiency. We weight these to produce an overall number. Scores are independent — they are not influenced by Amazon ratings, brand relationships, or commission rates.</p>
+
+      <h2>How we make money</h2>
+      <p>HomeSpaGuide is a member of the Amazon Associates program. When you click through to Amazon from one of our links and buy something — anything, not just what we recommended — we earn a small commission at no extra cost to you. That commission is the only way this site stays online.</p>
+      <p>We do not accept paid placements. Editor's Picks are not for sale. If a product is bad, we say so.</p>
+
+      <h2>Who's behind the site</h2>
+      <p>HomeSpaGuide is run by a small team of home spa owners, water-chemistry nerds and editors. We've owned every category of tub from $300 imports to $8,000 hard-shells, and we've made every mistake so you don't have to.</p>
+
+      <h2>Contact us</h2>
+      <p>Questions, corrections, or feedback? Drop us a line at <a href="/contact">our contact form</a>.</p>
+    </article>
+  </div>
+</BaseLayout>

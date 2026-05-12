@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+---
+
+<BaseLayout title="Terms of Use — HomeSpaGuide" description="Terms governing use of HomeSpaGuide.com.">
+  <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Terms' }]} />
+    <article class="prose" style="margin-top: 1.5rem;">
+      <h1>Terms of Use</h1>
+      <p>By using HomeSpaGuide.com you agree to these terms. They're written plainly so you can actually read them.</p>
+
+      <h2>Editorial</h2>
+      <p>All content on this site is provided for informational purposes only. We try to be accurate, but specifications, prices and availability change. Always verify on the manufacturer's or Amazon's product page before purchasing.</p>
+
+      <h2>Affiliate disclosure</h2>
+      <p>HomeSpaGuide is a participant in the Amazon Services LLC Associates Program. We earn commissions on qualifying purchases made through links on this site, at no additional cost to you. See our <a href="/affiliate-disclosure">Affiliate Disclosure</a> for details.</p>
+
+      <h2>No professional advice</h2>
+      <p>Nothing on this site is electrical, structural, medical or financial advice. When in doubt, consult a qualified professional in your jurisdiction.</p>
+
+      <h2>Limitation of liability</h2>
+      <p>To the maximum extent permitted by law, HomeSpaGuide and its operators are not liable for any direct or indirect damages arising from use of this site or any product purchased via our links.</p>
+
+      <h2>Changes</h2>
+      <p>We may update these terms occasionally. Continued use after updates indicates acceptance.</p>
+    </article>
+  </div>
+</BaseLayout>

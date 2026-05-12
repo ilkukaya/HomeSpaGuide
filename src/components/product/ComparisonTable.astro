@@ -1,0 +1,88 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import AmazonCTA from './AmazonCTA.astro';
+import { PRICE_RANGES } from '../../lib/prices';
+
+interface Props {
+  current: CollectionEntry<'products'>;
+  alternativeRefs?: CollectionEntry<'products'>['data']['alternativeProducts'];
+}
+const { current, alternativeRefs = [] } = Astro.props;
+const alts = (
+  await Promise.all((alternativeRefs ?? []).slice(0, 3).map((r) => getEntry('products', r.id)))
+).filter((p): p is CollectionEntry<'products'> => Boolean(p));
+const all = [current, ...alts];
+if (alts.length === 0) {
+  // nothing to render
+}
+---
+
+{alts.length > 0 && (
+  <section class="compare">
+    <h2>How it compares</h2>
+    <div class="compare__scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            {all.map((p, i) => (
+              <th scope="col">
+                <a href={`/products/${p.slug}`}>
+                  <Image src={p.data.primaryImage} alt={p.data.imageAlt} widths={[120, 200]} format="webp" />
+                  <span>{p.data.shortTitle}</span>
+                  {i === 0 && <em class="compare__current">This product</em>}
+                </a>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Editor's Score</th>
+            {all.map((p) => <td><strong>{p.data.editorScore.overall.toFixed(1)}</strong> / 10</td>)}
+          </tr>
+          <tr>
+            <th scope="row">Price range</th>
+            {all.map((p) => <td>{PRICE_RANGES[p.data.priceRange].label}</td>)}
+          </tr>
+          <tr>
+            <th scope="row">Capacity</th>
+            {all.map((p) => <td>{p.data.specs.capacity ? `${p.data.specs.capacity} people` : '—'}</td>)}
+          </tr>
+          <tr>
+            <th scope="row">Setup type</th>
+            {all.map((p) => <td>{p.data.specs.setupType ?? '—'}</td>)}
+          </tr>
+          <tr>
+            <th scope="row">Indoor / outdoor</th>
+            {all.map((p) => <td>{p.data.specs.indoorOutdoor ?? '—'}</td>)}
+          </tr>
+          <tr>
+            <th scope="row">Warranty</th>
+            {all.map((p) => <td>{p.data.specs.warranty ?? '—'}</td>)}
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            {all.map((p) => (
+              <td><AmazonCTA asin={p.data.asin} campaign="comparison" size="sm" label="View" /></td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+<style>
+  .compare h2 { margin-bottom: 1rem; font-size: var(--text-2xl); }
+  .compare__scroll { overflow-x: auto; }
+  .compare table { width: 100%; border-collapse: collapse; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; }
+  .compare th, .compare td { padding: 0.85rem; vertical-align: top; border-bottom: 1px solid var(--color-border); text-align: left; font-size: 0.9rem; }
+  .compare thead th { background: var(--color-surface-muted); }
+  .compare thead th a { display: flex; flex-direction: column; gap: 0.4rem; color: var(--color-ink); }
+  .compare thead th img { width: 80px; aspect-ratio: 1/1; object-fit: cover; border-radius: var(--radius-md); }
+  .compare__current { font-style: italic; color: var(--color-primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .compare tbody th { font-weight: 500; color: var(--color-ink-muted); width: 160px; background: var(--color-surface-muted); text-transform: capitalize; }
+  .compare tbody td { text-transform: capitalize; }
+</style>

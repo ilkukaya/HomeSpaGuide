@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search — HomeSpaGuide" description="Search products, guides and blog posts on HomeSpaGuide.">
+  <div class="container-narrow" style="padding-top: 3rem; padding-bottom: 4rem;">
+    <h1>Search</h1>
+    <p style="color: var(--color-ink-muted); margin-bottom: 2rem;">Search across all products, guides and blog posts.</p>
+    <div id="search"></div>
+  </div>
+
+  <link slot="head" rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <script slot="end" src="/pagefind/pagefind-ui.js" is:inline></script>
+  <script slot="end" is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      // @ts-ignore
+      if (typeof PagefindUI !== 'undefined') {
+        // @ts-ignore
+        new PagefindUI({ element: '#search', showSubResults: true, resetStyles: false });
+      }
+    });
+  </script>
+</BaseLayout>

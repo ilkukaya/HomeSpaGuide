@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  url: string;
+  imageUrl: string;
+  publishedAt: Date;
+  updatedAt?: Date;
+  author: string;
+}
+const { title, description, url, imageUrl, publishedAt, updatedAt, author } = Astro.props;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image: imageUrl,
+  url,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  author: { '@type': 'Person', name: author },
+  publisher: {
+    '@type': 'Organization',
+    name: 'HomeSpaGuide',
+    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com').toString() },
+  },
+  mainEntityOfPage: url,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

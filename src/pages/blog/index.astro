@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import BlogCard from '../../components/blog/BlogCard.astro';
+
+const posts = (await getCollection('blog')).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+---
+
+<BaseLayout title="Blog — HomeSpaGuide" description="Maintenance how-tos, seasonal tips, brand comparisons and honest reviews from the HomeSpaGuide editors.">
+  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Blog' }]} />
+    <header style="margin: 1.5rem 0 2rem; max-width: 60ch;">
+      <h1>The HomeSpaGuide Blog</h1>
+      <p style="color: var(--color-ink-muted);">Maintenance how-tos, seasonal tips, brand comparisons and the occasional rant about cloudy water.</p>
+    </header>
+    {posts.length > 0 ? (
+      <div style="display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+        {posts.map((p) => <BlogCard post={p} />)}
+      </div>
+    ) : (
+      <p style="color: var(--color-ink-subtle);">No posts published yet — check back soon.</p>
+    )}
+  </div>
+</BaseLayout>

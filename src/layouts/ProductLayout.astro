@@ -1,0 +1,222 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
+import Badge from '../components/ui/Badge.astro';
+import PriceRangeBadge from '../components/product/PriceRangeBadge.astro';
+import EditorScore from '../components/product/EditorScore.astro';
+import AmazonCTA from '../components/product/AmazonCTA.astro';
+import ProsConsBlock from '../components/product/ProsConsBlock.astro';
+import SpecsTable from '../components/product/SpecsTable.astro';
+import FAQAccordion from '../components/product/FAQAccordion.tsx';
+import RelatedProducts from '../components/product/RelatedProducts.astro';
+import FrequentlyBoughtTogether from '../components/product/FrequentlyBoughtTogether.astro';
+import ComparisonTable from '../components/product/ComparisonTable.astro';
+import ProductSchema from '../components/seo/ProductSchema.astro';
+import FAQSchema from '../components/seo/FAQSchema.astro';
+import { Heart, GitCompare, ExternalLink } from 'lucide-react';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+const { product } = Astro.props;
+const p = product.data;
+
+const brand = await getEntry('brands', p.brand.id);
+const category = await getEntry('categories', p.category.id);
+const parentCategory = category?.data.parent ? await getEntry('categories', category.data.parent.id) : null;
+const variantKey = (b: string) => b.toLowerCase().replace(/\s+/g, '-');
+
+const breadcrumbs = [
+  ...(parentCategory ? [{ label: parentCategory.data.name, href: `/category/${parentCategory.slug}` }] : []),
+  ...(category ? [{ label: category.data.name, href: `/category/${category.slug}` }] : []),
+  { label: p.shortTitle },
+];
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const pdpUrl = new URL(`/products/${product.slug}`, siteUrl).toString();
+
+const faqs: { question: string; answer: string }[] = [];
+
+const { Content } = await product.render();
+---
+
+<BaseLayout
+  title={p.seo?.metaTitle ?? `${p.title} — Review & Where to Buy`}
+  description={p.seo?.metaDescription ?? p.shortDescription}
+  ogType="product"
+>
+  <div class="container-page pdp-wrap">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <section class="pdp">
+      <div class="pdp__gallery">
+        <Image
+          src={p.primaryImage}
+          alt={p.imageAlt}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 1024px) 560px, 100vw"
+          format="webp"
+          loading="eager"
+          class="pdp__image"
+        />
+      </div>
+
+      <div class="pdp__info">
+        {p.editorBadges.length > 0 && (
+          <div class="pdp__badges">
+            {p.editorBadges.map((b) => <Badge variant={variantKey(b) as any}>{b}</Badge>)}
+          </div>
+        )}
+        <p class="pdp__brand">{brand?.data.name ?? p.brand.id}</p>
+        <h1>{p.title}</h1>
+        <p class="pdp__lede">{p.shortDescription}</p>
+
+        <div class="pdp__price-row">
+          <PriceRangeBadge range={p.priceRange} />
+          <span class="pdp__price-note">Live price on Amazon</span>
+        </div>
+
+        <EditorScore score={p.editorScore} layout="compact" />
+
+        <div class="pdp__cta">
+          <AmazonCTA asin={p.asin} campaign="pdp-primary" size="lg" fullWidth label="View on Amazon" />
+          <a
+            href={p.amazonUrl}
+            rel="sponsored nofollow noopener"
+            target="_blank"
+            class="pdp__secondary-link"
+          >
+            Check current price on Amazon <ExternalLink size={14} aria-hidden="true" />
+          </a>
+        </div>
+
+        <div class="pdp__quick-actions">
+          <button class="pdp__icon-btn" data-wishlist-toggle data-asin={p.asin} data-slug={product.slug} aria-label="Save to wishlist">
+            <Heart size={18} aria-hidden="true" /> <span>Save</span>
+          </button>
+          <button class="pdp__icon-btn" data-compare-toggle data-asin={p.asin} data-slug={product.slug} aria-label="Add to compare">
+            <GitCompare size={18} aria-hidden="true" /> <span>Compare</span>
+          </button>
+        </div>
+
+        <AffiliateDisclosure variant="compact" class="pdp__disclosure" />
+      </div>
+    </section>
+
+    <section class="pdp__section">
+      <h2>Why we picked this</h2>
+      {p.editorScore.notes && <p class="pdp__notes">{p.editorScore.notes}</p>}
+      <div class="prose pdp__description">
+        <Content />
+      </div>
+    </section>
+
+    {p.keyFeatures.length > 0 && (
+      <section class="pdp__section">
+        <h2>Key features</h2>
+        <ul class="pdp__feature-list">
+          {p.keyFeatures.map((f) => <li>{f}</li>)}
+        </ul>
+      </section>
+    )}
+
+    <section class="pdp__section">
+      <h2>Specifications</h2>
+      <SpecsTable specs={p.specs} />
+    </section>
+
+    {(p.pros.length > 0 || p.cons.length > 0) && (
+      <section class="pdp__section">
+        <h2>Pros &amp; cons</h2>
+        <ProsConsBlock pros={p.pros} cons={p.cons} />
+      </section>
+    )}
+
+    {p.alternativeProducts && p.alternativeProducts.length > 0 && (
+      <section class="pdp__section">
+        <ComparisonTable current={product} alternativeRefs={p.alternativeProducts} />
+      </section>
+    )}
+
+    {p.frequentlyBoughtWith && p.frequentlyBoughtWith.length > 0 && (
+      <section class="pdp__section">
+        <FrequentlyBoughtTogether current={product} refs={p.frequentlyBoughtWith} />
+      </section>
+    )}
+
+    <section class="pdp__section pdp__final-cta">
+      <h2>Ready to buy?</h2>
+      <p>Click below to see the current price and reviews on Amazon.</p>
+      <AmazonCTA asin={p.asin} campaign="pdp-bottom" size="lg" label="Check Price on Amazon" />
+    </section>
+
+    {p.relatedProducts && p.relatedProducts.length > 0 && (
+      <section class="pdp__section">
+        <RelatedProducts refs={p.relatedProducts} campaign="related" />
+      </section>
+    )}
+  </div>
+
+  <ProductSchema slot="head" product={product} brandName={brand?.data.name ?? p.brand.id} url={pdpUrl} imageUrl={new URL((p.primaryImage as any).src ?? '/og-default.png', siteUrl).toString()} />
+  {faqs.length > 0 && <FAQSchema slot="head" faqs={faqs} />}
+</BaseLayout>
+
+<style>
+  .pdp-wrap { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 3rem; }
+  .pdp { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } }
+  .pdp__gallery { position: sticky; top: calc(var(--header-height) + 1rem); align-self: start; }
+  .pdp__image { width: 100%; border-radius: var(--radius-xl); border: 1px solid var(--color-border); background: var(--color-surface-muted); aspect-ratio: 1/1; object-fit: cover; }
+  .pdp__info { display: flex; flex-direction: column; gap: 1.25rem; }
+  .pdp__badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pdp__brand { color: var(--color-ink-subtle); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0; }
+  .pdp__info h1 { font-size: var(--text-4xl); }
+  .pdp__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; }
+  .pdp__price-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .pdp__price-note { color: var(--color-ink-subtle); font-size: 0.85rem; }
+  .pdp__cta { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; background: var(--color-surface-muted); border-radius: var(--radius-lg); }
+  .pdp__secondary-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-size: 0.9rem; text-align: center; justify-content: center; }
+  .pdp__quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pdp__icon-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.85rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: white; color: var(--color-ink-muted); font-size: 0.9rem; }
+  .pdp__icon-btn[data-active='true'] { background: var(--color-accent); color: var(--color-primary-900); border-color: var(--color-accent-600); }
+  .pdp__icon-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .pdp__disclosure { margin-top: 0.5rem; }
+  .pdp__section h2 { font-size: var(--text-2xl); margin-bottom: 1rem; }
+  .pdp__feature-list { columns: 1; column-gap: 2rem; padding-left: 1.2rem; }
+  @media (min-width: 700px) { .pdp__feature-list { columns: 2; } }
+  .pdp__feature-list li { break-inside: avoid; margin-bottom: 0.55rem; }
+  .pdp__notes { color: var(--color-ink-muted); font-style: italic; max-width: 70ch; margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid var(--color-accent); }
+  .pdp__final-cta { text-align: center; background: var(--color-primary-50); border-radius: var(--radius-xl); padding: 2.5rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .pdp__final-cta p { color: var(--color-ink-muted); }
+</style>
+
+<script>
+  function refresh() {
+    let wl: string[] = [];
+    let cmp: string[] = [];
+    try { wl = JSON.parse(localStorage.getItem('hsg.wishlist') || '[]'); } catch {}
+    try { cmp = JSON.parse(localStorage.getItem('hsg.compare') || '[]'); } catch {}
+    document.querySelectorAll<HTMLButtonElement>('[data-wishlist-toggle]').forEach((btn) => {
+      btn.dataset.active = wl.includes(btn.dataset.asin || '') ? 'true' : 'false';
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-compare-toggle]').forEach((btn) => {
+      btn.dataset.active = cmp.includes(btn.dataset.asin || '') ? 'true' : 'false';
+    });
+  }
+  refresh();
+  window.addEventListener('hsg:wishlist:change', refresh);
+  window.addEventListener('hsg:compare:change', refresh);
+
+  // Track recently viewed
+  const asin = document.querySelector<HTMLElement>('[data-asin]')?.dataset.asin;
+  if (asin) {
+    try {
+      let rv: string[] = JSON.parse(localStorage.getItem('hsg.recentlyViewed') || '[]');
+      rv = [asin, ...rv.filter((x) => x !== asin)].slice(0, 12);
+      localStorage.setItem('hsg.recentlyViewed', JSON.stringify(rv));
+    } catch {}
+  }
+</script>

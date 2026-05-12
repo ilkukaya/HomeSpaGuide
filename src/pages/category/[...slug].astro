@@ -1,0 +1,249 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import CategoryHero from '../../components/catalog/CategoryHero.astro';
+import ProductCard from '../../components/product/ProductCard.astro';
+import FilterSidebar, { type FilterFacets } from '../../components/catalog/FilterSidebar';
+import SortDropdown from '../../components/catalog/SortDropdown';
+import AffiliateDisclosure from '../../components/layout/AffiliateDisclosure.astro';
+import ItemListSchema from '../../components/seo/ItemListSchema.astro';
+import { PRICE_RANGES } from '../../lib/prices';
+
+export async function getStaticPaths() {
+  const cats = await getCollection('categories');
+  return cats.map((c) => ({
+    params: { slug: c.slug },
+    props: { category: c },
+  }));
+}
+
+const { category } = Astro.props;
+const c = category.data;
+
+const allCats = await getCollection('categories');
+const descendants = new Set<string>([category.id]);
+let frontier = [category.id];
+while (frontier.length) {
+  const next: string[] = [];
+  for (const id of frontier) {
+    for (const cat of allCats) {
+      if (cat.data.parent?.id === id && !descendants.has(cat.id)) {
+        descendants.add(cat.id);
+        next.push(cat.id);
+      }
+    }
+  }
+  frontier = next;
+}
+
+const allProducts = await getCollection('products', ({ data }) => data.status === 'active');
+const products = allProducts.filter((p) => descendants.has(p.data.category.id));
+
+const brandIds = Array.from(new Set(products.map((p) => p.data.brand.id)));
+const brandEntries = await Promise.all(brandIds.map((id) => getEntry('brands', id)));
+const brands = brandEntries
+  .filter((b): b is NonNullable<typeof b> => Boolean(b))
+  .map((b) => ({ id: b.id, name: b.data.name }));
+
+const usedPriceRanges = Array.from(new Set(products.map((p) => p.data.priceRange)));
+const facets: FilterFacets = {
+  brands,
+  priceRanges: usedPriceRanges.map((r) => ({ value: r, label: PRICE_RANGES[r].label })),
+  setupTypes: Array.from(new Set(products.map((p) => p.data.specs.setupType).filter((x): x is NonNullable<typeof x> => Boolean(x)))),
+  indoorOutdoor: Array.from(new Set(products.map((p) => p.data.specs.indoorOutdoor).filter((x): x is NonNullable<typeof x> => Boolean(x)))),
+  badges: Array.from(new Set(products.flatMap((p) => p.data.editorBadges))),
+};
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const itemListItems = products.slice(0, 20).map((p) => ({
+  name: p.data.title,
+  url: new URL(`/products/${p.slug}`, siteUrl).toString(),
+}));
+
+const { Content } = await category.render();
+---
+
+<BaseLayout
+  title={`${c.name} — HomeSpaGuide`}
+  description={c.shortDescription}
+>
+  <div class="container-page">
+    <Breadcrumbs items={[{ label: c.name }]} />
+    <CategoryHero category={category} />
+
+    <div class="catalog">
+      <FilterSidebar client:load facets={facets} />
+      <div class="catalog__main">
+        <div class="catalog__toolbar">
+          <p class="catalog__count" data-result-count>{products.length} products</p>
+          <SortDropdown client:load defaultValue="featured" />
+        </div>
+        <div class="catalog__grid" data-product-grid>
+          {products.map((p) => (
+            <article
+              class="catalog__card"
+              data-card
+              data-brand={p.data.brand.id}
+              data-price={p.data.priceRange}
+              data-setup={p.data.specs.setupType ?? ''}
+              data-placement={p.data.specs.indoorOutdoor ?? ''}
+              data-badges={p.data.editorBadges.join(',')}
+              data-score={p.data.editorScore.overall}
+              data-pick={p.data.editorPick ? '1' : '0'}
+              data-price-min={PRICE_RANGES[p.data.priceRange].min}
+              data-price-max={PRICE_RANGES[p.data.priceRange].max}
+              data-published={(+p.data.publishedAt)}
+              data-name={p.data.shortTitle}
+            >
+              <ProductCard product={p} campaign="category" />
+            </article>
+          ))}
+        </div>
+        <p data-empty hidden class="catalog__empty">No products match your filters. <button type="button" data-clear-filters>Clear all</button>.</p>
+      </div>
+    </div>
+
+    <section class="catalog__about prose">
+      <h2>About {c.name}</h2>
+      <Content />
+      {c.faqs && c.faqs.length > 0 && (
+        <>
+          <h3>Frequently asked questions</h3>
+          {c.faqs.map((f) => (
+            <details class="catalog__faq">
+              <summary>{f.question}</summary>
+              <p>{f.answer}</p>
+            </details>
+          ))}
+        </>
+      )}
+    </section>
+
+    <AffiliateDisclosure variant="banner" />
+  </div>
+
+  <ItemListSchema slot="head" items={itemListItems} />
+</BaseLayout>
+
+<style is:global>
+  .hsg-filter {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .hsg-filter__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .hsg-filter__head h2 { font-size: 1.1rem; font-family: var(--font-sans); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .hsg-filter__clear { font-size: 0.8rem; color: var(--color-primary); text-decoration: underline; }
+  .hsg-filter fieldset { border: none; padding: 0; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .hsg-filter legend { font-weight: 600; color: var(--color-ink); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hsg-filter label { display: flex; gap: 0.5rem; align-items: center; color: var(--color-ink-muted); cursor: pointer; }
+  .hsg-filter__mobile-toggle { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: white; }
+  .hsg-filter__drawer { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,0.4); }
+  .hsg-filter__drawer-inner { background: white; height: 100%; width: min(90%, 360px); overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+  .hsg-filter__drawer-close { padding: 0.85rem 1.25rem; background: var(--color-primary); color: white; border-radius: var(--radius-md); }
+  @media (min-width: 900px) {
+    .hsg-filter__mobile-toggle { display: none; }
+    .hsg-filter__drawer { display: none; }
+  }
+  @media (max-width: 899px) { .hsg-filter { display: none; } }
+
+  .hsg-sort { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+  .hsg-sort__select { padding: 0.5rem 0.65rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: white; font-size: 0.9rem; }
+</style>
+
+<style>
+  .catalog { display: grid; gap: 1.5rem; grid-template-columns: 1fr; margin-top: 1rem; }
+  @media (min-width: 900px) { .catalog { grid-template-columns: 240px 1fr; align-items: flex-start; } }
+  .catalog__toolbar { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .catalog__count { color: var(--color-ink-subtle); font-size: 0.9rem; margin: 0; }
+  .catalog__grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+  @media (min-width: 600px) { .catalog__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .catalog__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1200px) { .catalog__grid { grid-template-columns: repeat(3, 1fr); } }
+  .catalog__empty { padding: 2rem; text-align: center; color: var(--color-ink-subtle); border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg); }
+  .catalog__empty button { color: var(--color-primary); text-decoration: underline; }
+  .catalog__about { margin: 3rem 0; }
+  .catalog__faq { margin: 0.5rem 0; padding: 0.85rem 1rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .catalog__faq summary { cursor: pointer; font-weight: 600; color: var(--color-primary); }
+  .catalog__faq p { margin-top: 0.5rem; color: var(--color-ink-muted); }
+</style>
+
+<script>
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-card]'));
+  const grid = document.querySelector<HTMLElement>('[data-product-grid]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const count = document.querySelector<HTMLElement>('[data-result-count]');
+  const clearBtn = document.querySelector<HTMLButtonElement>('[data-clear-filters]');
+
+  function readParams() {
+    const p = new URLSearchParams(window.location.search);
+    const list = (k: string) => (p.get(k) ? p.get(k)!.split(',').filter(Boolean) : []);
+    return {
+      brand: list('brand'),
+      price: list('price'),
+      setup: list('setup'),
+      placement: list('placement'),
+      badge: list('badge'),
+      score: Number(p.get('score') || 0),
+      pick: p.get('pick') === '1',
+      sort: p.get('sort') || 'featured',
+    };
+  }
+
+  function matches(card: HTMLElement, s: ReturnType<typeof readParams>): boolean {
+    if (s.brand.length && !s.brand.includes(card.dataset.brand || '')) return false;
+    if (s.price.length && !s.price.includes(card.dataset.price || '')) return false;
+    if (s.setup.length && !s.setup.includes(card.dataset.setup || '')) return false;
+    if (s.placement.length && !s.placement.includes(card.dataset.placement || '')) return false;
+    if (s.badge.length) {
+      const cardBadges = (card.dataset.badges || '').split(',');
+      if (!s.badge.some((b) => cardBadges.includes(b))) return false;
+    }
+    if (s.score > 0 && Number(card.dataset.score) < s.score) return false;
+    if (s.pick && card.dataset.pick !== '1') return false;
+    return true;
+  }
+
+  function compareForSort(a: HTMLElement, b: HTMLElement, sort: string): number {
+    switch (sort) {
+      case 'score-desc': return Number(b.dataset.score) - Number(a.dataset.score);
+      case 'price-asc': return Number(a.dataset.priceMin) - Number(b.dataset.priceMin);
+      case 'price-desc': return Number(b.dataset.priceMax) - Number(a.dataset.priceMax);
+      case 'newest': return Number(b.dataset.published) - Number(a.dataset.published);
+      case 'name-asc': return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+      default:
+        const pa = a.dataset.pick === '1' ? 1 : 0;
+        const pb = b.dataset.pick === '1' ? 1 : 0;
+        if (pa !== pb) return pb - pa;
+        return Number(b.dataset.score) - Number(a.dataset.score);
+    }
+  }
+
+  function apply() {
+    const state = readParams();
+    let shown = 0;
+    const matching = cards.filter((c) => matches(c, state));
+    matching.sort((a, b) => compareForSort(a, b, state.sort));
+    // hide all then re-append in order
+    cards.forEach((c) => (c.style.display = 'none'));
+    matching.forEach((c) => {
+      c.style.display = '';
+      grid?.appendChild(c);
+      shown++;
+    });
+    if (count) count.textContent = `${shown} product${shown === 1 ? '' : 's'}`;
+    if (empty) empty.hidden = shown !== 0;
+  }
+
+  apply();
+  window.addEventListener('hsg:filter:change', apply);
+  window.addEventListener('hsg:sort:change', apply);
+  window.addEventListener('popstate', apply);
+  clearBtn?.addEventListener('click', () => {
+    window.history.replaceState({}, '', window.location.pathname);
+    window.dispatchEvent(new CustomEvent('hsg:filter:change'));
+  });
+</script>

@@ -1,0 +1,35 @@
+---
+interface Props {
+  variant?: 'banner' | 'inline' | 'compact';
+  class?: string;
+}
+const { variant = 'banner', class: className = '' } = Astro.props;
+---
+
+{variant === 'banner' && (
+  <aside class={`affiliate-disclosure affiliate-disclosure--banner ${className}`} role="note">
+    <strong>Affiliate disclosure:</strong> HomeSpaGuide may earn a commission when you buy through links on this page. As an Amazon Associate, we earn from qualifying purchases — at no extra cost to you.
+  </aside>
+)}
+{variant === 'inline' && (
+  <p class={`affiliate-disclosure affiliate-disclosure--inline text-sm text-[var(--color-ink-subtle)] ${className}`}>
+    This page contains affiliate links. As an Amazon Associate we earn from qualifying purchases.
+  </p>
+)}
+{variant === 'compact' && (
+  <span class={`affiliate-disclosure affiliate-disclosure--compact text-xs text-[var(--color-ink-subtle)] ${className}`}>
+    Amazon Associates · We earn from qualifying purchases
+  </span>
+)}
+
+<style>
+  .affiliate-disclosure--banner {
+    background: var(--color-accent-50);
+    border: 1px solid var(--color-accent-100);
+    color: var(--color-ink-muted);
+    border-radius: var(--radius-lg);
+    padding: 0.85rem 1.1rem;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+  }
+</style>

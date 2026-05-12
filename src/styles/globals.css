@@ -1,0 +1,188 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@theme {
+  --color-primary: #0f4c5c;
+  --color-primary-50: #f0f7f9;
+  --color-primary-100: #d9eaef;
+  --color-primary-200: #b3d4dc;
+  --color-primary-300: #7eb1bf;
+  --color-primary-400: #4d8a9d;
+  --color-primary-500: #2e6c80;
+  --color-primary-600: #1d5a6d;
+  --color-primary-700: #144a5b;
+  --color-primary-800: #0c3d4a;
+  --color-primary-900: #082b35;
+
+  --color-accent: #e8c547;
+  --color-accent-50: #fdf7e3;
+  --color-accent-100: #faecbd;
+  --color-accent-300: #f0d77a;
+  --color-accent-600: #c8a727;
+  --color-accent-700: #9c8316;
+
+  --color-amazon: #ff9900;
+  --color-amazon-hover: #f08804;
+  --color-amazon-ink: #131921;
+
+  --color-bg: #fafaf7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f3ee;
+  --color-border: #e6e3da;
+  --color-border-strong: #cfc9bb;
+  --color-ink: #1a1a1a;
+  --color-ink-muted: #4a4a44;
+  --color-ink-subtle: #7a7a72;
+
+  --color-success: #2f7d4f;
+  --color-success-soft: #e1f1e6;
+  --color-warning: #b87f1a;
+  --color-warning-soft: #fbf1d9;
+  --color-error: #b03a3a;
+  --color-error-soft: #f7e0e0;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Fraunces', ui-serif, 'Iowan Old Style', Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 14px;
+  --radius-2xl: 22px;
+
+  --shadow-xs: 0 1px 2px rgba(15, 76, 92, 0.06);
+  --shadow-sm: 0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
+  --shadow-md: 0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
+  --shadow-lg: 0 18px 36px -12px rgba(15, 76, 92, 0.22);
+
+  --container-max: 1280px;
+}
+
+/* Base reset & typography */
+html {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: var(--text-base);
+  line-height: 1.6;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--color-primary-900);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+h1 { font-size: var(--text-4xl); }
+h2 { font-size: var(--text-3xl); }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+
+p { margin: 0; }
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--color-primary-600);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Utility classes */
+.container-page {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 1rem;
+  background: var(--color-primary);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Prose for markdown content */
+.prose {
+  max-width: 70ch;
+  color: var(--color-ink);
+  line-height: 1.7;
+}
+.prose > * + * { margin-top: 1.25em; }
+.prose h2 { margin-top: 2em; margin-bottom: 0.6em; }
+.prose h3 { margin-top: 1.6em; margin-bottom: 0.4em; }
+.prose ul, .prose ol { padding-left: 1.5em; }
+.prose li + li { margin-top: 0.35em; }
+.prose blockquote {
+  border-left: 4px solid var(--color-accent);
+  padding: 0.25em 1em;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-surface-muted);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
+}
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

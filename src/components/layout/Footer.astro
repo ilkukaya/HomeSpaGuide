@@ -1,0 +1,123 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-page site-footer__grid">
+    <section class="site-footer__col">
+      <p class="site-footer__brand">
+        <span class="logo-mark" aria-hidden="true">◐</span> HomeSpaGuide
+      </p>
+      <p class="site-footer__tag">
+        Your trusted guide to home spas, hot tubs, and everything that makes water feel like home.
+      </p>
+    </section>
+
+    <section class="site-footer__col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="/category/hot-tubs">Hot Tubs</a></li>
+        <li><a href="/category/chemicals-water-care">Chemicals &amp; Water Care</a></li>
+        <li><a href="/category/filters-filtration">Filters</a></li>
+        <li><a href="/category/covers-accessories">Covers &amp; Accessories</a></li>
+        <li><a href="/products">All products</a></li>
+      </ul>
+    </section>
+
+    <section class="site-footer__col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="/guides">Buying Guides</a></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><a href="/faq">FAQ</a></li>
+        <li><a href="/compare">Compare</a></li>
+        <li><a href="/wishlist">Wishlist</a></li>
+      </ul>
+    </section>
+
+    <section class="site-footer__col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+        <li><a href="/affiliate-disclosure">Affiliate Disclosure</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="site-footer__trust">
+    <p>
+      As an Amazon Associate, HomeSpaGuide earns from qualifying purchases. Amazon and the Amazon logo are trademarks of Amazon.com, Inc. or its affiliates.
+    </p>
+  </div>
+
+  <div class="site-footer__base">
+    <small>© {year} HomeSpaGuide. All rights reserved.</small>
+    <small>Made with care for spa lovers.</small>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    background: var(--color-primary-900);
+    color: #d9eaef;
+  }
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-top: 3rem;
+    padding-bottom: 2.5rem;
+  }
+  @media (min-width: 700px) {
+    .site-footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; }
+  }
+  .site-footer__brand {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+  .site-footer__brand .logo-mark { color: var(--color-accent); }
+  .site-footer__tag { color: #a4c5d0; max-width: 32ch; line-height: 1.5; }
+  .site-footer__col h4 {
+    color: white;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+  }
+  .site-footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .site-footer__col a { color: #b3d4dc; font-size: 0.95rem; transition: color 0.15s ease; }
+  .site-footer__col a:hover { color: white; }
+  .site-footer__trust {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.25rem 0;
+    text-align: center;
+  }
+  .site-footer__trust p {
+    color: #8fb0bb;
+    font-size: 0.85rem;
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.5;
+    padding-inline: 1rem;
+  }
+  .site-footer__base {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1.25rem clamp(1rem, 3vw, 2rem);
+    color: #8fb0bb;
+    font-size: 0.8rem;
+    max-width: var(--container-max);
+    margin-inline: auto;
+  }
+</style>

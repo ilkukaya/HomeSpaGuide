@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt - +a.data.updatedAt);
+---
+
+<BaseLayout title="Buying Guides — HomeSpaGuide" description="In-depth, methodical buying guides covering hot tubs, chemicals, filters and accessories.">
+  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Buying Guides' }]} />
+    <header style="margin: 1.5rem 0 2rem; max-width: 60ch;">
+      <h1>Buying Guides</h1>
+      <p style="color: var(--color-ink-muted);">Methodical, no-fluff guides for buyers who want to choose once and choose well.</p>
+    </header>
+    {guides.length > 0 ? (
+      <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+        {guides.map((g) => (
+          <li>
+            <a href={`/guides/${g.slug}`} style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); height: 100%; color: var(--color-ink);">
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-accent-700); font-weight: 700;">{g.data.topic}</span>
+              <h3 style="font-size: var(--text-xl); margin: 0;">{g.data.title}</h3>
+              <p style="color: var(--color-ink-muted); font-size: 0.95rem;">{g.data.intro}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p style="color: var(--color-ink-subtle);">No guides published yet.</p>
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,64 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+const categories: CollectionEntry<'categories'>[] = await getCollection('categories').catch(() => []);
+const topLevel = categories
+  .filter((c) => !c.data.parent)
+  .sort((a, b) => a.data.order - b.data.order);
+const subsByParent = new Map<string, CollectionEntry<'categories'>[]>();
+for (const cat of categories) {
+  if (cat.data.parent) {
+    const key = cat.data.parent.id;
+    if (!subsByParent.has(key)) subsByParent.set(key, []);
+    subsByParent.get(key)!.push(cat);
+  }
+}
+---
+
+<nav class="megamenu" aria-label="Shop by category">
+  <ul>
+    {topLevel.map((cat) => {
+      const subs = subsByParent.get(cat.id) ?? [];
+      return (
+        <li class="megamenu__item">
+          <a href={`/category/${cat.slug}`} class="megamenu__top">{cat.data.name}</a>
+          {subs.length > 0 && (
+            <div class="megamenu__panel">
+              <ul>
+                {subs.map((s) => (
+                  <li><a href={`/category/${s.slug}`}>{s.data.name}</a></li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .megamenu ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 1.5rem; }
+  .megamenu__item { position: relative; }
+  .megamenu__top {
+    font-weight: 500;
+    color: var(--color-ink-muted);
+    padding: 0.5rem 0;
+  }
+  .megamenu__panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: 1rem 1.25rem;
+    min-width: 240px;
+  }
+  .megamenu__item:hover .megamenu__panel,
+  .megamenu__item:focus-within .megamenu__panel { display: block; }
+  .megamenu__panel ul { display: flex; flex-direction: column; gap: 0.5rem; }
+  .megamenu__panel a { font-size: 0.92rem; color: var(--color-ink-muted); }
+  .megamenu__panel a:hover { color: var(--color-primary); }
+</style>

@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+const products = await getCollection('products', ({ data }) => data.status === 'active');
+const manifest = products.map((p) => ({
+  asin: p.data.asin,
+  slug: p.slug,
+  title: p.data.shortTitle,
+  brand: p.data.brand.id,
+  priceRange: p.data.priceRange,
+  amazonUrl: p.data.amazonUrl,
+  score: p.data.editorScore.overall,
+  capacity: p.data.specs.capacity ?? null,
+  setup: p.data.specs.setupType ?? null,
+  placement: p.data.specs.indoorOutdoor ?? null,
+  warranty: p.data.specs.warranty ?? null,
+  pros: p.data.pros,
+  cons: p.data.cons,
+}));
+---
+
+<BaseLayout title="Compare products — HomeSpaGuide" description="Side-by-side comparison of up to four products you've saved on this device." noindex>
+  <div class="container-page" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Compare' }]} />
+    <header style="margin: 1.5rem 0 2rem; display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+      <div>
+        <h1>Compare</h1>
+        <p style="color: var(--color-ink-muted);">Up to four products. Stored on your device — never on our servers.</p>
+      </div>
+      <button data-clear-compare class="link-btn">Clear all</button>
+    </header>
+    <div data-compare-shell></div>
+    <p data-compare-empty hidden style="padding: 3rem 1rem; text-align: center; border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg);">
+      Nothing to compare yet. Add products via the compare icon on any product card.
+    </p>
+  </div>
+
+  <script type="application/json" id="hsg-manifest" set:html={JSON.stringify(manifest)} />
+  <script>
+    interface M { asin: string; slug: string; title: string; brand: string; priceRange: string; amazonUrl: string; score: number; capacity: number | null; setup: string | null; placement: string | null; warranty: string | null; pros: string[]; cons: string[]; }
+    const manifest: M[] = JSON.parse(document.getElementById('hsg-manifest')?.textContent || '[]');
+
+    function load(): string[] { try { return JSON.parse(localStorage.getItem('hsg.compare') || '[]'); } catch { return []; } }
+    function save(ids: string[]) { localStorage.setItem('hsg.compare', JSON.stringify(ids)); window.dispatchEvent(new CustomEvent('hsg:compare:change')); }
+
+    function render() {
+      const shell = document.querySelector<HTMLElement>('[data-compare-shell]');
+      const empty = document.querySelector<HTMLElement>('[data-compare-empty]');
+      if (!shell) return;
+      const items = load().map((id) => manifest.find((m) => m.asin === id)).filter((x): x is M => Boolean(x));
+      if (items.length === 0) {
+        shell.innerHTML = '';
+        if (empty) empty.hidden = false;
+        return;
+      }
+      if (empty) empty.hidden = true;
+
+      const rows: { label: string; cells: (string | number)[] }[] = [
+        { label: "Editor's Score", cells: items.map((p) => p.score.toFixed(1)) },
+        { label: 'Brand', cells: items.map((p) => p.brand) },
+        { label: 'Capacity', cells: items.map((p) => p.capacity ? `${p.capacity} people` : '—') },
+        { label: 'Setup', cells: items.map((p) => p.setup ?? '—') },
+        { label: 'Placement', cells: items.map((p) => p.placement ?? '—') },
+        { label: 'Warranty', cells: items.map((p) => p.warranty ?? '—') },
+      ];
+
+      shell.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); min-width: 600px;">
+            <thead>
+              <tr>
+                <th></th>
+                ${items.map((p) => `
+                  <th style="padding: 1rem; vertical-align: top; text-align: left; background: var(--color-surface-muted);">
+                    <a href="/products/${p.slug}" style="color: var(--color-ink); font-weight: 600;">${p.title}</a>
+                    <button type="button" data-remove="${p.asin}" style="display: block; margin-top: 0.5rem; color: var(--color-error); font-size: 0.8rem;">Remove</button>
+                  </th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map((r) => `
+                <tr>
+                  <th style="padding: 0.85rem 1rem; text-align: left; background: var(--color-surface-muted); color: var(--color-ink-muted); font-weight: 500; width: 160px; text-transform: capitalize; border-top: 1px solid var(--color-border);">${r.label}</th>
+                  ${r.cells.map((c) => `<td style="padding: 0.85rem 1rem; text-transform: capitalize; border-top: 1px solid var(--color-border);">${c}</td>`).join('')}
+                </tr>
+              `).join('')}
+              <tr>
+                <th></th>
+                ${items.map((p) => `
+                  <td style="padding: 0.85rem 1rem; border-top: 1px solid var(--color-border);">
+                    <a href="${p.amazonUrl}?tag=homespaguide-20&ascsubtag=compare" rel="sponsored nofollow noopener" target="_blank" style="display: inline-block; padding: 0.5rem 0.85rem; background: var(--color-amazon); color: var(--color-amazon-ink); border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem;">View on Amazon</a>
+                  </td>
+                `).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      shell.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          save(load().filter((x) => x !== btn.dataset.remove));
+          render();
+        });
+      });
+    }
+    document.querySelector('[data-clear-compare]')?.addEventListener('click', () => { save([]); render(); });
+    render();
+  </script>
+</BaseLayout>

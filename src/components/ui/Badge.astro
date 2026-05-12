@@ -1,0 +1,37 @@
+---
+import { cn } from '../../lib/cn';
+
+type Variant =
+  | 'default'
+  | 'editor-pick'
+  | 'best-seller'
+  | 'best-value'
+  | 'new'
+  | 'top-rated'
+  | 'budget-pick'
+  | 'premium-pick'
+  | 'price';
+
+interface Props {
+  variant?: Variant;
+  class?: string;
+}
+
+const { variant = 'default', class: className } = Astro.props;
+
+const variants: Record<Variant, string> = {
+  default: 'bg-[var(--color-surface-muted)] text-[var(--color-ink-muted)] border border-[var(--color-border)]',
+  'editor-pick': 'bg-[var(--color-primary)] text-white',
+  'best-seller': 'bg-[var(--color-amazon)] text-[var(--color-amazon-ink)]',
+  'best-value': 'bg-[var(--color-success-soft)] text-[var(--color-success)] border border-[var(--color-success)]',
+  new: 'bg-[var(--color-accent)] text-[var(--color-primary-900)]',
+  'top-rated': 'bg-[var(--color-primary-100)] text-[var(--color-primary-700)] border border-[var(--color-primary-200)]',
+  'budget-pick': 'bg-[var(--color-warning-soft)] text-[var(--color-warning)] border border-[var(--color-warning)]',
+  'premium-pick': 'bg-[var(--color-primary-900)] text-[var(--color-accent)]',
+  price: 'bg-[var(--color-surface)] text-[var(--color-primary)] border border-[var(--color-primary-200)] font-semibold',
+};
+---
+
+<span class={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-[var(--radius-sm)] text-xs font-medium uppercase tracking-wide', variants[variant], className)}>
+  <slot />
+</span>

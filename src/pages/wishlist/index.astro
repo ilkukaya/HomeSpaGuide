@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+
+const products = await getCollection('products', ({ data }) => data.status === 'active');
+const manifest = products.map((p) => ({
+  asin: p.data.asin,
+  slug: p.slug,
+  title: p.data.shortTitle,
+  brand: p.data.brand.id,
+  priceRange: p.data.priceRange,
+  amazonUrl: p.data.amazonUrl,
+  imageAlt: p.data.imageAlt,
+  score: p.data.editorScore.overall,
+}));
+const manifestJson = JSON.stringify(manifest);
+---
+
+<BaseLayout title="Your Wishlist — HomeSpaGuide" description="Saved products on this device." noindex>
+  <div class="container-page" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Wishlist' }]} />
+    <header style="margin: 1.5rem 0 2rem; display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+      <div>
+        <h1>Your wishlist</h1>
+        <p style="color: var(--color-ink-muted);">Stored on this device — we never see it.</p>
+      </div>
+      <button data-clear-wishlist class="link-btn">Clear all</button>
+    </header>
+    <div data-wishlist-grid></div>
+    <p data-wishlist-empty hidden style="padding: 3rem 1rem; text-align: center; border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg);">
+      Your wishlist is empty. <a href="/products">Browse products</a> and tap the heart icon to save items here.
+    </p>
+  </div>
+
+  <script type="application/json" id="hsg-manifest" set:html={manifestJson} />
+  <script>
+    interface ManifestItem { asin: string; slug: string; title: string; brand: string; priceRange: string; amazonUrl: string; imageAlt: string; score: number; }
+    const raw = document.getElementById('hsg-manifest')?.textContent || '[]';
+    const manifest: ManifestItem[] = JSON.parse(raw);
+
+    function load(): string[] {
+      try { return JSON.parse(localStorage.getItem('hsg.wishlist') || '[]'); } catch { return []; }
+    }
+    function save(ids: string[]) { localStorage.setItem('hsg.wishlist', JSON.stringify(ids)); window.dispatchEvent(new CustomEvent('hsg:wishlist:change')); }
+
+    function render() {
+      const grid = document.querySelector<HTMLElement>('[data-wishlist-grid]');
+      const empty = document.querySelector<HTMLElement>('[data-wishlist-empty]');
+      if (!grid) return;
+      const ids = load();
+      const items = ids.map((id) => manifest.find((m) => m.asin === id)).filter((x): x is ManifestItem => Boolean(x));
+      if (items.length === 0) {
+        grid.innerHTML = '';
+        if (empty) empty.hidden = false;
+        return;
+      }
+      if (empty) empty.hidden = true;
+      grid.innerHTML = `<div style="display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">${items.map((it) => `
+        <article style="background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <a href="/products/${it.slug}" style="font-weight: 600; color: var(--color-ink);">${it.title}</a>
+          <p style="color: var(--color-ink-subtle); font-size: 0.85rem; text-transform: uppercase;">${it.brand}</p>
+          <p style="color: var(--color-ink-muted); font-size: 0.85rem;">Editor's Score: <strong>${it.score.toFixed(1)}</strong></p>
+          <div style="display: flex; gap: 0.5rem; margin-top: auto;">
+            <a href="/products/${it.slug}" class="link-btn">View details</a>
+            <button type="button" data-remove="${it.asin}" class="link-btn link-btn--danger">Remove</button>
+          </div>
+        </article>
+      `).join('')}</div>`;
+
+      grid.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          save(load().filter((x) => x !== btn.dataset.remove));
+          render();
+        });
+      });
+    }
+    document.querySelector('[data-clear-wishlist]')?.addEventListener('click', () => { save([]); render(); });
+    render();
+  </script>
+</BaseLayout>
+
+<style is:global>
+  .link-btn { color: var(--color-primary); text-decoration: underline; font-size: 0.9rem; }
+  .link-btn:hover { color: var(--color-primary-600); }
+  .link-btn--danger { color: var(--color-error); }
+</style>

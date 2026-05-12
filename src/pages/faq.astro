@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import FAQSchema from '../components/seo/FAQSchema.astro';
+
+const faqs = [
+  {
+    question: 'How does HomeSpaGuide make money?',
+    answer: 'We participate in the Amazon Associates program. When you buy through our links, Amazon pays us a small commission at no extra cost to you.',
+  },
+  {
+    question: 'Do you accept paid product placements?',
+    answer: 'No. We do not accept payment for reviews or placement in Editor\'s Picks. Our scores are independent of commission rates.',
+  },
+  {
+    question: 'Why don\'t you show live prices?',
+    answer: 'Amazon\'s rules prohibit scraping prices, and we are not yet enrolled in the Product Advertising API. So we show curated price ranges instead. The "View on Amazon" link will always show you the current price.',
+  },
+  {
+    question: 'How do you decide what to review?',
+    answer: 'We focus on products real spa owners ask about — the popular Coleman, Intex and Bestway tubs, the chemicals everyone needs, and the accessories that actually improve life with a spa.',
+  },
+  {
+    question: 'Can I trust your wishlist / compare features?',
+    answer: 'They live entirely in your browser. We never see them. Clearing your browser data clears them too.',
+  },
+];
+---
+
+<BaseLayout title="FAQ — HomeSpaGuide" description="Common questions about how HomeSpaGuide works.">
+  <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'FAQ' }]} />
+    <article class="prose" style="margin-top: 1.5rem;">
+      <h1>Frequently asked questions</h1>
+      {faqs.map((f) => (
+        <details class="faq-item">
+          <summary>{f.question}</summary>
+          <p>{f.answer}</p>
+        </details>
+      ))}
+    </article>
+  </div>
+
+  <FAQSchema slot="head" faqs={faqs} />
+</BaseLayout>
+
+<style>
+  .faq-item { margin: 1rem 0; padding: 1rem 1.25rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .faq-item summary { font-weight: 600; color: var(--color-primary); cursor: pointer; }
+  .faq-item p { margin-top: 0.65rem; color: var(--color-ink-muted); }
+</style>

@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import FAQSchema from '../components/seo/FAQSchema.astro';
+import ArticleSchema from '../components/seo/ArticleSchema.astro';
+
+interface Props {
+  guide: CollectionEntry<'guides'>;
+}
+const { guide } = Astro.props;
+const g = guide.data;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const url = new URL(`/guides/${guide.slug}`, siteUrl).toString();
+const heroSrc = g.heroImage ? new URL((g.heroImage as any).src ?? '/og-default.png', siteUrl).toString() : new URL('/og-default.png', siteUrl).toString();
+
+const products = (
+  await Promise.all((g.recommendedProducts ?? []).map((r) => getEntry('products', r.id)))
+).filter((p): p is CollectionEntry<'products'> => Boolean(p));
+---
+
+<BaseLayout
+  title={g.seo?.metaTitle ?? g.title}
+  description={g.seo?.metaDescription ?? g.intro}
+  ogType="article"
+>
+  <article class="container-page guide">
+    <Breadcrumbs items={[{ label: 'Buying Guides', href: '/guides' }, { label: g.title }]} />
+    <header class="guide__header">
+      <p class="guide__eyebrow">Buying Guide · {g.topic}</p>
+      <h1>{g.title}</h1>
+      <p class="guide__lede">{g.intro}</p>
+    </header>
+    {g.heroImage && (
+      <div class="guide__hero">
+        <Image src={g.heroImage} alt={g.heroImageAlt ?? g.title} widths={[640, 1280]} format="webp" />
+      </div>
+    )}
+    <AffiliateDisclosure variant="banner" />
+
+    {products.length > 0 && (
+      <section>
+        <h2>Our top picks</h2>
+        <div class="guide__picks">
+          {products.map((p) => <ProductCard product={p} campaign={`guide-${guide.slug}`} />)}
+        </div>
+      </section>
+    )}
+
+    {g.sections.length > 0 && (
+      <section class="guide__sections">
+        {g.sections.map((s) => (
+          <section>
+            <h2>{s.heading}</h2>
+            <div class="prose" set:html={s.body} />
+          </section>
+        ))}
+      </section>
+    )}
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {g.faqs.length > 0 && (
+      <section>
+        <h2>FAQs</h2>
+        {g.faqs.map((f) => (
+          <details class="guide__faq">
+            <summary>{f.question}</summary>
+            <p>{f.answer}</p>
+          </details>
+        ))}
+      </section>
+    )}
+  </article>
+
+  <ArticleSchema slot="head"
+    title={g.title}
+    description={g.intro}
+    url={url}
+    imageUrl={heroSrc}
+    publishedAt={g.publishedAt}
+    updatedAt={g.updatedAt}
+    author="HomeSpaGuide Editors"
+  />
+  {g.faqs.length > 0 && <FAQSchema slot="head" faqs={g.faqs} />}
+</BaseLayout>
+
+<style>
+  .guide { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
+  .guide__header { max-width: 760px; }
+  .guide__eyebrow { color: var(--color-accent-700); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 0.5rem; text-transform: capitalize; }
+  .guide__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; margin-top: 0.75rem; }
+  .guide__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
+  .guide__picks { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin-top: 1.25rem; }
+  .guide__sections > section { margin-top: 2rem; }
+  .guide__faq { margin: 0.5rem 0; padding: 0.85rem 1rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .guide__faq summary { cursor: pointer; font-weight: 600; color: var(--color-primary); }
+  .guide__faq p { margin-top: 0.5rem; color: var(--color-ink-muted); }
+</style>

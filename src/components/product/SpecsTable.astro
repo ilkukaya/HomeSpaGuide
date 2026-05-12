@@ -1,0 +1,83 @@
+---
+interface Specs {
+  capacity?: number;
+  dimensions?: string;
+  weight?: string;
+  powerRequirement?: string;
+  waterCapacity?: string;
+  jetCount?: number;
+  heaterWattage?: number;
+  setupType?: 'inflatable' | 'hard-shell' | 'plug-and-play' | 'wired';
+  indoorOutdoor?: 'indoor' | 'outdoor' | 'both';
+  seasonality?: 'summer' | 'all-season' | 'winter-rated';
+  materials?: string[];
+  warranty?: string;
+  customFields?: { label: string; value: string }[];
+}
+
+interface Props {
+  specs: Specs;
+}
+const { specs } = Astro.props;
+
+const rows: { label: string; value: string }[] = [];
+const push = (label: string, value: string | number | undefined | string[]) => {
+  if (value === undefined || value === null) return;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return;
+    rows.push({ label, value: value.join(', ') });
+    return;
+  }
+  if (value === '') return;
+  rows.push({ label, value: String(value) });
+};
+
+push('Capacity', specs.capacity !== undefined ? `${specs.capacity} people` : undefined);
+push('Dimensions', specs.dimensions);
+push('Weight', specs.weight);
+push('Power', specs.powerRequirement);
+push('Water capacity', specs.waterCapacity);
+push('Jets', specs.jetCount);
+push('Heater wattage', specs.heaterWattage ? `${specs.heaterWattage}W` : undefined);
+push('Setup type', specs.setupType);
+push('Indoor / outdoor', specs.indoorOutdoor);
+push('Seasonality', specs.seasonality);
+push('Materials', specs.materials);
+push('Warranty', specs.warranty);
+for (const f of specs.customFields ?? []) push(f.label, f.value);
+---
+
+{rows.length > 0 ? (
+  <table class="specs-table">
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <th scope="row">{r.label}</th>
+          <td>{r.value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+) : (
+  <p class="text-sm text-[var(--color-ink-subtle)]">No specifications listed yet.</p>
+)}
+
+<style>
+  .specs-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-size: 0.95rem;
+  }
+  .specs-table th, .specs-table td {
+    text-align: left;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .specs-table tr:last-child th, .specs-table tr:last-child td { border-bottom: none; }
+  .specs-table tr:nth-child(odd) { background: var(--color-surface-muted); }
+  .specs-table th { font-weight: 500; color: var(--color-ink-muted); width: 200px; text-transform: capitalize; }
+  .specs-table td { color: var(--color-ink); text-transform: capitalize; }
+</style>

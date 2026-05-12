@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
+import ProductGrid from '../../components/product/ProductGrid.astro';
+
+const products = await getCollection('products', ({ data }) => data.status === 'active');
+products.sort((a, b) => b.data.editorScore.overall - a.data.editorScore.overall);
+---
+
+<BaseLayout title="All Products — HomeSpaGuide" description="Browse every home spa product we cover — hot tubs, chemicals, filters, covers and more.">
+  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+    <Breadcrumbs items={[{ label: 'Products' }]} />
+    <header style="margin: 1.5rem 0 2rem;">
+      <h1>All products</h1>
+      <p style="color: var(--color-ink-muted); max-width: 56ch;">Every product we've reviewed. Use the categories to narrow down to what you need.</p>
+    </header>
+    <ProductGrid products={products} campaign="all-products" columns={4} />
+  </div>
+</BaseLayout>

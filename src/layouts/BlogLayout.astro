@@ -1,0 +1,77 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
+import TOC from '../components/blog/TOC.astro';
+import ArticleSchema from '../components/seo/ArticleSchema.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { post, headings } = Astro.props;
+const p = post.data;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const url = new URL(`/blog/${post.slug}`, siteUrl).toString();
+const heroSrc = new URL((p.heroImage as any).src ?? '/og-default.png', siteUrl).toString();
+---
+
+<BaseLayout
+  title={p.seo?.metaTitle ?? p.title}
+  description={p.seo?.metaDescription ?? p.excerpt}
+  ogType="article"
+  publishedTime={p.publishedAt.toISOString()}
+  modifiedTime={(p.updatedAt ?? p.publishedAt).toISOString()}
+>
+  <article class="container-page blog-post">
+    <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: p.title }]} />
+    <header class="blog-post__header">
+      <p class="blog-post__category">{p.category.replace('-', ' ')}</p>
+      <h1>{p.title}</h1>
+      <p class="blog-post__lede">{p.excerpt}</p>
+      <p class="blog-post__meta">
+        By {p.author} ·
+        <time datetime={p.publishedAt.toISOString()}>{p.publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+      </p>
+    </header>
+    <div class="blog-post__hero">
+      <Image src={p.heroImage} alt={p.heroImageAlt} widths={[640, 960, 1280]} format="webp" loading="eager" />
+    </div>
+    <AffiliateDisclosure variant="banner" />
+    <div class="blog-post__layout">
+      {p.toc && headings.length > 0 && (
+        <aside class="blog-post__aside"><TOC headings={headings} /></aside>
+      )}
+      <div class="prose blog-post__body">
+        <slot />
+      </div>
+    </div>
+  </article>
+
+  <ArticleSchema slot="head"
+    title={p.title}
+    description={p.excerpt}
+    url={url}
+    imageUrl={heroSrc}
+    publishedAt={p.publishedAt}
+    updatedAt={p.updatedAt}
+    author={p.author}
+  />
+</BaseLayout>
+
+<style>
+  .blog-post { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
+  .blog-post__header { max-width: 720px; }
+  .blog-post__category { color: var(--color-accent-700); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .blog-post__header h1 { font-size: var(--text-4xl); margin: 0.5rem 0 0.75rem; }
+  .blog-post__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; }
+  .blog-post__meta { color: var(--color-ink-subtle); font-size: 0.85rem; margin-top: 1rem; }
+  .blog-post__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
+  .blog-post__layout { display: grid; gap: 2rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .blog-post__layout { grid-template-columns: 260px 1fr; } }
+  .blog-post__aside { position: sticky; top: calc(var(--header-height) + 1rem); align-self: start; }
+  .blog-post__body { max-width: 70ch; }
+</style>

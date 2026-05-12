@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  category: CollectionEntry<'categories'>;
+}
+const { category } = Astro.props;
+const c = category.data;
+---
+
+<section class="cat-hero">
+  <div class="cat-hero__text">
+    <h1>{c.name}</h1>
+    <p>{c.shortDescription}</p>
+  </div>
+  {c.heroImage && (
+    <div class="cat-hero__media">
+      <Image src={c.heroImage} alt={c.name} widths={[400, 800]} format="webp" />
+    </div>
+  )}
+</section>
+
+<style>
+  .cat-hero {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+    padding: 2.5rem 0 1.5rem;
+  }
+  @media (min-width: 800px) { .cat-hero { grid-template-columns: 1.4fr 1fr; gap: 3rem; } }
+  .cat-hero h1 { font-size: var(--text-4xl); margin-bottom: 0.5rem; }
+  .cat-hero p { color: var(--color-ink-muted); font-size: var(--text-lg); max-width: 56ch; }
+  .cat-hero__media img { border-radius: var(--radius-xl); aspect-ratio: 4/3; object-fit: cover; }
+</style>

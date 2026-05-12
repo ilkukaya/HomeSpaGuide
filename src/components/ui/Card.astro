@@ -1,0 +1,26 @@
+---
+import { cn } from '../../lib/cn';
+
+interface Props {
+  class?: string;
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  hover?: boolean;
+  as?: 'div' | 'article' | 'li';
+}
+
+const { class: className, padding = 'md', hover = false, as = 'div' } = Astro.props;
+const Tag = as;
+
+type Pad = NonNullable<Props['padding']>;
+const pads: Record<Pad, string> = { none: '', sm: 'p-3', md: 'p-5', lg: 'p-7' };
+const padKey = padding as Pad;
+---
+
+<Tag class={cn(
+  'bg-[var(--color-surface)] rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-[var(--shadow-xs)] transition-shadow duration-200',
+  hover && 'hover:shadow-[var(--shadow-md)] hover:-translate-y-0.5',
+  pads[padKey],
+  className,
+)}>
+  <slot />
+</Tag>

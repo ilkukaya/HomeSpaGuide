@@ -1,0 +1,43 @@
+---
+import { Check, X } from 'lucide-react';
+
+interface Props {
+  pros: string[];
+  cons: string[];
+}
+const { pros, cons } = Astro.props;
+---
+
+<div class="proscons">
+  <div class="proscons__col proscons__col--pros">
+    <h4>Pros</h4>
+    <ul>
+      {pros.map((p) => (
+        <li><Check size={16} aria-hidden="true" /><span>{p}</span></li>
+      ))}
+    </ul>
+  </div>
+  <div class="proscons__col proscons__col--cons">
+    <h4>Cons</h4>
+    <ul>
+      {cons.map((c) => (
+        <li><X size={16} aria-hidden="true" /><span>{c}</span></li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .proscons { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 600px) { .proscons { grid-template-columns: 1fr 1fr; } }
+  .proscons__col { padding: 1.25rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
+  .proscons__col--pros { background: var(--color-success-soft); border-color: rgba(47, 125, 79, 0.2); }
+  .proscons__col--cons { background: var(--color-error-soft); border-color: rgba(176, 58, 58, 0.2); }
+  .proscons__col h4 { font-family: var(--font-sans); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.85rem; }
+  .proscons__col--pros h4 { color: var(--color-success); }
+  .proscons__col--cons h4 { color: var(--color-error); }
+  .proscons__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+  .proscons__col li { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--color-ink); line-height: 1.5; }
+  .proscons__col--pros li svg { color: var(--color-success); margin-top: 4px; flex-shrink: 0; }
+  .proscons__col--cons li svg { color: var(--color-error); margin-top: 4px; flex-shrink: 0; }
+</style>

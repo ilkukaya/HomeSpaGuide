@@ -1,0 +1,26 @@
+---
+import { getEntry, type CollectionEntry } from 'astro:content';
+import ProductGrid from './ProductGrid.astro';
+
+interface Props {
+  refs?: CollectionEntry<'products'>['data']['relatedProducts'];
+  heading?: string;
+  campaign?: string;
+}
+const { refs = [], heading = 'You might also like', campaign = 'related' } = Astro.props;
+
+const products = (
+  await Promise.all((refs ?? []).map((r) => getEntry('products', r.id)))
+).filter((p): p is CollectionEntry<'products'> => Boolean(p));
+---
+
+{products.length > 0 && (
+  <section class="related">
+    <h2>{heading}</h2>
+    <ProductGrid products={products} campaign={campaign} columns={4} />
+  </section>
+)}
+
+<style>
+  .related h2 { margin-bottom: 1.25rem; font-size: var(--text-2xl); }
+</style>

@@ -1,0 +1,106 @@
+---
+import { scoreTone } from '../../lib/score';
+import { cn } from '../../lib/cn';
+
+interface Score {
+  overall: number;
+  quality: number;
+  value: number;
+  setup: number;
+  durability: number;
+  energyEfficiency?: number;
+}
+
+interface Props {
+  score: Score;
+  layout?: 'compact' | 'full' | 'badge';
+  class?: string;
+}
+
+const { score, layout = 'full', class: className } = Astro.props;
+const tone = scoreTone(score.overall);
+
+const toneStyles: Record<string, string> = {
+  great: 'border-[var(--color-success)] text-[var(--color-success)]',
+  good: 'border-[var(--color-primary)] text-[var(--color-primary)]',
+  ok: 'border-[var(--color-warning)] text-[var(--color-warning)]',
+  low: 'border-[var(--color-error)] text-[var(--color-error)]',
+};
+
+const bars = [
+  { label: 'Quality', value: score.quality },
+  { label: 'Value', value: score.value },
+  { label: 'Setup', value: score.setup },
+  { label: 'Durability', value: score.durability },
+  ...(typeof score.energyEfficiency === 'number'
+    ? [{ label: 'Energy', value: score.energyEfficiency }]
+    : []),
+];
+---
+
+{layout === 'badge' && (
+  <div class={cn(
+    'inline-flex items-center justify-center w-12 h-12 rounded-full border-2 font-serif font-bold bg-white text-base',
+    toneStyles[tone],
+    className,
+  )}>
+    {score.overall.toFixed(1)}
+  </div>
+)}
+
+{layout === 'compact' && (
+  <div class={cn('flex items-center gap-2', className)}>
+    <div class={cn(
+      'inline-flex items-center justify-center w-10 h-10 rounded-full border-2 font-serif font-bold text-sm bg-white',
+      toneStyles[tone],
+    )}>
+      {score.overall.toFixed(1)}
+    </div>
+    <div class="text-xs text-[var(--color-ink-subtle)] uppercase tracking-wider">
+      <div class="font-semibold text-[var(--color-ink-muted)]">Editor's Score</div>
+      <div>out of 10</div>
+    </div>
+  </div>
+)}
+
+{layout === 'full' && (
+  <div class={cn('hsg-editor-score', className)}>
+    <div class="hsg-editor-score__head">
+      <div class={cn(
+        'inline-flex items-center justify-center w-16 h-16 rounded-full border-[3px] font-serif font-bold text-xl bg-white',
+        toneStyles[tone],
+      )}>
+        {score.overall.toFixed(1)}
+      </div>
+      <div>
+        <p class="text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] font-semibold">Editor's Score</p>
+        <p class="text-sm text-[var(--color-ink-muted)]">Independent assessment by our editors. <a href="/about" class="underline">How we score</a>.</p>
+      </div>
+    </div>
+    <dl class="hsg-editor-score__bars">
+      {bars.map((b) => (
+        <div class="hsg-editor-score__row">
+          <dt>{b.label}</dt>
+          <dd>
+            <div class="hsg-editor-score__bar" aria-hidden="true">
+              <div class="hsg-editor-score__fill" style={`width: ${(b.value / 10) * 100}%`}></div>
+            </div>
+            <span>{b.value.toFixed(1)}</span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+)}
+
+<style>
+  .hsg-editor-score { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+  .hsg-editor-score__head { display: flex; gap: 1rem; align-items: center; }
+  .hsg-editor-score__bars { display: grid; gap: 0.65rem; margin: 0; }
+  .hsg-editor-score__row { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 0.75rem; font-size: 0.85rem; }
+  .hsg-editor-score__row dt { color: var(--color-ink-muted); font-weight: 500; }
+  .hsg-editor-score__row dd { display: flex; align-items: center; gap: 0.6rem; margin: 0; color: var(--color-ink-muted); }
+  .hsg-editor-score__bar { flex: 1; height: 6px; background: var(--color-surface-muted); border-radius: var(--radius-full); overflow: hidden; }
+  .hsg-editor-score__fill { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-accent)); border-radius: var(--radius-full); }
+  .hsg-editor-score__row dd span { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--color-primary); min-width: 30px; text-align: right; }
+</style>

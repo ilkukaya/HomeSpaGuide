@@ -1,0 +1,61 @@
+---
+import '../styles/globals.css';
+import SEO from '../components/seo/SEO.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'product';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const props = Astro.props;
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+const plausibleScript = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT;
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'HomeSpaGuide',
+  url: siteUrl,
+  logo: new URL('/favicon.svg', siteUrl).toString(),
+  sameAs: [],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title="HomeSpaGuide Blog" href="/rss.xml" />
+    <SEO {...props} />
+    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
+    {plausibleDomain && plausibleScript && (
+      <script
+        is:inline
+        defer
+        data-domain={plausibleDomain}
+        src={plausibleScript}
+      />
+    )}
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <slot name="end" />
+  </body>
+</html>

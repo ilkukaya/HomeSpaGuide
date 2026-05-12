@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+interface Props { post: CollectionEntry<'blog'> }
+const { post } = Astro.props;
+---
+
+<article class="blog-card">
+  <a href={`/blog/${post.slug}`}>
+    <div class="blog-card__media">
+      <Image src={post.data.heroImage} alt={post.data.heroImageAlt} widths={[320, 640]} format="webp" />
+    </div>
+    <div class="blog-card__body">
+      <span class="blog-card__category">{post.data.category.replace('-', ' ')}</span>
+      <h3>{post.data.title}</h3>
+      <p>{post.data.excerpt}</p>
+      <p class="blog-card__meta">{post.data.author} · <time datetime={post.data.publishedAt.toISOString()}>{post.data.publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time></p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .blog-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); overflow: hidden; transition: all 0.2s; }
+  .blog-card:hover { border-color: var(--color-primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .blog-card a { color: var(--color-ink); display: block; height: 100%; }
+  .blog-card__media { aspect-ratio: 16/9; background: var(--color-surface-muted); overflow: hidden; }
+  .blog-card__media img { width: 100%; height: 100%; object-fit: cover; }
+  .blog-card__body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .blog-card__category { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-accent-700); font-weight: 700; }
+  .blog-card h3 { font-size: var(--text-xl); }
+  .blog-card p { color: var(--color-ink-muted); font-size: 0.92rem; line-height: 1.5; }
+  .blog-card__meta { font-size: 0.78rem; color: var(--color-ink-subtle); }
+</style>
