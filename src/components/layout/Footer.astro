@@ -62,8 +62,8 @@ const year = new Date().getFullYear();
 <style>
   .site-footer {
     margin-top: 4rem;
-    background: var(--color-primary-900);
-    color: #d9eaef;
+    background: var(--color-primary);
+    color: var(--color-ink-on-dark);
   }
   .site-footer__grid {
     display: grid;
@@ -78,44 +78,63 @@ const year = new Date().getFullYear();
   .site-footer__brand {
     font-family: var(--font-serif);
     font-size: 1.4rem;
-    color: white;
+    color: var(--color-ink-on-dark);
     margin-bottom: 0.5rem;
+    letter-spacing: var(--tracking-heading);
   }
-  .site-footer__brand .logo-mark { color: var(--color-accent); }
-  .site-footer__tag { color: #a4c5d0; max-width: 32ch; line-height: 1.5; }
+  .site-footer__brand .logo-mark { color: var(--color-cedar); }
+  .site-footer__tag {
+    color: rgba(250, 250, 247, 0.72);
+    max-width: 32ch;
+    line-height: var(--leading-normal);
+  }
   .site-footer__col h4 {
-    color: white;
-    font-size: 0.95rem;
+    color: var(--color-ink-on-dark);
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-meta);
     margin-bottom: 1rem;
     font-family: var(--font-sans);
     font-weight: 600;
+    position: relative;
+    padding-bottom: 0.6rem;
+  }
+  .site-footer__col h4::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--color-cedar);
   }
   .site-footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
-  .site-footer__col a { color: #b3d4dc; font-size: 0.95rem; transition: color 0.15s ease; }
-  .site-footer__col a:hover { color: white; }
+  .site-footer__col a {
+    color: rgba(250, 250, 247, 0.75);
+    font-size: 0.95rem;
+    transition: color var(--dur-base) var(--ease-out);
+  }
+  .site-footer__col a:hover { color: var(--color-ink-on-dark); }
   .site-footer__trust {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(250, 250, 247, 0.12);
     padding: 1.25rem 0;
     text-align: center;
   }
   .site-footer__trust p {
-    color: #8fb0bb;
+    color: rgba(250, 250, 247, 0.6);
     font-size: 0.85rem;
     max-width: 760px;
     margin: 0 auto;
-    line-height: 1.5;
+    line-height: var(--leading-normal);
     padding-inline: 1rem;
   }
   .site-footer__base {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(250, 250, 247, 0.08);
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 0.75rem;
     padding: 1.25rem clamp(1rem, 3vw, 2rem);
-    color: #8fb0bb;
+    color: rgba(250, 250, 247, 0.55);
     font-size: 0.8rem;
     max-width: var(--container-max);
     margin-inline: auto;
