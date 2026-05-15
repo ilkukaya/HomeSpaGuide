@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 import ProductGrid from '../../components/product/ProductGrid.astro';
+import AffiliateDisclosure from '../../components/layout/AffiliateDisclosure.astro';
 
 export async function getStaticPaths() {
   const brands = await getCollection('brands');
@@ -12,25 +13,109 @@ export async function getStaticPaths() {
   }));
 }
 const { brand } = Astro.props;
+const b = brand.data;
+
+const allBrands = await getCollection('brands');
+const brandById = new Map(allBrands.map((x) => [x.id, x.slug]));
+
 const products = (await getCollection('products', ({ data }) => data.status === 'active'))
-  .filter((p) => p.data.brand.id === brand.id);
+  .filter((p) => (brandById.get(p.data.brand.id) ?? p.data.brand.id) === brand.slug);
+
+const avgScore = products.length
+  ? products.reduce((s, p) => s + p.data.editorScore.overall, 0) / products.length
+  : 0;
+const editorPickCount = products.filter((p) => p.data.editorPick).length;
+const priceRanges = Array.from(new Set(products.map((p) => p.data.priceRange))).slice(0, 3);
+
 const { Content } = await brand.render();
 ---
 
-<BaseLayout title={`${brand.data.name} — Reviews & Products`} description={brand.data.description}>
-  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
-    <Breadcrumbs items={[{ label: 'Brands', href: '/products' }, { label: brand.data.name }]} />
-    <header style="margin: 1.5rem 0 2rem; max-width: 56ch;">
-      <h1>{brand.data.name}</h1>
-      <p style="color: var(--color-ink-muted); margin-top: 0.5rem;">{brand.data.description}</p>
+<BaseLayout title={`${b.name} — Reviews, Products & Verdict`} description={b.description}>
+  <div class="container-page brand-page">
+    <Breadcrumbs items={[{ label: 'Brands', href: '/products' }, { label: b.name }]} />
+
+    <header class="brand-page__header">
+      <span class="editorial-rule" aria-hidden="true"></span>
+      <p class="eyebrow">Brand profile</p>
+      <h1>{b.name}</h1>
+      <p class="brand-page__lede">{b.description}</p>
+      <dl class="brand-page__facts">
+        {b.founded && (
+          <div><dt>Founded</dt><dd>{b.founded}</dd></div>
+        )}
+        {b.country && (
+          <div><dt>Headquarters</dt><dd>{b.country}</dd></div>
+        )}
+        <div><dt>We've reviewed</dt><dd>{products.length} {products.length === 1 ? 'product' : 'products'}</dd></div>
+        {products.length > 0 && (
+          <div><dt>Average editor's score</dt><dd>{avgScore.toFixed(1)} / 10</dd></div>
+        )}
+        {editorPickCount > 0 && (
+          <div><dt>Editor's picks</dt><dd>{editorPickCount}</dd></div>
+        )}
+        {b.website && (
+          <div><dt>Website</dt><dd><a href={b.website} rel="external nofollow" target="_blank">{new URL(b.website).host}</a></dd></div>
+        )}
+      </dl>
     </header>
+
     {products.length > 0 ? (
-      <ProductGrid products={products} campaign={`brand-${brand.slug}`} columns={4} />
+      <section class="brand-page__products">
+        <header class="home-section-head">
+          <div>
+            <h2>{b.name} products we've reviewed</h2>
+            <p>Independent scoring — never paid placement.</p>
+          </div>
+          {priceRanges.length > 0 && (
+            <p class="meta">Typical pricing: {priceRanges.join(' · ')}</p>
+          )}
+        </header>
+        <ProductGrid products={products} campaign={`brand-${brand.slug}`} columns={3} />
+      </section>
     ) : (
-      <p style="color: var(--color-ink-subtle);">No products listed yet.</p>
+      <div class="empty-panel">
+        <h2>No {b.name} products in our index yet</h2>
+        <p>We haven't reviewed anything from {b.name} so far. As we add coverage, it'll show up here.</p>
+        <a href="/products" class="empty-panel__cta">Browse what we have <span aria-hidden="true">→</span></a>
+      </div>
     )}
-    <div class="prose" style="margin-top: 3rem;">
-      <Content />
-    </div>
+
+    <section class="brand-page__body">
+      <h2>Our take on {b.name}</h2>
+      <div class="prose">
+        <Content />
+      </div>
+    </section>
+
+    <AffiliateDisclosure variant="banner" />
   </div>
 </BaseLayout>
+
+<style>
+  .brand-page { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 3rem; }
+  .brand-page__header { max-width: 64ch; display: flex; flex-direction: column; gap: 0.65rem; }
+  .brand-page__header h1 { margin-top: 0.25rem; }
+  .brand-page__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); }
+  .brand-page__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem 1.5rem;
+    margin: 1rem 0 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-paper-deep);
+    border-radius: var(--radius-xl);
+  }
+  .brand-page__facts > div { display: flex; flex-direction: column; gap: 0.15rem; }
+  .brand-page__facts dt {
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    color: var(--color-ink-subtle);
+    font-weight: 600;
+  }
+  .brand-page__facts dd { margin: 0; color: var(--color-primary-900); font-weight: 600; }
+  .brand-page__facts a { color: var(--color-primary); text-decoration: underline; text-decoration-color: var(--color-cedar-soft); }
+  .brand-page__products { display: flex; flex-direction: column; gap: 1rem; }
+  .brand-page__body { max-width: 70ch; }
+  .brand-page__body h2 { margin-bottom: 0.75rem; }
+</style>

@@ -33,6 +33,13 @@ const products = (
       <p class="guide__eyebrow">Buying Guide · {g.topic}</p>
       <h1>{g.title}</h1>
       <p class="guide__lede">{g.intro}</p>
+      <p class="guide__meta">
+        <span class="meta--strong">By the HomeSpaGuide Editors</span>
+        <span aria-hidden="true">·</span>
+        <span>Last updated <time datetime={(g.updatedAt ?? g.publishedAt).toISOString()}>{(g.updatedAt ?? g.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+        <span aria-hidden="true">·</span>
+        <a href="/about#methodology">How we test</a>
+      </p>
     </header>
     {g.heroImage && (
       <div class="guide__hero">
@@ -52,16 +59,16 @@ const products = (
 
     {g.sections.length > 0 && (
       <section class="guide__sections">
-        {g.sections.map((s) => (
+        {g.sections.map((s, idx) => (
           <section>
             <h2>{s.heading}</h2>
-            <div class="prose" set:html={s.body} />
+            <div class={`prose ${idx === 0 ? 'prose-dropcap' : ''}`} set:html={s.body} />
           </section>
         ))}
       </section>
     )}
 
-    <div class="prose">
+    <div class={`prose ${g.sections.length === 0 ? 'prose-dropcap' : ''}`}>
       <slot />
     </div>
 
@@ -93,8 +100,12 @@ const products = (
 <style>
   .guide { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
   .guide__header { max-width: 760px; }
-  .guide__eyebrow { color: var(--color-accent-700); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 0.5rem; text-transform: capitalize; }
-  .guide__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; margin-top: 0.75rem; }
+  .guide__eyebrow { color: var(--color-cedar); font-size: var(--text-xs); letter-spacing: var(--tracking-meta); font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; }
+  .guide__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); margin-top: 0.75rem; }
+  .guide__meta { color: var(--color-ink-muted); font-size: var(--text-sm); margin-top: 1rem; display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+  .guide__meta .meta--strong { color: var(--color-ink); font-weight: 500; }
+  .guide__meta a { color: var(--color-primary); text-decoration: underline; text-decoration-color: var(--color-cedar-soft); text-underline-offset: 3px; }
+  .guide__meta a:hover { text-decoration-color: var(--color-cedar); }
   .guide__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
   .guide__picks { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin-top: 1.25rem; }
   .guide__sections > section { margin-top: 2rem; }

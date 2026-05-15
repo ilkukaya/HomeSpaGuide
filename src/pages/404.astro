@@ -4,11 +4,12 @@ import Button from '../components/ui/Button.astro';
 ---
 
 <BaseLayout title="Page not found — HomeSpaGuide" description="The page you were looking for doesn't exist." noindex>
-  <div class="container-narrow" style="padding: 5rem 0; text-align: center; display: flex; flex-direction: column; gap: 1.5rem; align-items: center;">
-    <p style="color: var(--color-accent-700); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;">404 · Page not found</p>
-    <h1>We can't find that page.</h1>
-    <p style="color: var(--color-ink-muted); max-width: 50ch;">It may have moved or been retired. Try one of these instead:</p>
-    <ul style="list-style: none; padding: 0; margin: 0; display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
+  <div class="container-narrow" style="padding: 5rem 0; text-align: center; display: flex; flex-direction: column; gap: 1.25rem; align-items: center;">
+    <span class="editorial-rule" aria-hidden="true"></span>
+    <p class="eyebrow">404 · Page not found</p>
+    <h1 style="max-width: 18ch;">We can't find that page.</h1>
+    <p style="color: var(--color-ink-muted); max-width: 50ch;">It may have moved, been retired, or never existed. Try one of these instead:</p>
+    <ul style="list-style: none; padding: 0; margin: 1rem 0 0; display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;">
       <li><Button href="/" variant="primary">Homepage</Button></li>
       <li><Button href="/category/hot-tubs" variant="outline">Browse hot tubs</Button></li>
       <li><Button href="/guides" variant="outline">Buying guides</Button></li>

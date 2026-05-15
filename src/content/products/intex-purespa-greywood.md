@@ -55,7 +55,7 @@ editorScore:
   notes: The most refined inflatable on the market — small touches add up.
 editorPick: true
 editorBadges: [Editor Pick, Top Rated]
-primaryImage: ../../assets/placeholder-product.svg
+primaryImage: ../../assets/placeholder-hot-tub.svg
 imageAlt: Intex PureSpa Plus Greywood Deluxe inflatable spa
 amazonUrl: https://www.amazon.com/dp/B0BRD89BCY
 relatedProducts:

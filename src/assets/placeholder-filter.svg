@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bgf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d5a6d"/>
+      <stop offset="100%" stop-color="#0f4c5c"/>
+    </linearGradient>
+    <linearGradient id="cart" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafaf7"/>
+      <stop offset="100%" stop-color="#cfc9bb"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bgf)"/>
+  <ellipse cx="400" cy="500" rx="170" ry="22" fill="#082b35" opacity="0.45"/>
+  <!-- cartridge body -->
+  <rect x="320" y="160" width="160" height="320" rx="8" fill="url(#cart)"/>
+  <!-- end caps -->
+  <ellipse cx="400" cy="160" rx="80" ry="18" fill="#0c3d4a"/>
+  <ellipse cx="400" cy="480" rx="80" ry="18" fill="#0c3d4a"/>
+  <!-- pleats -->
+  <g stroke="#b8794a" stroke-width="2" fill="none">
+    <line x1="345" y1="170" x2="345" y2="475"/>
+    <line x1="365" y1="170" x2="365" y2="475"/>
+    <line x1="385" y1="170" x2="385" y2="475"/>
+    <line x1="405" y1="170" x2="405" y2="475"/>
+    <line x1="425" y1="170" x2="425" y2="475"/>
+    <line x1="445" y1="170" x2="445" y2="475"/>
+    <line x1="465" y1="170" x2="465" y2="475"/>
+  </g>
+  <g stroke="#e8d3bc" stroke-width="1" fill="none">
+    <line x1="335" y1="170" x2="335" y2="475"/>
+    <line x1="355" y1="170" x2="355" y2="475"/>
+    <line x1="375" y1="170" x2="375" y2="475"/>
+    <line x1="395" y1="170" x2="395" y2="475"/>
+    <line x1="415" y1="170" x2="415" y2="475"/>
+    <line x1="435" y1="170" x2="435" y2="475"/>
+    <line x1="455" y1="170" x2="455" y2="475"/>
+    <line x1="475" y1="170" x2="475" y2="475"/>
+  </g>
+</svg>

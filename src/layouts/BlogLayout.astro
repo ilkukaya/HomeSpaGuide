@@ -33,8 +33,11 @@ const heroSrc = new URL((p.heroImage as any).src ?? '/og-default.png', siteUrl).
       <h1>{p.title}</h1>
       <p class="blog-post__lede">{p.excerpt}</p>
       <p class="blog-post__meta">
-        By {p.author} ·
-        <time datetime={p.publishedAt.toISOString()}>{p.publishedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        <span class="meta--strong">By {p.author}</span>
+        <span aria-hidden="true">·</span>
+        <span>Last updated <time datetime={(p.updatedAt ?? p.publishedAt).toISOString()}>{(p.updatedAt ?? p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+        <span aria-hidden="true">·</span>
+        <a href="/about#methodology">How we test</a>
       </p>
     </header>
     <div class="blog-post__hero">
@@ -45,7 +48,7 @@ const heroSrc = new URL((p.heroImage as any).src ?? '/og-default.png', siteUrl).
       {p.toc && headings.length > 0 && (
         <aside class="blog-post__aside"><TOC headings={headings} /></aside>
       )}
-      <div class="prose blog-post__body">
+      <div class="prose prose-dropcap blog-post__body">
         <slot />
       </div>
     </div>
@@ -65,10 +68,13 @@ const heroSrc = new URL((p.heroImage as any).src ?? '/og-default.png', siteUrl).
 <style>
   .blog-post { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
   .blog-post__header { max-width: 720px; }
-  .blog-post__category { color: var(--color-accent-700); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .blog-post__category { color: var(--color-cedar); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-meta); font-weight: 600; }
   .blog-post__header h1 { font-size: var(--text-4xl); margin: 0.5rem 0 0.75rem; }
-  .blog-post__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; }
-  .blog-post__meta { color: var(--color-ink-subtle); font-size: 0.85rem; margin-top: 1rem; }
+  .blog-post__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); }
+  .blog-post__meta { color: var(--color-ink-muted); font-size: var(--text-sm); margin-top: 1rem; display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+  .blog-post__meta .meta--strong { color: var(--color-ink); font-weight: 500; }
+  .blog-post__meta a { color: var(--color-primary); text-decoration: underline; text-decoration-color: var(--color-cedar-soft); text-underline-offset: 3px; }
+  .blog-post__meta a:hover { text-decoration-color: var(--color-cedar); }
   .blog-post__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
   .blog-post__layout { display: grid; gap: 2rem; grid-template-columns: 1fr; }
   @media (min-width: 900px) { .blog-post__layout { grid-template-columns: 260px 1fr; } }

@@ -54,7 +54,7 @@ editorScore:
   notes: The only inflatable we'd confidently leave running through a Northern winter.
 editorPick: false
 editorBadges: [Premium Pick, Top Rated]
-primaryImage: ../../assets/placeholder-product.svg
+primaryImage: ../../assets/placeholder-hot-tub.svg
 imageAlt: Bestway Lay-Z-Spa Saint Tropez HydroJet Pro inflatable hot tub with LED lighting
 amazonUrl: https://www.amazon.com/dp/B09KNQ6JBV
 relatedProducts:

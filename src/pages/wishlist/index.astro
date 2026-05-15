@@ -25,12 +25,17 @@ const manifestJson = JSON.stringify(manifest);
         <h1>Your wishlist</h1>
         <p style="color: var(--color-ink-muted);">Stored on this device — we never see it.</p>
       </div>
-      <button data-clear-wishlist class="link-btn">Clear all</button>
+      <button type="button" data-clear-wishlist class="link-btn">Clear all</button>
     </header>
     <div data-wishlist-grid></div>
-    <p data-wishlist-empty hidden style="padding: 3rem 1rem; text-align: center; border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg);">
-      Your wishlist is empty. <a href="/products">Browse products</a> and tap the heart icon to save items here.
-    </p>
+    <div data-wishlist-empty hidden class="empty-panel">
+      <svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="empty-panel__icon">
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+      </svg>
+      <h2>Your wishlist is empty</h2>
+      <p>Tap the heart icon on any product card to save it here for later. We don't track this — it's stored only on this device.</p>
+      <a href="/products" class="empty-panel__cta">Browse products <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 
   <script type="application/json" id="hsg-manifest" set:html={manifestJson} />
@@ -63,7 +68,7 @@ const manifestJson = JSON.stringify(manifest);
           <p style="color: var(--color-ink-muted); font-size: 0.85rem;">Editor's Score: <strong>${it.score.toFixed(1)}</strong></p>
           <div style="display: flex; gap: 0.5rem; margin-top: auto;">
             <a href="/products/${it.slug}" class="link-btn">View details</a>
-            <button type="button" data-remove="${it.asin}" class="link-btn link-btn--danger">Remove</button>
+            <button type="button" data-remove="${it.asin}" aria-label="Remove ${it.title} from wishlist" class="link-btn link-btn--danger">Remove</button>
           </div>
         </article>
       `).join('')}</div>`;

@@ -14,13 +14,14 @@ const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt 
       <p style="color: var(--color-ink-muted);">Methodical, no-fluff guides for buyers who want to choose once and choose well.</p>
     </header>
     {guides.length > 0 ? (
-      <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+      <ul class="guide-list">
         {guides.map((g) => (
           <li>
-            <a href={`/guides/${g.slug}`} style="display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); height: 100%; color: var(--color-ink);">
-              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-accent-700); font-weight: 700;">{g.data.topic}</span>
-              <h3 style="font-size: var(--text-xl); margin: 0;">{g.data.title}</h3>
-              <p style="color: var(--color-ink-muted); font-size: 0.95rem;">{g.data.intro}</p>
+            <a href={`/guides/${g.slug}`} class="guide-list__card">
+              <span class="eyebrow">{g.data.topic}</span>
+              <h3>{g.data.title}</h3>
+              <p>{g.data.intro}</p>
+              <span class="guide-list__cta">Read the guide <span aria-hidden="true">→</span></span>
             </a>
           </li>
         ))}
@@ -30,3 +31,30 @@ const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt 
     )}
   </div>
 </BaseLayout>
+
+<style>
+  .guide-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  .guide-list__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.75rem;
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    color: var(--color-ink);
+    height: 100%;
+    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+  }
+  .guide-list__card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+  .guide-list__card h3 { font-size: var(--text-xl); margin: 0.4rem 0 0.25rem; color: var(--color-primary-900); }
+  .guide-list__card p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: var(--leading-normal); flex: 1; }
+  .guide-list__cta { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+</style>

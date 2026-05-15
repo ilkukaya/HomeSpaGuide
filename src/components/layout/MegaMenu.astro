@@ -1,9 +1,14 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { ChevronDown } from 'lucide-react';
+
 const categories: CollectionEntry<'categories'>[] = await getCollection('categories').catch(() => []);
+const allProducts = await getCollection('products', ({ data }) => data.status === 'active').catch(() => []);
+
 const topLevel = categories
   .filter((c) => !c.data.parent)
   .sort((a, b) => a.data.order - b.data.order);
+
 const subsByParent = new Map<string, CollectionEntry<'categories'>[]>();
 for (const cat of categories) {
   if (cat.data.parent) {
@@ -12,53 +17,170 @@ for (const cat of categories) {
     subsByParent.get(key)!.push(cat);
   }
 }
+
+const slugSetForRoot = (root: CollectionEntry<'categories'>) => {
+  const set = new Set([root.slug]);
+  let frontier = [root.slug];
+  while (frontier.length) {
+    const next: string[] = [];
+    for (const s of frontier) {
+      for (const cat of categories) {
+        if (!cat.data.parent) continue;
+        const parentEntry = categories.find((c) => c.id === cat.data.parent!.id || c.slug === cat.data.parent!.id);
+        if (parentEntry?.slug === s && !set.has(cat.slug)) {
+          set.add(cat.slug);
+          next.push(cat.slug);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return set;
+};
+
+const productCountFor = (root: CollectionEntry<'categories'>) => {
+  const slugs = slugSetForRoot(root);
+  return allProducts.filter((p) => {
+    const pCat = categories.find((c) => c.id === p.data.category.id || c.slug === p.data.category.id);
+    return pCat ? slugs.has(pCat.slug) : false;
+  }).length;
+};
 ---
 
 <nav class="megamenu" aria-label="Shop by category">
-  <ul>
+  <ul class="megamenu__bar">
     {topLevel.map((cat) => {
-      const subs = subsByParent.get(cat.id) ?? [];
+      const subs = (subsByParent.get(cat.id) ?? subsByParent.get(cat.slug) ?? [])
+        .sort((a, b) => a.data.order - b.data.order);
+      const count = productCountFor(cat);
       return (
         <li class="megamenu__item">
-          <a href={`/category/${cat.slug}`} class="megamenu__top">{cat.data.name}</a>
+          <a href={`/category/${cat.slug}`} class="megamenu__top">
+            {cat.data.name}
+            {subs.length > 0 && <ChevronDown size={14} aria-hidden="true" />}
+          </a>
           {subs.length > 0 && (
-            <div class="megamenu__panel">
-              <ul>
+            <div class="megamenu__panel" role="menu">
+              <div class="megamenu__panel-head">
+                <p class="eyebrow">{cat.data.name}</p>
+                <p class="megamenu__panel-desc">{cat.data.shortDescription}</p>
+              </div>
+              <ul class="megamenu__subs">
                 {subs.map((s) => (
-                  <li><a href={`/category/${s.slug}`}>{s.data.name}</a></li>
+                  <li>
+                    <a href={`/category/${s.slug}`}>
+                      <span class="megamenu__sub-name">{s.data.name}</span>
+                      <span class="megamenu__sub-desc">{s.data.shortDescription}</span>
+                    </a>
+                  </li>
                 ))}
               </ul>
+              <a href={`/category/${cat.slug}`} class="megamenu__see-all">
+                See all {cat.data.name.toLowerCase()} <span aria-hidden="true">→</span>
+                {count > 0 && <span class="megamenu__count">{count}</span>}
+              </a>
             </div>
           )}
         </li>
       );
     })}
+    <li><a href="/guides" class="megamenu__top megamenu__top--plain">Guides</a></li>
+    <li><a href="/blog" class="megamenu__top megamenu__top--plain">Blog</a></li>
   </ul>
 </nav>
 
 <style>
-  .megamenu ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 1.5rem; }
+  .megamenu__bar {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  @media (min-width: 900px) { .megamenu__bar { display: flex; } }
   .megamenu__item { position: relative; }
   .megamenu__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-ink-muted);
     padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+  }
+  .megamenu__top:hover,
+  .megamenu__item:hover .megamenu__top {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-cedar);
   }
   .megamenu__panel {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px);
     position: absolute;
-    top: 100%;
-    left: 0;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    padding: 1rem 1.25rem;
-    min-width: 240px;
+    top: calc(100% + 4px);
+    left: -1rem;
+    z-index: 60;
+    background: var(--color-paper);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    padding: 1.25rem 1.5rem 1rem;
+    min-width: 340px;
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
   }
   .megamenu__item:hover .megamenu__panel,
-  .megamenu__item:focus-within .megamenu__panel { display: block; }
-  .megamenu__panel ul { display: flex; flex-direction: column; gap: 0.5rem; }
-  .megamenu__panel a { font-size: 0.92rem; color: var(--color-ink-muted); }
-  .megamenu__panel a:hover { color: var(--color-primary); }
+  .megamenu__item:focus-within .megamenu__panel {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .megamenu__panel-head { margin-bottom: 0.85rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--color-border); }
+  .megamenu__panel-head .eyebrow { margin-bottom: 0.25rem; }
+  .megamenu__panel-desc {
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    max-width: 38ch;
+  }
+  .megamenu__subs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .megamenu__subs a {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.55rem 0.6rem;
+    border-radius: var(--radius-md);
+    transition: background var(--dur-base) var(--ease-out);
+  }
+  .megamenu__subs a:hover { background: var(--color-paper-deep); }
+  .megamenu__sub-name { color: var(--color-primary-900); font-weight: 600; font-size: var(--text-sm); }
+  .megamenu__sub-desc { color: var(--color-ink-subtle); font-size: var(--text-xs); }
+  .megamenu__see-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    width: 100%;
+  }
+  .megamenu__count {
+    margin-left: auto;
+    padding: 0.05rem 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--color-cedar-soft);
+    color: var(--color-cedar-deep);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
 </style>
