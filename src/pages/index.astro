@@ -34,7 +34,7 @@ const guides = (await getCollection('guides').catch(() => []))
   title="HomeSpaGuide — Honest Hot Tub Reviews & Buying Guides"
   description="Expert reviews, buying guides, and curated picks for home spas, hot tubs, chemicals, and accessories. Find the right product, then buy on Amazon."
 >
-  <section class="home-hero">
+  <section class="home-hero on-dark">
     <div class="home-hero__bg">
       <Image src={heroImage} alt="" loading="eager" widths={[800, 1600]} format="webp" />
     </div>
@@ -46,7 +46,7 @@ const guides = (await getCollection('guides').catch(() => []))
       </p>
       <div class="home-hero__cta">
         <Button href="/category/hot-tubs" variant="primary" size="lg">Shop Hot Tubs</Button>
-        <Button href="/guides" variant="outline" size="lg">Buying Guides</Button>
+        <a href="/guides" class="home-hero__ghost">Buying Guides <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
@@ -144,7 +144,7 @@ const guides = (await getCollection('guides').catch(() => []))
   .home-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,43,53,0.7) 0%, rgba(15,76,92,0.55) 100%); }
   .home-hero__inner { position: relative; color: var(--color-ink-on-dark); max-width: 720px; }
   .home-hero__eyebrow {
-    color: var(--color-cedar-soft);
+    color: var(--color-amber);
     font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-meta);
@@ -159,29 +159,55 @@ const guides = (await getCollection('guides').catch(() => []))
     letter-spacing: var(--tracking-display);
     line-height: 1.1;
   }
-  .home-hero h1 span { color: var(--color-cedar-soft); font-style: italic; }
+  .home-hero h1 span {
+    color: var(--color-paper);
+    font-style: italic;
+    border-bottom: 3px solid var(--color-cedar);
+    padding-bottom: 0.05em;
+  }
   .home-hero__lede {
-    color: rgba(250, 250, 247, 0.88);
+    color: rgba(250, 250, 247, 0.92);
     font-size: var(--text-lg);
     line-height: var(--leading-normal);
     margin: 1rem 0 1.75rem;
     max-width: 56ch;
   }
-  .home-hero__cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .home-hero__cta { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .home-hero__ghost {
+    color: var(--color-ink-on-dark);
+    font-weight: 600;
+    padding: 0.75rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-bottom: 1.5px solid rgba(250, 250, 247, 0.55);
+    transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  }
+  .home-hero__ghost:hover { color: var(--color-amber); border-bottom-color: var(--color-amber); }
 
   .home-stack { display: flex; flex-direction: column; gap: 4rem; padding-top: 4rem; padding-bottom: 4rem; }
 
-  .home-section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; position: relative; }
+  .home-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+    position: relative;
+  }
   .home-section-head::before {
     content: '';
     position: absolute;
-    top: -12px;
+    top: -2px;
     left: 0;
-    width: 48px;
+    width: 56px;
     height: 3px;
     background: var(--color-cedar);
   }
-  .home-section-head h2 { font-size: var(--text-3xl); margin-bottom: 0.25rem; }
+  .home-section-head h2 { font-size: var(--text-3xl); margin: 0.4rem 0 0.25rem; }
   .home-section-head p { color: var(--color-ink-muted); max-width: 60ch; line-height: var(--leading-normal); }
   .home-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-weight: 600; }
   .home-link:hover { color: var(--color-cedar-deep); }

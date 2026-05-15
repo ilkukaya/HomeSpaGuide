@@ -12,7 +12,12 @@ const topLevel = categories
 <header class="site-header">
   <div class="container-page site-header__inner">
     <a href="/" class="site-header__logo" aria-label="HomeSpaGuide home">
-      <span class="logo-mark" aria-hidden="true">◐</span>
+      <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="var(--color-primary)" />
+        <circle cx="32" cy="36" r="18" fill="var(--color-amber)" />
+        <path d="M14 38 Q22 32 32 38 T50 38" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        <path d="M14 46 Q22 40 32 46 T50 46" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+      </svg>
       <span class="logo-text">HomeSpaGuide</span>
     </a>
 
@@ -29,9 +34,9 @@ const topLevel = categories
     </nav>
 
     <div class="site-header__actions">
-      <button class="icon-btn" data-search-trigger aria-label="Search">
+      <a href="/search" class="icon-btn" aria-label="Search">
         <Search size={20} aria-hidden="true" />
-      </button>
+      </a>
       <a href="/wishlist" class="icon-btn icon-btn--badge" aria-label="Wishlist">
         <Heart size={20} aria-hidden="true" />
         <span data-wishlist-count class="badge" hidden>0</span>
@@ -48,7 +53,15 @@ const topLevel = categories
 
   <div class="mobile-drawer" data-mobile-drawer hidden>
     <div class="mobile-drawer__head">
-      <span class="logo-text">HomeSpaGuide</span>
+      <span class="mobile-drawer__brand">
+        <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="var(--color-primary)" />
+          <circle cx="32" cy="36" r="18" fill="var(--color-amber)" />
+          <path d="M14 38 Q22 32 32 38 T50 38" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <path d="M14 46 Q22 40 32 46 T50 46" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        </svg>
+        <span class="logo-text">HomeSpaGuide</span>
+      </span>
       <button class="icon-btn" data-mobile-close aria-label="Close menu">
         <X size={22} aria-hidden="true" />
       </button>
@@ -90,7 +103,7 @@ const topLevel = categories
     font-size: 1.25rem;
     letter-spacing: var(--tracking-heading);
   }
-  .logo-mark { color: var(--color-cedar); font-size: 1.5rem; line-height: 1; }
+  .logo-mark { width: 28px; height: 28px; display: block; flex-shrink: 0; }
   .site-header__nav { flex: 1; }
   .site-header__nav ul {
     display: none;
@@ -159,6 +172,14 @@ const topLevel = categories
     align-items: center;
     margin-bottom: 1.5rem;
   }
+  .mobile-drawer__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    color: var(--color-primary-900);
+  }
   .mobile-drawer__list {
     list-style: none;
     padding: 0;
@@ -223,8 +244,4 @@ const topLevel = categories
   window.addEventListener('hsg:wishlist:change', () => update('[data-wishlist-count]', readCount('hsg.wishlist')));
   window.addEventListener('hsg:compare:change', () => update('[data-compare-count]', readCount('hsg.compare')));
 
-  const search = document.querySelector<HTMLButtonElement>('[data-search-trigger]');
-  search?.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('hsg:search:open'));
-  });
 </script>

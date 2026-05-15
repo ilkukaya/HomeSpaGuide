@@ -86,6 +86,9 @@
 
 /* ===========================================================
    Base reset & semantic element styles
+   Wrapped in :where(...) so specificity is 0,0,0 — Tailwind
+   utility classes (e.g. text-[var(--color-ink-on-dark)]) always
+   win in the cascade.
    =========================================================== */
 html {
   font-family: var(--font-sans);
@@ -108,7 +111,7 @@ body {
 
 main { flex: 1; }
 
-h1, h2, h3, h4, h5, h6 {
+:where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--font-serif);
   font-weight: 600;
   color: var(--color-primary-900);
@@ -118,23 +121,23 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-h1 { font-size: var(--text-4xl); letter-spacing: var(--tracking-display); }
-h2 { font-size: var(--text-3xl); }
-h3 { font-size: var(--text-2xl); }
-h4 { font-size: var(--text-xl); }
-h5 { font-size: var(--text-lg); }
-h6 { font-size: var(--text-base); }
+:where(h1) { font-size: var(--text-4xl); letter-spacing: var(--tracking-display); }
+:where(h2) { font-size: var(--text-3xl); }
+:where(h3) { font-size: var(--text-2xl); }
+:where(h4) { font-size: var(--text-xl); }
+:where(h5) { font-size: var(--text-lg); }
+:where(h6) { font-size: var(--text-base); }
 
-p { margin: 0; text-wrap: pretty; }
+:where(p) { margin: 0; text-wrap: pretty; }
 
-a {
+:where(a) {
   color: var(--color-primary);
   text-decoration: none;
   transition: color var(--dur-base) var(--ease-out);
 }
-a:hover { color: var(--color-primary-600); }
+:where(a:hover) { color: var(--color-primary-600); }
 
-button {
+:where(button) {
   font: inherit;
   cursor: pointer;
   background: none;
@@ -142,7 +145,7 @@ button {
   padding: 0;
 }
 
-img { max-width: 100%; height: auto; display: block; }
+:where(img) { max-width: 100%; height: auto; display: block; }
 
 *:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -235,6 +238,39 @@ img { max-width: 100%; height: auto; display: block; }
   transition: top var(--dur-base) var(--ease-out);
 }
 .skip-link:focus { top: 1rem; }
+
+/* ===========================================================
+   Empty state panel — used for compare / wishlist / 0-products
+   =========================================================== */
+.empty-panel {
+  background: var(--color-steam);
+  border-radius: var(--radius-xl);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 560px;
+  margin: 2rem auto;
+  box-shadow: var(--shadow-card);
+}
+.empty-panel__icon { color: var(--color-primary); margin-bottom: 0.4rem; }
+.empty-panel h2 { font-size: var(--text-2xl); color: var(--color-primary-900); margin: 0; }
+.empty-panel p { color: var(--color-ink-muted); max-width: 42ch; line-height: var(--leading-normal); }
+.empty-panel__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-primary);
+  color: var(--color-ink-on-dark);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: background var(--dur-base) var(--ease-out);
+}
+.empty-panel__cta:hover { background: var(--color-primary-600); color: var(--color-ink-on-dark); }
 
 /* ===========================================================
    Prose — long-form markdown content

@@ -22,15 +22,25 @@ const { category } = Astro.props;
 const c = category.data;
 
 const allCats = await getCollection('categories');
-const descendants = new Set<string>([category.id]);
-let frontier = [category.id];
+
+// Build a slug index so we can normalize across Astro's entry.id /
+// entry.slug / reference.id variations and traverse the parent tree.
+const catBySlug = new Map(allCats.map((c) => [c.slug, c]));
+const catById = new Map(allCats.map((c) => [c.id, c]));
+const slugOf = (ref: { id: string }) =>
+  catById.get(ref.id)?.slug ?? catBySlug.get(ref.id)?.slug ?? ref.id;
+
+const descendants = new Set<string>([category.slug]);
+let frontier = [category.slug];
 while (frontier.length) {
   const next: string[] = [];
-  for (const id of frontier) {
+  for (const slug of frontier) {
     for (const cat of allCats) {
-      if (cat.data.parent?.id === id && !descendants.has(cat.id)) {
-        descendants.add(cat.id);
-        next.push(cat.id);
+      if (!cat.data.parent) continue;
+      const parentSlug = slugOf(cat.data.parent);
+      if (parentSlug === slug && !descendants.has(cat.slug)) {
+        descendants.add(cat.slug);
+        next.push(cat.slug);
       }
     }
   }
@@ -38,7 +48,7 @@ while (frontier.length) {
 }
 
 const allProducts = await getCollection('products', ({ data }) => data.status === 'active');
-const products = allProducts.filter((p) => descendants.has(p.data.category.id));
+const products = allProducts.filter((p) => descendants.has(slugOf(p.data.category)));
 
 const brandIds = Array.from(new Set(products.map((p) => p.data.brand.id)));
 const brandEntries = await Promise.all(brandIds.map((id) => getEntry('brands', id)));

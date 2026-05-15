@@ -6,7 +6,13 @@ const year = new Date().getFullYear();
   <div class="container-page site-footer__grid">
     <section class="site-footer__col">
       <p class="site-footer__brand">
-        <span class="logo-mark" aria-hidden="true">◐</span> HomeSpaGuide
+        <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <rect width="64" height="64" rx="14" fill="var(--color-paper)" />
+          <circle cx="32" cy="36" r="18" fill="var(--color-amber)" />
+          <path d="M14 38 Q22 32 32 38 T50 38" stroke="var(--color-primary)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <path d="M14 46 Q22 40 32 46 T50 46" stroke="var(--color-primary)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        </svg>
+        <span>HomeSpaGuide</span>
       </p>
       <p class="site-footer__tag">
         Your trusted guide to home spas, hot tubs, and everything that makes water feel like home.
@@ -81,8 +87,11 @@ const year = new Date().getFullYear();
     color: var(--color-ink-on-dark);
     margin-bottom: 0.5rem;
     letter-spacing: var(--tracking-heading);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
   }
-  .site-footer__brand .logo-mark { color: var(--color-cedar); }
+  .site-footer__brand .logo-mark { width: 32px; height: 32px; flex-shrink: 0; }
   .site-footer__tag {
     color: rgba(250, 250, 247, 0.72);
     max-width: 32ch;

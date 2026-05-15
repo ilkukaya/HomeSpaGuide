@@ -53,8 +53,8 @@ editorScore:
   durability: 7.5
   energyEfficiency: 7
   notes: A reliable workhorse — the closest thing to a "default pick" in the inflatable category.
-editorPick: true
-editorBadges: [Editor Pick, Best Value]
+editorPick: false
+editorBadges: [Best Value]
 primaryImage: ../../assets/placeholder-product.svg
 imageAlt: Coleman SaluSpa Tahiti AirJet inflatable hot tub on a wooden deck
 amazonUrl: https://www.amazon.com/dp/B07PJ2RJBQ

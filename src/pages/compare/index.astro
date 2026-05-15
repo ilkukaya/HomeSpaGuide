@@ -32,9 +32,17 @@ const manifest = products.map((p) => ({
       <button data-clear-compare class="link-btn">Clear all</button>
     </header>
     <div data-compare-shell></div>
-    <p data-compare-empty hidden style="padding: 3rem 1rem; text-align: center; border: 1px dashed var(--color-border-strong); border-radius: var(--radius-lg);">
-      Nothing to compare yet. Add products via the compare icon on any product card.
-    </p>
+    <div data-compare-empty hidden class="empty-panel">
+      <svg viewBox="0 0 24 24" width="42" height="42" aria-hidden="true" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="empty-panel__icon">
+        <circle cx="18" cy="18" r="3" />
+        <circle cx="6" cy="6" r="3" />
+        <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+        <path d="M11 18H8a2 2 0 0 1-2-2V9" />
+      </svg>
+      <h2>Nothing to compare yet</h2>
+      <p>Pick up to four products with the compare icon on any product card. We'll line them up side by side — specs, scores, and the honest verdict.</p>
+      <a href="/products" class="empty-panel__cta">Browse products <span aria-hidden="true">→</span></a>
+    </div>
   </div>
 
   <script type="application/json" id="hsg-manifest" set:html={JSON.stringify(manifest)} />

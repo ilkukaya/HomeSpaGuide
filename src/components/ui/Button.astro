@@ -42,16 +42,11 @@ const sizes: Record<Size, string> = {
   lg: 'px-6 py-3.5 text-lg',
 };
 const variants: Record<Variant, string> = {
-  primary:
-    'bg-[var(--color-primary)] text-[var(--color-ink-on-dark)] hover:bg-[var(--color-primary-600)] active:bg-[var(--color-primary-700)]',
-  secondary:
-    'bg-[var(--color-paper-deep)] text-[var(--color-ink)] hover:bg-[var(--color-cedar-soft)] hover:text-[var(--color-cedar-deep)]',
-  ghost:
-    'bg-transparent text-[var(--color-ink-muted)] hover:bg-[var(--color-paper-deep)] hover:text-[var(--color-primary)]',
-  outline:
-    'bg-transparent text-[var(--color-primary)] border border-[var(--color-border-strong)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-50)]',
-  amazon:
-    'bg-[var(--color-amazon)] text-[var(--color-amazon-ink)] hover:bg-[var(--color-amazon-hover)] font-bold shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]',
+  primary: 'btn-variant-primary',
+  secondary: 'btn-variant-secondary',
+  ghost: 'btn-variant-ghost',
+  outline: 'btn-variant-outline',
+  amazon: 'btn-variant-amazon',
 };
 
 const sizeKey = size as Size;
@@ -68,3 +63,39 @@ const classes = cn(base, sizes[sizeKey], variants[variantKey], fullWidth && 'w-f
     <slot />
   </button>
 )}
+
+<style is:global>
+  .btn-variant-primary {
+    background: var(--color-primary);
+    color: var(--color-ink-on-dark);
+  }
+  .btn-variant-primary:hover { background: var(--color-primary-600); color: var(--color-ink-on-dark); }
+  .btn-variant-primary:active { background: var(--color-primary-700); }
+
+  .btn-variant-secondary {
+    background: var(--color-paper-deep);
+    color: var(--color-ink);
+  }
+  .btn-variant-secondary:hover { background: var(--color-cedar-soft); color: var(--color-cedar-deep); }
+
+  .btn-variant-ghost {
+    background: transparent;
+    color: var(--color-ink-muted);
+  }
+  .btn-variant-ghost:hover { background: var(--color-paper-deep); color: var(--color-primary); }
+
+  .btn-variant-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-border-strong);
+  }
+  .btn-variant-outline:hover { background: var(--color-primary-50); border-color: var(--color-primary); color: var(--color-primary); }
+
+  .btn-variant-amazon {
+    background: var(--color-amazon);
+    color: var(--color-amazon-ink);
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-variant-amazon:hover { background: var(--color-amazon-hover); color: var(--color-amazon-ink); box-shadow: var(--shadow-md); }
+</style>
