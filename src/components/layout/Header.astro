@@ -35,9 +35,9 @@ for (const cat of categories) {
     </div>
 
     <div class="site-header__actions">
-      <a href="/search" class="icon-btn" aria-label="Search">
+      <button type="button" data-search-trigger class="icon-btn" aria-label="Search (Cmd+K)">
         <Search size={20} aria-hidden="true" />
-      </a>
+      </button>
       <a href="/wishlist" class="icon-btn icon-btn--badge" aria-label="Wishlist">
         <Heart size={20} aria-hidden="true" />
         <span data-wishlist-count class="badge" hidden>0</span>

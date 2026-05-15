@@ -43,7 +43,7 @@ editorScore:
   notes: A safe default sanitizer pick for any inflatable spa.
 editorPick: false
 editorBadges: [Best Seller, Budget Pick]
-primaryImage: ../../assets/placeholder-product.svg
+primaryImage: ../../assets/placeholder-chemical.svg
 imageAlt: SpaChoice bromine sanitizing tablets container
 amazonUrl: https://www.amazon.com/dp/B003YFJEZ2
 status: active

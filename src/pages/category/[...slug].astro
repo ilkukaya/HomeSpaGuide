@@ -86,7 +86,7 @@ const { Content } = await category.render();
       <FilterSidebar client:load facets={facets} />
       <div class="catalog__main">
         <div class="catalog__toolbar">
-          <p class="catalog__count" data-result-count>{products.length} products</p>
+          <p class="catalog__count" data-result-count>{products.length} {products.length === 1 ? 'product' : 'products'}</p>
           <SortDropdown client:load defaultValue="featured" />
         </div>
         <div class="catalog__grid" data-product-grid>

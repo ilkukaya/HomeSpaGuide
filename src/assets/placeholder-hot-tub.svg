@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d5a6d"/>
+      <stop offset="100%" stop-color="#0f4c5c"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7eb1bf"/>
+      <stop offset="100%" stop-color="#2e6c80"/>
+    </linearGradient>
+    <radialGradient id="steam" cx="50%" cy="55%" r="35%">
+      <stop offset="0%" stop-color="#fafaf7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#fafaf7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="430" rx="290" ry="50" fill="#082b35" opacity="0.4"/>
+  <!-- tub body -->
+  <ellipse cx="400" cy="380" rx="280" ry="80" fill="#144a5b"/>
+  <ellipse cx="400" cy="365" rx="280" ry="75" fill="#082b35"/>
+  <ellipse cx="400" cy="360" rx="260" ry="65" fill="url(#water)"/>
+  <!-- ripples -->
+  <ellipse cx="400" cy="355" rx="200" ry="14" fill="none" stroke="#fafaf7" stroke-width="1.5" opacity="0.35"/>
+  <ellipse cx="400" cy="345" rx="140" ry="10" fill="none" stroke="#fafaf7" stroke-width="1.2" opacity="0.5"/>
+  <ellipse cx="400" cy="335" rx="80" ry="6" fill="none" stroke="#fafaf7" stroke-width="1" opacity="0.6"/>
+  <!-- steam -->
+  <ellipse cx="400" cy="280" rx="260" ry="100" fill="url(#steam)"/>
+  <ellipse cx="320" cy="240" rx="36" ry="12" fill="#fafaf7" opacity="0.22"/>
+  <ellipse cx="430" cy="220" rx="48" ry="15" fill="#fafaf7" opacity="0.18"/>
+  <ellipse cx="500" cy="245" rx="32" ry="10" fill="#fafaf7" opacity="0.2"/>
+</svg>

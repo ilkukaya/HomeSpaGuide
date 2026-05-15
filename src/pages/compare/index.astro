@@ -29,7 +29,7 @@ const manifest = products.map((p) => ({
         <h1>Compare</h1>
         <p style="color: var(--color-ink-muted);">Up to four products. Stored on your device — never on our servers.</p>
       </div>
-      <button data-clear-compare class="link-btn">Clear all</button>
+      <button type="button" data-clear-compare class="link-btn">Clear all</button>
     </header>
     <div data-compare-shell></div>
     <div data-compare-empty hidden class="empty-panel">
@@ -83,7 +83,7 @@ const manifest = products.map((p) => ({
                 ${items.map((p) => `
                   <th style="padding: 1rem; vertical-align: top; text-align: left; background: var(--color-surface-muted);">
                     <a href="/products/${p.slug}" style="color: var(--color-ink); font-weight: 600;">${p.title}</a>
-                    <button type="button" data-remove="${p.asin}" style="display: block; margin-top: 0.5rem; color: var(--color-error); font-size: 0.8rem;">Remove</button>
+                    <button type="button" data-remove="${p.asin}" aria-label="Remove ${p.title} from compare" style="display: block; margin-top: 0.5rem; color: var(--color-error); font-size: 0.8rem;">Remove</button>
                   </th>
                 `).join('')}
               </tr>

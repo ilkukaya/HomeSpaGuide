@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bgc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d5a6d"/>
+      <stop offset="100%" stop-color="#0f4c5c"/>
+    </linearGradient>
+    <linearGradient id="jar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafaf7"/>
+      <stop offset="100%" stop-color="#e6e3da"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bgc)"/>
+  <ellipse cx="400" cy="510" rx="180" ry="22" fill="#082b35" opacity="0.45"/>
+  <!-- jar body -->
+  <path d="M 300 220 Q 300 200 320 200 L 480 200 Q 500 200 500 220 L 500 480 Q 500 510 470 510 L 330 510 Q 300 510 300 480 Z" fill="url(#jar)"/>
+  <!-- lid -->
+  <rect x="310" y="170" width="180" height="40" rx="6" fill="#b8794a"/>
+  <rect x="310" y="170" width="180" height="10" rx="4" fill="#8e5a33"/>
+  <!-- label band -->
+  <rect x="312" y="270" width="176" height="140" fill="#e8a547"/>
+  <rect x="312" y="270" width="176" height="22" fill="#b8794a"/>
+  <!-- pellets -->
+  <circle cx="365" cy="345" r="14" fill="#fafaf7" opacity="0.85"/>
+  <circle cx="400" cy="335" r="14" fill="#fafaf7" opacity="0.85"/>
+  <circle cx="435" cy="345" r="14" fill="#fafaf7" opacity="0.85"/>
+  <circle cx="385" cy="375" r="14" fill="#fafaf7" opacity="0.85"/>
+  <circle cx="420" cy="375" r="14" fill="#fafaf7" opacity="0.85"/>
+</svg>

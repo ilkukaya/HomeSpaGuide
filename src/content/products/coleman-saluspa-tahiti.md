@@ -55,7 +55,7 @@ editorScore:
   notes: A reliable workhorse — the closest thing to a "default pick" in the inflatable category.
 editorPick: false
 editorBadges: [Best Value]
-primaryImage: ../../assets/placeholder-product.svg
+primaryImage: ../../assets/placeholder-hot-tub.svg
 imageAlt: Coleman SaluSpa Tahiti AirJet inflatable hot tub on a wooden deck
 amazonUrl: https://www.amazon.com/dp/B07PJ2RJBQ
 relatedProducts:

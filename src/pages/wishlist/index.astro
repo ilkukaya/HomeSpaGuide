@@ -25,7 +25,7 @@ const manifestJson = JSON.stringify(manifest);
         <h1>Your wishlist</h1>
         <p style="color: var(--color-ink-muted);">Stored on this device — we never see it.</p>
       </div>
-      <button data-clear-wishlist class="link-btn">Clear all</button>
+      <button type="button" data-clear-wishlist class="link-btn">Clear all</button>
     </header>
     <div data-wishlist-grid></div>
     <div data-wishlist-empty hidden class="empty-panel">
@@ -68,7 +68,7 @@ const manifestJson = JSON.stringify(manifest);
           <p style="color: var(--color-ink-muted); font-size: 0.85rem;">Editor's Score: <strong>${it.score.toFixed(1)}</strong></p>
           <div style="display: flex; gap: 0.5rem; margin-top: auto;">
             <a href="/products/${it.slug}" class="link-btn">View details</a>
-            <button type="button" data-remove="${it.asin}" class="link-btn link-btn--danger">Remove</button>
+            <button type="button" data-remove="${it.asin}" aria-label="Remove ${it.title} from wishlist" class="link-btn link-btn--danger">Remove</button>
           </div>
         </article>
       `).join('')}</div>`;
