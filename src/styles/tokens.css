@@ -1,89 +1,172 @@
-/* Design tokens — calm, spa-like, trustworthy palette. */
+/* ============================================================
+   HomeSpaGuide — Design Tokens
+   Single source of truth: editorial magazine trust + spa calm.
+   Canonical from `colors_and_type.css` (Claude Design skill).
+   ============================================================ */
+
 :root {
-  /* Brand */
-  --color-primary-50: #f0f7f9;
-  --color-primary-100: #d9eaef;
-  --color-primary-200: #b3d4dc;
-  --color-primary-300: #7eb1bf;
-  --color-primary-400: #4d8a9d;
-  --color-primary-500: #2e6c80;
-  --color-primary-600: #1d5a6d;
-  --color-primary-700: #144a5b;
-  --color-primary: #0f4c5c;
-  --color-primary-800: #0c3d4a;
-  --color-primary-900: #082b35;
+  /* ============================================================
+     COLORS — no pure black, no pure white. Everything warm-tinted.
+     ============================================================ */
 
-  /* Accent (warm sand for highlights) */
-  --color-accent-50: #fdf7e3;
-  --color-accent-100: #faecbd;
-  --color-accent-300: #f0d77a;
-  --color-accent: #e8c547;
-  --color-accent-600: #c8a727;
-  --color-accent-700: #9c8316;
+  /* Brand primary: deep teal (the spa-water voice) */
+  --color-primary:        #0F4C5C;
+  --color-primary-50:     #F0F7F9;
+  --color-primary-100:    #D9EAEF;
+  --color-primary-200:    #B3D4DC;
+  --color-primary-300:    #7EB1BF;
+  --color-primary-400:    #4D8A9D;
+  --color-primary-500:    #2E6C80;
+  --color-primary-600:    #1D5A6D;  /* hover */
+  --color-primary-700:    #144A5B;  /* press */
+  --color-primary-800:    #0C3D4A;
+  --color-primary-900:    #082B35;  /* headings ink */
 
-  /* Amazon orange — reserved exclusively for Amazon CTAs */
-  --color-amazon: #ff9900;
-  --color-amazon-hover: #f08804;
-  --color-amazon-ink: #131921;
+  /* Cedar — primary warm accent (drop caps, editorial rules, eyebrows) */
+  --color-cedar:          #B8794A;
+  --color-cedar-soft:     #E8D3BC;
+  --color-cedar-deep:     #8E5A33;
 
-  /* Neutrals (warm-tinted) */
-  --color-bg: #fafaf7;
-  --color-surface: #ffffff;
-  --color-surface-muted: #f4f3ee;
-  --color-border: #e6e3da;
-  --color-border-strong: #cfc9bb;
-  --color-ink: #1a1a1a;
-  --color-ink-muted: #4a4a44;
-  --color-ink-subtle: #7a7a72;
+  /* Amber — secondary highlight (badges, score chips) */
+  --color-amber:          #E8A547;
+  --color-amber-soft:     #FBE6C2;
+
+  /* Amazon CTA orange — RESERVED for "View on Amazon" surfaces only */
+  --color-amazon:         #FF9900;
+  --color-amazon-hover:   #F08804;
+  --color-amazon-ink:     #131A22;
+
+  /* Backgrounds (warm-tinted) */
+  --color-paper:          #FAFAF7;  /* default page bg */
+  --color-paper-deep:     #F4F2EC;  /* card-on-page, sections */
+  --color-steam:          #E8F1F2;  /* spa-cool callouts, info panels */
+  --color-surface:        #FFFFFF;  /* product card surface, sparing */
+
+  /* Text */
+  --color-ink:            #0F1E20;  /* primary — teal-tinted near-black */
+  --color-ink-muted:      #6B6660;  /* secondary, meta, bylines */
+  --color-ink-subtle:     #9A958C;  /* captions, timestamps */
+  --color-ink-on-dark:    #FAFAF7;  /* text on teal / dark surfaces */
+
+  /* Borders & rules */
+  --color-border:         #E6E3DA;
+  --color-border-strong:  #CFC9BB;
+  --color-rule-editorial: #B8794A;  /* cedar */
 
   /* Semantic */
-  --color-success: #2f7d4f;
-  --color-success-soft: #e1f1e6;
-  --color-warning: #b87f1a;
-  --color-warning-soft: #fbf1d9;
-  --color-error: #b03a3a;
-  --color-error-soft: #f7e0e0;
+  --color-success:        #2F7D4F;
+  --color-success-soft:   #E1F1E6;
+  --color-warning:        #B87F1A;
+  --color-warning-soft:   #FBF1D9;
+  --color-error:          #B03A3A;
+  --color-error-soft:     #F7E0E0;
+  --color-info:           #2E6C80;
+  --color-info-soft:      #E8F1F2;
 
-  /* Typography */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --font-serif: 'Fraunces', ui-serif, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  /* Score tones */
+  --color-score-great:    #1D5A6D;
+  --color-score-good:     #2F7D4F;
+  --color-score-ok:       #B87F1A;
+  --color-score-low:      #B03A3A;
 
-  --text-xs: clamp(0.75rem, 0.72rem + 0.1vw, 0.8rem);
-  --text-sm: clamp(0.875rem, 0.84rem + 0.15vw, 0.95rem);
-  --text-base: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
-  --text-lg: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
-  --text-xl: clamp(1.25rem, 1.15rem + 0.4vw, 1.5rem);
-  --text-2xl: clamp(1.5rem, 1.35rem + 0.6vw, 1.875rem);
-  --text-3xl: clamp(1.875rem, 1.65rem + 0.9vw, 2.4rem);
-  --text-4xl: clamp(2.25rem, 1.9rem + 1.4vw, 3rem);
-  --text-5xl: clamp(2.75rem, 2.3rem + 1.8vw, 3.75rem);
+  /* ----- Backwards-compat aliases (legacy `--color-accent*`, `--color-bg`, etc.) */
+  --color-accent:         #E8A547;  /* legacy → amber */
+  --color-accent-50:      #FDF7E3;
+  --color-accent-100:     #FBE6C2;
+  --color-accent-300:     #F0D77A;
+  --color-accent-600:     #C8A727;
+  --color-accent-700:     #9C8316;
+  --color-bg:             #FAFAF7;  /* legacy → paper */
+  --color-surface-muted:  #F4F2EC;  /* legacy → paper-deep */
 
-  /* Radii */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 14px;
-  --radius-2xl: 22px;
-  --radius-full: 999px;
+  /* ============================================================
+     TYPOGRAPHY
+     Fraunces (serif) for editorial — Inter (sans) for body / UI.
+     ============================================================ */
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:  ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 76, 92, 0.06);
-  --shadow-sm: 0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
-  --shadow-md: 0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
-  --shadow-lg: 0 18px 36px -12px rgba(15, 76, 92, 0.22);
+  /* Fluid scale — clamp(min, preferred, max) */
+  --text-xs:    clamp(0.75rem, 0.72rem + 0.10vw, 0.80rem);
+  --text-sm:    clamp(0.875rem, 0.84rem + 0.15vw, 0.95rem);
+  --text-base:  clamp(1rem, 0.95rem + 0.20vw, 1.0625rem);
+  --text-lg:    clamp(1.125rem, 1.05rem + 0.30vw, 1.25rem);
+  --text-xl:    clamp(1.25rem, 1.15rem + 0.40vw, 1.5rem);
+  --text-2xl:   clamp(1.5rem, 1.35rem + 0.60vw, 1.875rem);
+  --text-3xl:   clamp(1.875rem, 1.65rem + 0.90vw, 2.4rem);
+  --text-4xl:   clamp(2.25rem, 1.90rem + 1.40vw, 3rem);
+  --text-5xl:   clamp(2.75rem, 2.30rem + 1.80vw, 3.75rem);
+
+  --leading-tight:   1.15;
+  --leading-snug:    1.3;
+  --leading-normal:  1.5;
+  --leading-body:    1.7;   /* canonical body line-height */
+  --leading-loose:   1.85;
+
+  --tracking-display: -0.025em;
+  --tracking-heading: -0.020em;
+  --tracking-snug:    -0.010em;
+  --tracking-normal:   0;
+  --tracking-meta:     0.06em;
+  --tracking-wide:     0.10em;
+
+  /* ============================================================
+     SHAPE — radii, shadows, focus
+     ============================================================ */
+  --radius-sm:    4px;
+  --radius-md:    6px;     /* canonical button radius */
+  --radius-lg:    8px;
+  --radius-xl:    12px;    /* canonical card radius */
+  --radius-2xl:   22px;
+  --radius-full:  999px;
+
+  /* Shadows tinted with primary teal, never neutral grey. */
+  --shadow-xs:    0 1px 2px rgba(15, 76, 92, 0.06);
+  --shadow-sm:    0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
+  --shadow-md:    0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
+  --shadow-lg:    0 18px 36px -12px rgba(15, 76, 92, 0.22);
+  --shadow-xl:    0 30px 60px -20px rgba(15, 76, 92, 0.28);
+  --shadow-card:        0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
+  --shadow-card-hover:  0 10px 24px -10px rgba(15, 76, 92, 0.22), 0 2px 4px rgba(15, 76, 92, 0.06);
   --shadow-focus: 0 0 0 3px rgba(15, 76, 92, 0.22);
 
-  /* Layout */
-  --container-max: 1280px;
-  --container-narrow: 880px;
-  --header-height: 72px;
+  /* ============================================================
+     SPACING — 4px base
+     ============================================================ */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  --container-max:     1280px;
+  --container-narrow:  880px;
+  --container-prose:   680px;
+  --header-height:     72px;
+
+  /* ============================================================
+     MOTION — calm, never bouncy
+     ============================================================ */
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:    120ms;
+  --dur-base:    180ms;
+  --dur-slow:    260ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

@@ -2,55 +2,80 @@
 @import './tokens.css';
 
 @theme {
-  --color-primary: #0f4c5c;
-  --color-primary-50: #f0f7f9;
-  --color-primary-100: #d9eaef;
-  --color-primary-200: #b3d4dc;
-  --color-primary-300: #7eb1bf;
-  --color-primary-400: #4d8a9d;
-  --color-primary-500: #2e6c80;
-  --color-primary-600: #1d5a6d;
-  --color-primary-700: #144a5b;
-  --color-primary-800: #0c3d4a;
-  --color-primary-900: #082b35;
+  /* Brand */
+  --color-primary: #0F4C5C;
+  --color-primary-50: #F0F7F9;
+  --color-primary-100: #D9EAEF;
+  --color-primary-200: #B3D4DC;
+  --color-primary-300: #7EB1BF;
+  --color-primary-400: #4D8A9D;
+  --color-primary-500: #2E6C80;
+  --color-primary-600: #1D5A6D;
+  --color-primary-700: #144A5B;
+  --color-primary-800: #0C3D4A;
+  --color-primary-900: #082B35;
 
-  --color-accent: #e8c547;
-  --color-accent-50: #fdf7e3;
-  --color-accent-100: #faecbd;
-  --color-accent-300: #f0d77a;
-  --color-accent-600: #c8a727;
-  --color-accent-700: #9c8316;
+  /* Warm accents */
+  --color-cedar: #B8794A;
+  --color-cedar-soft: #E8D3BC;
+  --color-cedar-deep: #8E5A33;
+  --color-amber: #E8A547;
+  --color-amber-soft: #FBE6C2;
 
-  --color-amazon: #ff9900;
-  --color-amazon-hover: #f08804;
-  --color-amazon-ink: #131921;
+  /* Legacy accent alias (= amber) */
+  --color-accent: #E8A547;
+  --color-accent-50: #FDF7E3;
+  --color-accent-100: #FBE6C2;
+  --color-accent-300: #F0D77A;
+  --color-accent-600: #C8A727;
+  --color-accent-700: #9C8316;
 
-  --color-bg: #fafaf7;
-  --color-surface: #ffffff;
-  --color-surface-muted: #f4f3ee;
-  --color-border: #e6e3da;
-  --color-border-strong: #cfc9bb;
-  --color-ink: #1a1a1a;
-  --color-ink-muted: #4a4a44;
-  --color-ink-subtle: #7a7a72;
+  /* Amazon CTA */
+  --color-amazon: #FF9900;
+  --color-amazon-hover: #F08804;
+  --color-amazon-ink: #131A22;
 
-  --color-success: #2f7d4f;
-  --color-success-soft: #e1f1e6;
-  --color-warning: #b87f1a;
-  --color-warning-soft: #fbf1d9;
-  --color-error: #b03a3a;
-  --color-error-soft: #f7e0e0;
+  /* Surfaces */
+  --color-paper: #FAFAF7;
+  --color-paper-deep: #F4F2EC;
+  --color-steam: #E8F1F2;
+  --color-surface: #FFFFFF;
+  --color-bg: #FAFAF7;
+  --color-surface-muted: #F4F2EC;
 
+  /* Text */
+  --color-ink: #0F1E20;
+  --color-ink-muted: #6B6660;
+  --color-ink-subtle: #9A958C;
+  --color-ink-on-dark: #FAFAF7;
+
+  /* Borders */
+  --color-border: #E6E3DA;
+  --color-border-strong: #CFC9BB;
+
+  /* Semantic */
+  --color-success: #2F7D4F;
+  --color-success-soft: #E1F1E6;
+  --color-warning: #B87F1A;
+  --color-warning-soft: #FBF1D9;
+  --color-error: #B03A3A;
+  --color-error-soft: #F7E0E0;
+  --color-info: #2E6C80;
+  --color-info-soft: #E8F1F2;
+
+  /* Fonts */
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Fraunces', ui-serif, 'Iowan Old Style', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
+  /* Shape */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
-  --radius-xl: 14px;
+  --radius-xl: 12px;
   --radius-2xl: 22px;
 
+  /* Shadows */
   --shadow-xs: 0 1px 2px rgba(15, 76, 92, 0.06);
   --shadow-sm: 0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
   --shadow-md: 0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
@@ -59,11 +84,13 @@
   --container-max: 1280px;
 }
 
-/* Base reset & typography */
+/* ===========================================================
+   Base reset & semantic element styles
+   =========================================================== */
 html {
   font-family: var(--font-sans);
   color: var(--color-ink);
-  background-color: var(--color-bg);
+  background-color: var(--color-paper);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -72,41 +99,40 @@ html {
 
 body {
   font-size: var(--text-base);
-  line-height: 1.6;
+  line-height: var(--leading-body);
   margin: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-main {
-  flex: 1;
-}
+main { flex: 1; }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 600;
   color: var(--color-primary-900);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-heading);
   margin: 0;
+  text-wrap: balance;
 }
 
-h1 { font-size: var(--text-4xl); }
+h1 { font-size: var(--text-4xl); letter-spacing: var(--tracking-display); }
 h2 { font-size: var(--text-3xl); }
 h3 { font-size: var(--text-2xl); }
 h4 { font-size: var(--text-xl); }
+h5 { font-size: var(--text-lg); }
+h6 { font-size: var(--text-base); }
 
-p { margin: 0; }
+p { margin: 0; text-wrap: pretty; }
 
 a {
   color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--dur-base) var(--ease-out);
 }
-a:hover {
-  color: var(--color-primary-600);
-}
+a:hover { color: var(--color-primary-600); }
 
 button {
   font: inherit;
@@ -116,11 +142,7 @@ button {
   padding: 0;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
+img { max-width: 100%; height: auto; display: block; }
 
 *:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -128,17 +150,75 @@ img {
   border-radius: var(--radius-sm);
 }
 
-/* Utility classes */
+/* ===========================================================
+   Editorial typography utilities
+   =========================================================== */
+
+/* Display — for hero / opening headlines */
+.display {
+  font-family: var(--font-serif);
+  font-size: var(--text-5xl);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+  color: var(--color-primary-900);
+}
+
+/* Eyebrow — small-caps tracking, cedar */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-meta);
+  color: var(--color-cedar);
+}
+
+/* Lede — opening paragraph, slightly larger */
+.lede {
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
+  color: var(--color-ink);
+}
+
+/* Meta / bylines / timestamps */
+.meta {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-ink-muted);
+  letter-spacing: var(--tracking-snug);
+}
+.meta--strong { color: var(--color-ink); font-weight: 500; }
+
+/* Editorial section rule — cedar, 3px, short */
+.editorial-rule {
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--color-cedar);
+  margin: 0 0 0.85rem;
+  border: 0;
+}
+
+/* ===========================================================
+   Containers
+   =========================================================== */
 .container-page {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: clamp(1rem, 3vw, 2rem);
 }
-
 .container-narrow {
   width: 100%;
   max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+.container-prose {
+  width: 100%;
+  max-width: var(--container-prose);
   margin-inline: auto;
   padding-inline: clamp(1rem, 3vw, 2rem);
 }
@@ -148,21 +228,21 @@ img {
   top: -40px;
   left: 1rem;
   background: var(--color-primary);
-  color: white;
+  color: var(--color-ink-on-dark);
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius-md);
   z-index: 100;
-  transition: top 0.2s ease;
+  transition: top var(--dur-base) var(--ease-out);
 }
-.skip-link:focus {
-  top: 1rem;
-}
+.skip-link:focus { top: 1rem; }
 
-/* Prose for markdown content */
+/* ===========================================================
+   Prose — long-form markdown content
+   =========================================================== */
 .prose {
   max-width: 70ch;
   color: var(--color-ink);
-  line-height: 1.7;
+  line-height: var(--leading-body);
 }
 .prose > * + * { margin-top: 1.25em; }
 .prose h2 { margin-top: 2em; margin-bottom: 0.6em; }
@@ -170,19 +250,59 @@ img {
 .prose ul, .prose ol { padding-left: 1.5em; }
 .prose li + li { margin-top: 0.35em; }
 .prose blockquote {
-  border-left: 4px solid var(--color-accent);
-  padding: 0.25em 1em;
+  border-left: 3px solid var(--color-cedar);
+  padding: 0.2em 1.2em;
   color: var(--color-ink-muted);
+  font-family: var(--font-serif);
   font-style: italic;
+  font-size: var(--text-lg);
+  line-height: var(--leading-normal);
 }
-.prose code {
+.prose code, code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  background: var(--color-surface-muted);
+  background: var(--color-paper-deep);
   padding: 0.15em 0.4em;
   border-radius: var(--radius-sm);
 }
 .prose a {
+  color: var(--color-primary);
   text-decoration: underline;
+  text-decoration-color: var(--color-cedar-soft);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
+  transition: text-decoration-color var(--dur-base) var(--ease-out);
 }
+.prose a:hover { text-decoration-color: var(--color-cedar); }
+
+/* Drop cap — cedar Fraunces on opening paragraph of editorial articles */
+.prose-dropcap > p:first-of-type::first-letter,
+.dropcap::first-letter {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 3.8em;
+  line-height: 0.85;
+  float: left;
+  margin: 0.05em 0.08em 0 0;
+  color: var(--color-cedar);
+  letter-spacing: var(--tracking-display);
+}
+
+/* ===========================================================
+   On-dark — sections sitting on teal / deep-ink surfaces
+   =========================================================== */
+.on-dark,
+[data-theme='dark'] {
+  color: var(--color-ink-on-dark);
+}
+.on-dark h1, .on-dark h2, .on-dark h3, .on-dark h4, .on-dark h5, .on-dark h6,
+[data-theme='dark'] h1, [data-theme='dark'] h2, [data-theme='dark'] h3,
+[data-theme='dark'] h4, [data-theme='dark'] h5, [data-theme='dark'] h6 {
+  color: var(--color-ink-on-dark);
+}
+.on-dark .meta,
+[data-theme='dark'] .meta { color: rgba(250, 250, 247, 0.7); }
+.on-dark a,
+[data-theme='dark'] a { color: var(--color-amber); }
+.on-dark a:hover,
+[data-theme='dark'] a:hover { color: var(--color-cedar-soft); }
