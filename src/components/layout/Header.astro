@@ -1,12 +1,21 @@
 ---
-import { getCollection } from 'astro:content';
-import { Search, Heart, GitCompare, Menu, X } from 'lucide-react';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { Search, Heart, GitCompare, Menu, X, ChevronDown } from 'lucide-react';
+import MegaMenu from './MegaMenu.astro';
 
-const categories = await getCollection('categories').catch(() => []);
+const categories: CollectionEntry<'categories'>[] = await getCollection('categories').catch(() => []);
 const topLevel = categories
   .filter((c) => !c.data.parent)
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 6);
+  .sort((a, b) => a.data.order - b.data.order);
+
+const subsByParentSlug = new Map<string, CollectionEntry<'categories'>[]>();
+for (const cat of categories) {
+  if (!cat.data.parent) continue;
+  const parentEntry = categories.find((c) => c.id === cat.data.parent!.id || c.slug === cat.data.parent!.id);
+  const key = parentEntry?.slug ?? cat.data.parent.id;
+  if (!subsByParentSlug.has(key)) subsByParentSlug.set(key, []);
+  subsByParentSlug.get(key)!.push(cat);
+}
 ---
 
 <header class="site-header">
@@ -21,17 +30,9 @@ const topLevel = categories
       <span class="logo-text">HomeSpaGuide</span>
     </a>
 
-    <nav class="site-header__nav" aria-label="Primary">
-      <ul>
-        {topLevel.map((cat) => (
-          <li>
-            <a href={`/category/${cat.slug}`}>{cat.data.name}</a>
-          </li>
-        ))}
-        <li><a href="/guides">Guides</a></li>
-        <li><a href="/blog">Blog</a></li>
-      </ul>
-    </nav>
+    <div class="site-header__nav">
+      <MegaMenu />
+    </div>
 
     <div class="site-header__actions">
       <a href="/search" class="icon-btn" aria-label="Search">
@@ -67,9 +68,25 @@ const topLevel = categories
       </button>
     </div>
     <ul class="mobile-drawer__list">
-      {topLevel.map((cat) => (
-        <li><a href={`/category/${cat.slug}`}>{cat.data.name}</a></li>
-      ))}
+      {topLevel.map((cat) => {
+        const subs = subsByParentSlug.get(cat.slug) ?? [];
+        return (
+          <li class="mobile-drawer__group">
+            <a href={`/category/${cat.slug}`} class="mobile-drawer__group-head">
+              <span>{cat.data.name}</span>
+              <span class="mobile-drawer__group-desc">{cat.data.shortDescription}</span>
+            </a>
+            {subs.length > 0 && (
+              <ul class="mobile-drawer__sublist">
+                {subs.map((s) => (
+                  <li><a href={`/category/${s.slug}`}>{s.data.name}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        );
+      })}
+      <li class="mobile-drawer__divider" aria-hidden="true"></li>
       <li><a href="/guides">Buying Guides</a></li>
       <li><a href="/blog">Blog</a></li>
       <li><a href="/about">About</a></li>
@@ -105,25 +122,6 @@ const topLevel = categories
   }
   .logo-mark { width: 28px; height: 28px; display: block; flex-shrink: 0; }
   .site-header__nav { flex: 1; }
-  .site-header__nav ul {
-    display: none;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    gap: 1.25rem;
-  }
-  .site-header__nav a {
-    color: var(--color-ink-muted);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    padding: 0.5rem 0;
-    border-bottom: 2px solid transparent;
-    transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
-  }
-  .site-header__nav a:hover {
-    color: var(--color-primary);
-    border-bottom-color: var(--color-cedar);
-  }
   .site-header__actions {
     display: flex;
     align-items: center;
@@ -195,9 +193,37 @@ const topLevel = categories
     font-size: var(--text-lg);
     border-bottom: 1px solid var(--color-border);
   }
+  .mobile-drawer__group {
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .mobile-drawer__group-head {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.85rem 0.5rem 0.5rem !important;
+    border-bottom: 0 !important;
+    color: var(--color-primary-900) !important;
+    font-family: var(--font-serif);
+    font-weight: 600;
+  }
+  .mobile-drawer__group-desc { font-family: var(--font-sans); font-weight: 400; color: var(--color-ink-muted); font-size: var(--text-sm); }
+  .mobile-drawer__sublist {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0.5rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile-drawer__sublist a {
+    padding: 0.55rem 0.5rem !important;
+    border-bottom: 0 !important;
+    font-size: var(--text-base) !important;
+    color: var(--color-ink-muted) !important;
+  }
+  .mobile-drawer__divider { height: 1rem; }
 
   @media (min-width: 900px) {
-    .site-header__nav ul { display: flex; }
     .site-header__menu-toggle { display: none; }
   }
 </style>
@@ -209,10 +235,21 @@ const topLevel = categories
   toggle?.addEventListener('click', () => {
     drawer?.removeAttribute('hidden');
     toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
   });
   close?.addEventListener('click', () => {
     drawer?.setAttribute('hidden', '');
     toggle?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+  // close drawer on internal link click
+  drawer?.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest('a');
+    if (a) {
+      drawer.setAttribute('hidden', '');
+      toggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
   });
 
   function readCount(key: string): number {

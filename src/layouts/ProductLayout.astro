@@ -53,15 +53,18 @@ const { Content } = await product.render();
 
     <section class="pdp">
       <div class="pdp__gallery">
-        <Image
-          src={p.primaryImage}
-          alt={p.imageAlt}
-          widths={[480, 768, 1024]}
-          sizes="(min-width: 1024px) 560px, 100vw"
-          format="webp"
-          loading="eager"
-          class="pdp__image"
-        />
+        <div class="pdp__image-wrap">
+          <Image
+            src={p.primaryImage}
+            alt={p.imageAlt}
+            widths={[480, 768, 1024]}
+            sizes="(min-width: 1024px) 560px, 100vw"
+            format="webp"
+            loading="eager"
+            class="pdp__image"
+          />
+          <span class="pdp__monogram" aria-hidden="true">{(brand?.data.name ?? p.brand.id).charAt(0).toUpperCase()}</span>
+        </div>
       </div>
 
       <div class="pdp__info">
@@ -169,27 +172,97 @@ const { Content } = await product.render();
   .pdp { display: grid; gap: 2rem; grid-template-columns: 1fr; }
   @media (min-width: 900px) { .pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } }
   .pdp__gallery { position: sticky; top: calc(var(--header-height) + 1rem); align-self: start; }
-  .pdp__image { width: 100%; border-radius: var(--radius-xl); border: 1px solid var(--color-border); background: var(--color-surface-muted); aspect-ratio: 1/1; object-fit: cover; }
-  .pdp__info { display: flex; flex-direction: column; gap: 1.25rem; }
+  .pdp__image-wrap {
+    position: relative;
+    border-radius: var(--radius-xl);
+    background: var(--color-paper-deep);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+  .pdp__image { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
+  .pdp__monogram {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-size: clamp(7rem, 14vw, 11rem);
+    font-weight: 600;
+    color: var(--color-paper);
+    mix-blend-mode: soft-light;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  .pdp__info { display: flex; flex-direction: column; gap: 1.1rem; }
   .pdp__badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .pdp__brand { color: var(--color-ink-subtle); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 0; }
+  .pdp__brand {
+    color: var(--color-cedar);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    font-weight: 600;
+    margin: 0;
+  }
   .pdp__info h1 { font-size: var(--text-4xl); }
-  .pdp__lede { color: var(--color-ink-muted); font-size: var(--text-lg); line-height: 1.55; }
+  .pdp__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); }
   .pdp__price-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
   .pdp__price-note { color: var(--color-ink-subtle); font-size: 0.85rem; }
-  .pdp__cta { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; background: var(--color-surface-muted); border-radius: var(--radius-lg); }
+  .pdp__cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.1rem;
+    background: var(--color-steam);
+    border-radius: var(--radius-xl);
+  }
   .pdp__secondary-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-size: 0.9rem; text-align: center; justify-content: center; }
   .pdp__quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .pdp__icon-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.85rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: white; color: var(--color-ink-muted); font-size: 0.9rem; }
-  .pdp__icon-btn[data-active='true'] { background: var(--color-accent); color: var(--color-primary-900); border-color: var(--color-accent-600); }
+  .pdp__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink-muted);
+    font-size: 0.9rem;
+    transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+  }
+  .pdp__icon-btn[data-active='true'] {
+    background: var(--color-cedar-soft);
+    color: var(--color-cedar-deep);
+    border-color: var(--color-cedar);
+  }
   .pdp__icon-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
   .pdp__disclosure { margin-top: 0.5rem; }
   .pdp__section h2 { font-size: var(--text-2xl); margin-bottom: 1rem; }
-  .pdp__feature-list { columns: 1; column-gap: 2rem; padding-left: 1.2rem; }
+  .pdp__feature-list { columns: 1; column-gap: 2rem; padding-left: 1.2rem; color: var(--color-ink); line-height: var(--leading-normal); }
   @media (min-width: 700px) { .pdp__feature-list { columns: 2; } }
   .pdp__feature-list li { break-inside: avoid; margin-bottom: 0.55rem; }
-  .pdp__notes { color: var(--color-ink-muted); font-style: italic; max-width: 70ch; margin-bottom: 1rem; padding-left: 1rem; border-left: 3px solid var(--color-accent); }
-  .pdp__final-cta { text-align: center; background: var(--color-primary-50); border-radius: var(--radius-xl); padding: 2.5rem 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .pdp__notes {
+    color: var(--color-ink-muted);
+    font-style: italic;
+    font-family: var(--font-serif);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    max-width: 70ch;
+    margin-bottom: 1rem;
+    padding: 0.2em 1.2em;
+    border-left: 3px solid var(--color-cedar);
+  }
+  .pdp__final-cta {
+    text-align: center;
+    background: var(--color-steam);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
   .pdp__final-cta p { color: var(--color-ink-muted); }
 </style>
 
