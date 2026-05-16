@@ -30,8 +30,8 @@ collections:
       - { label: Category, name: category, widget: relation, collection: categories, value_field: '{{slug}}', search_fields: [name], display_fields: [name] }
       - { label: Subcategories, name: subcategories, widget: list, required: false }
       - { label: Collections, name: collections, widget: list, required: false }
-      - { label: Short description, name: shortDescription, widget: text }
-      - { label: Description (markdown body), name: description, widget: markdown }
+      - { label: Short description, name: shortDescription, widget: text, hint: "Write as a curator. Cite manufacturer specs and owner reviews. Never claim first-person measurements. See EDITORIAL_VOICE.md." }
+      - { label: Description (markdown body), name: description, widget: markdown, hint: "Write as a curator, not a tester. Cite manufacturer specs and owner reviews. Never claim first-person measurements. See EDITORIAL_VOICE.md." }
       - { label: Key features, name: keyFeatures, widget: list }
       - { label: Pros, name: pros, widget: list, required: false }
       - { label: Cons, name: cons, widget: list, required: false }

@@ -37,10 +37,11 @@ Copy `.env.example` to `.env` and fill in:
 npm run dev         # local dev server
 npm run build       # production build + pagefind index
 npm run preview     # preview production build
-npm run typecheck   # astro check (TS + content schemas)
-npm run new-product # scaffold a product .md
+npm run typecheck   # astro check + content schemas + editorial-voice linter
+npm run new-product # scaffold a product .md (curator-framed body)
 npm run new-blog    # scaffold a blog post
 npm run audit-links # validate Amazon link format
+npm run audit-voice # editorial-voice linter on src/content/**/*.md
 ```
 
 ## Project structure
@@ -108,6 +109,24 @@ Each piece of content is one Markdown file. Frontmatter is validated by Zod at b
 - **No Google Ads bidding on "amazon" keyword** if you ever buy paid traffic.
 
 Run `npm run audit-links` regularly to catch mistakes.
+
+## Content guidelines
+
+Before writing or editing any customer-facing content, read
+[`EDITORIAL_VOICE.md`](./EDITORIAL_VOICE.md). It is the authoritative ruleset
+for HomeSpaGuide's editorial voice and FTC / Amazon Associates compliance.
+
+The one-paragraph summary: HomeSpaGuide is a curated affiliate publication,
+**not** a testing lab. Never write "we tested", "we measured", "we ran it
+for X days", or any first-person measurement claim. Use curator framings
+instead — "we selected", "manufacturer's published spec", "owner reviews on
+Amazon consistently report", "based on the spec sheets". Editor Scores are
+curation judgments, not test results.
+
+`npm run typecheck` runs a voice linter (`scripts/audit-voice.mjs`) that
+will fail the build if banned phrases land in `src/content/**/*.md`. Run
+`npm run audit-voice` on its own to scan without the rest of the type
+check.
 
 ## Content style guide
 
