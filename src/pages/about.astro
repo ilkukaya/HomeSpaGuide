@@ -3,38 +3,58 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
 ---
 
-<BaseLayout title="About HomeSpaGuide" description="Who we are, how we test, and how we make money — transparently.">
+<BaseLayout title="About HomeSpaGuide" description="Who we are, how we choose what to recommend, and how we make money — transparently.">
   <div class="container-narrow about-page">
     <Breadcrumbs items={[{ label: 'About' }]} />
     <header class="about-page__header">
       <span class="editorial-rule" aria-hidden="true"></span>
       <p class="eyebrow">About us</p>
       <h1>The trusted guide to home spas.</h1>
-      <p class="lede">HomeSpaGuide is a small, independent editorial team obsessed with the home spa category. We test products, write detailed reviews, and recommend what we'd actually buy ourselves.</p>
+      <p class="lede">HomeSpaGuide is a small, independent editorial team obsessed with the home spa category. We research products, compare them in detail, and recommend what we'd actually buy ourselves.</p>
     </header>
 
     <article class="prose">
-      <h2 id="methodology">How we test &amp; score</h2>
-      <p>Every product we cover gets an <strong>Editor's Score</strong> from 0–10, broken into five sub-scores — <em>quality</em>, <em>value</em>, <em>setup</em>, <em>durability</em>, and <em>energy efficiency</em> — that we weight to produce the headline number. We use the same rubric across every product so a score on one review is directly comparable to a score on another.</p>
-      <p>The actual testing varies by category. For hot tubs we set them up cold, fill them, time the heat-up cycle in degrees-per-hour, measure jet pressure with a calibrated gauge, run them at 104°F continuously for two weeks while logging kWh consumption, and then drain, fold, and refold them three times to stress the inflatable seams. For chemicals we pH-test continuously for 14 days, drive bromine and chlorine residuals through three controlled spikes, and weigh the test strip against an OTO drop-test reference.</p>
-      <p>Scores are independent. They are not influenced by Amazon star ratings, brand relationships, commission rates, or how much a product costs.</p>
+      <h2 id="why">Why we exist</h2>
+      <p>The home spa category has hundreds of products and almost no honest buying guidance. Manufacturers' spec sheets all look the same. Amazon reviews are noisy. We exist to do the hours of research and comparison most buyers don't have time for — and then send you to the right Amazon listing.</p>
 
-      <h2 id="badges">What our badges mean</h2>
-      <p><strong>Editor Pick</strong> — the single product we'd buy in this category if we were spending our own money. We reserve this badge for fewer than one in four products we review.</p>
-      <p><strong>Best Value</strong> — the product whose price-to-performance ratio leads its category, even if it doesn't have the highest absolute score.</p>
-      <p><strong>Premium Pick</strong> — the product that earns its price for buyers who want the best, with no concern for value.</p>
-      <p><strong>Budget Pick</strong> — the lowest price we can recommend without reservations.</p>
-      <p>If a product isn't badged, that's deliberate. Honest scoring means most products don't get a sticker.</p>
+      <h2 id="how-we-choose">How we choose what to recommend</h2>
+      <p>For every category we cover, we:</p>
+      <ul>
+        <li>Read every credible review and spec sheet we can find</li>
+        <li>Aggregate owner feedback from Amazon, Reddit, manufacturer forums, and YouTube long-form reviews</li>
+        <li>Compare published specifications side by side</li>
+        <li>Filter out products with consistent complaint patterns</li>
+        <li>Surface the model that best fits each buyer profile (budget, family size, climate, indoor/outdoor, etc.)</li>
+      </ul>
+      <p>We do <strong>not</strong> operate a testing facility. We are an editorial curation team, not a laboratory.</p>
+
+      <h2 id="methodology">How our Editor Score works</h2>
+      <p>Our 0–10 Editor Score is a <em>curation index</em>, not a test result. It weights:</p>
+      <ul>
+        <li><strong>Quality</strong> — build materials, manufacturer reputation, owner-reported reliability themes</li>
+        <li><strong>Value</strong> — price-to-feature ratio within the category</li>
+        <li><strong>Setup</strong> — reported ease of unboxing and first use</li>
+        <li><strong>Durability</strong> — longevity signals from long-term owner reviews</li>
+        <li><strong>Energy efficiency</strong> — published energy specs and owner-reported bill impact</li>
+      </ul>
+      <p>Each component is a curation judgment based on the sources above — it is not a measurement. Scores can differ from Amazon's star rating because we weight criteria differently than the average reviewer.</p>
+
+      <h2 id="badges">Editorial badges</h2>
+      <p><strong>Editor Pick</strong> — the one product in a category we'd buy ourselves.</p>
+      <p><strong>Best Value</strong> — best price-to-features ratio.</p>
+      <p><strong>Premium Pick</strong> — the upgrade choice for buyers willing to pay more.</p>
+      <p><strong>Budget Pick</strong> — the lowest price we can responsibly recommend.</p>
+      <p><strong>Top Rated</strong> — consistently high satisfaction across owner reviews.</p>
+      <p>Most products carry no badge. Badges are deliberately scarce.</p>
 
       <h2 id="affiliates">How we make money</h2>
-      <p>HomeSpaGuide is a member of the Amazon Associates program. When you click through to Amazon from one of our links and buy something — anything, not just what we recommended — we earn a small commission at no extra cost to you. That commission is the only way this site stays online.</p>
-      <p>We do not accept paid placements, sponsored reviews, or "boost my product" arrangements. Editor's Picks are not for sale. If a product is bad, we say so.</p>
+      <p>HomeSpaGuide is an Amazon Associates participant. When you click a link and buy on Amazon, we earn a small commission at no extra cost to you. This is the only way the site sustains itself. We do not accept paid placements, sponsored reviews, or "feature my product" arrangements. Our editorial selections are not for sale.</p>
 
       <h2 id="prices">Why we don't show live prices</h2>
-      <p>Amazon Associates rules don't allow us to display scraped or cached prices outside of approved API integrations. They also don't want stale prices misleading shoppers. So instead of a number that's likely wrong by the time you read this, we show a price <em>range</em> bucket — and the "Check price on Amazon" link always lands you on the current, accurate number.</p>
+      <p>Amazon Associates rules forbid us from showing scraped or cached prices outside an approved API integration. We show a price <em>range</em> bucket instead, and the "Check price on Amazon" button always sends you to the current, accurate price.</p>
 
-      <h2 id="team">Who's behind the site</h2>
-      <p>HomeSpaGuide is run by a small team of home spa owners, water-chemistry nerds and editors. We've owned every category of tub from $300 imports to $8,000 hard-shells, and we've made every mistake so you don't have to. Bylines are signed "By the HomeSpaGuide Editors" — never an individual — because every review goes through at least two pairs of eyes before publication.</p>
+      <h2 id="team">Who runs this site</h2>
+      <p>HomeSpaGuide is run by a small team of home spa owners and editors. Every article is reviewed by at least two people before publication.</p>
 
       <h2 id="contact">Contact us</h2>
       <p>Questions, corrections, product suggestions, or feedback? Drop us a line at <a href="/contact">our contact form</a>. We read everything.</p>

@@ -41,11 +41,16 @@ category: ${category}
 subcategories: []
 shortDescription: ${JSON.stringify(shortDescription)}
 description: |
-  ${title} — replace this with a real editorial description.
+  ${title} — replace this with a curator-framed description.
+  Write as an editor who researched the category, not as a tester.
+  Cite manufacturer specs ("Manufacturer's published spec…") and
+  aggregated owner feedback ("Owner reviews on Amazon consistently
+  report…"). Never claim first-person measurements. See
+  EDITORIAL_VOICE.md before writing.
 keyFeatures:
-  - Replace with a real feature
-pros: []
-cons: []
+  - Replace with a manufacturer-stated feature
+pros: []   # 3–5 things owners praise most consistently
+cons: []   # 2–3 things owners complain about most consistently
 bestFor: []
 specs:
   setupType: inflatable
@@ -68,7 +73,15 @@ publishedAt: ${today}
 updatedAt: ${today}
 ---
 
-Replace this with a real editorial review.
+Open with a 1-sentence positioning statement: who this is for and why we
+selected it for that buyer profile. Follow with a paragraph summarizing
+the manufacturer's headline specs, then a paragraph distilling what owner
+reviews on Amazon and r/hottubs consistently say (both praise and
+complaints). Close with a curator's take: who should buy this vs. who
+should look at an alternative in the related-products list.
+
+DO NOT write "we tested", "we measured", "we ran it for X days", or any
+first-person measurement claim. See EDITORIAL_VOICE.md.
 `;
 
 const path = join(target, `${slug}.md`);

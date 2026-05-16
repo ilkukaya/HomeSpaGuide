@@ -6,9 +6,9 @@ shortTitle: Intex PureSpa Insulated Cover
 brand: intex
 category: covers-accessories
 subcategories: [cover, insulated]
-shortDescription: The factory cover that came with your PureSpa is fine. This is the heavier replacement when the original starts sagging — better foam core, real buckles, a noticeable kWh reduction.
+shortDescription: The factory cover that came with your PureSpa is fine. This is the heavier replacement when the original starts sagging — better foam core, real buckles, and an insulation upgrade owners credit with lower running cost.
 description: |
-  The factory PureSpa cover lasts 18–30 months in our experience. This replacement runs a thicker laminated foam core and replaces the friction snaps with actual ratcheting buckles — which is why it stays seated in 30 mph wind and the original doesn't. The insulation upgrade typically lowers steady-state energy usage by 0.6–0.9 kWh/day at a 102°F setpoint.
+  Owner reports consistently put the factory PureSpa cover's useful life at roughly 18–30 months before the foam compresses and the snaps stop holding. This replacement runs a thicker laminated foam core and replaces the friction snaps with actual ratcheting buckles — which is why it stays seated in heavy wind and the original doesn't. Customer reviews on Amazon frequently mention measurable reductions in monthly electricity cost after the swap, which aligns with the thicker foam core's published R-value.
 keyFeatures:
   - 2"-thick laminated foam core (vs. 1.25" stock)
   - Four ratcheting buckles with key locks
@@ -16,7 +16,7 @@ keyFeatures:
   - Compatible with all 77" / 79" round PureSpa models
   - Tear-resistant nylon top, weatherproof underside
 pros:
-  - Measurable energy savings vs. stock cover
+  - Owners report lower running cost vs. stock cover
   - Buckles stay seated in real weather
   - Center support holds shape over winter storage
 cons:
@@ -59,4 +59,4 @@ publishedAt: 2026-05-03
 updatedAt: 2026-05-15
 ---
 
-If you own a PureSpa long enough, the stock cover gives up. This is the heavier, better-insulated replacement we keep recommending to readers writing in about "why is my tub costing more to run than last winter?"
+If you own a PureSpa long enough, the stock cover gives up. This is the heavier, better-insulated replacement we keep recommending to readers writing in to ask why their tub is suddenly costing more to run than last winter.

@@ -16,7 +16,7 @@ sections:
       **pH:** 7.2–7.8. Below 7.2 and you'll corrode heating elements; above 7.8 and the sanitizer goes lazy. **Total alkalinity:** 80–120 ppm. This is the buffer that keeps pH from drifting. **Sanitizer:** 3–5 ppm for bromine, 2–4 ppm for chlorine. **Calcium hardness:** 150–250 ppm. Most municipal water is fine; well water often needs a pre-filter cartridge on the fill hose.
   - heading: Bromine vs chlorine — pick one and stay with it
     body: |
-      Bromine is more stable at 95°F+ and easier on sensitive skin, but slightly more expensive per gallon-week. Chlorine is cheaper and the recovery is faster after a heavy soak, but it off-gasses harder at hot-tub temperatures and the smell sticks to towels. We recommend bromine to first-time owners and chlorine to anyone with a covered tub that gets light weekly use.
+      Bromine is more stable at 95°F+ and easier on sensitive skin, but slightly more expensive per gallon-week. Chlorine is cheaper and the recovery is faster after a heavy soak, but it off-gasses harder at hot-tub temperatures and the smell sticks to towels. Based on this trade-off, we suggest bromine to first-time owners and chlorine to anyone with a covered tub that gets light weekly use.
   - heading: When to drain and refill
     body: |
       Every 3–4 months for typical residential use; every 6–8 weeks if more than four people use it weekly. Total Dissolved Solids (TDS) creeps up slowly and is the one thing you cannot dose your way out of. The visual signal is foam that won't break down after dosing — that's your cue, regardless of the calendar.
@@ -31,4 +31,4 @@ publishedAt: 2026-04-02
 updatedAt: 2026-05-10
 ---
 
-Hot tub water chemistry is not the dark art it's marketed as. Five things, once a week, and your tub will outlive its warranty. This is the routine we use across every test unit in our shop — and the products we've watched work consistently across two years of weekly dosing.
+Hot tub water chemistry is not the dark art it's marketed as. Five things, once a week, and your tub will outlive its warranty. The routine below is synthesized from manufacturer dosing charts, NSF guidance, and the owner-care threads we read on r/hottubs and the Lay-Z-Spa forums — and the products listed are the ones owner feedback consistently rates as predictable.

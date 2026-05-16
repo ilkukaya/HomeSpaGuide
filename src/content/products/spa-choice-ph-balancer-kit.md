@@ -57,4 +57,4 @@ publishedAt: 2026-04-28
 updatedAt: 2026-05-14
 ---
 
-pH drifts. This kit is the unglamorous fix. We've used it across every tub on our test rig for the last 18 months and re-bought twice.
+pH drifts. This kit is the unglamorous fix. We selected it because, on paper, it offers the two industry-standard powders at a clear per-ounce discount versus the name-brand single jars — and customer reports consistently describe predictable dose response and a long shelf life when the tubs are kept sealed.

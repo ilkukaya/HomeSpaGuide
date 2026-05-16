@@ -10,11 +10,12 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
-    "typecheck": "astro check",
+    "typecheck": "astro check && node scripts/audit-voice.mjs",
     "lint": "eslint . --ext .js,.ts,.tsx,.astro",
     "new-product": "node scripts/new-product.mjs",
     "new-blog": "node scripts/new-blog.mjs",
-    "audit-links": "node scripts/audit-links.mjs"
+    "audit-links": "node scripts/audit-links.mjs",
+    "audit-voice": "node scripts/audit-voice.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

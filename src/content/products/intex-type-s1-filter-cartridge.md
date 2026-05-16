@@ -57,4 +57,4 @@ publishedAt: 2026-05-01
 updatedAt: 2026-05-13
 ---
 
-If you own an inflatable spa, you need these. Six per year, one fresh cartridge per week, old one soaks overnight in chlorine water before its next rotation. We've never had one fail before the rotation schedule retired it.
+If you own an inflatable spa, you need these. Six per year, one fresh cartridge per week, old one soaks overnight in chlorine water before its next rotation. Customer reports rarely mention early failures when the cartridges are rotated on this cadence — they almost always reach end-of-life through normal use, not defect.

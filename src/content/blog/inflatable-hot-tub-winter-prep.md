@@ -36,7 +36,7 @@ Wait until the tub is fully dry inside. Fold according to the manufacturer's pat
 
 ## Step 4 — Cover the pump
 
-Even with the spa packed up, the pump unit is worth its own dust bag. We use plain garbage bags rubber-banded at both ends. Two years later when you go to pull it out, the contacts on the heater plug will look as clean as they did the day you packed it.
+Even with the spa packed up, the pump unit is worth its own dust bag. A plain garbage bag rubber-banded at both ends is enough — the goal is to keep airborne dust off the heater-plug contacts so it powers up cleanly when you unpack it.
 
 ## The freeze-rated exception
 
@@ -44,6 +44,6 @@ If your spa is one of the few inflatables with a built-in freeze-shield mode —
 
 ## What goes wrong if you skip a step
 
-In our test rig, three out of four inflatables stored without the pump-gravity-drain step (Step 2) cracked their heater housing the following spring. One out of four inflatables stored without the dry-and-fold cadence (Step 3) developed a permanent crease in the air-beam ring at the waterline. None of the spas stored correctly failed.
+Customer reports on r/hottubs and the Lay-Z-Spa owner forums consistently describe the same failure modes when one of these steps gets skipped: cracked heater housings the following spring (residual water in the heat lines, almost always traceable to a missed gravity-drain), and permanent creases in the air-beam ring at the old waterline (improvised folding, or folding while still damp). The spas that get stored to spec almost never appear in those threads.
 
 It's 90 minutes once a year. Don't skip it.
