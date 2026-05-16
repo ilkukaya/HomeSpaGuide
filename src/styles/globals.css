@@ -64,8 +64,8 @@
   --color-info-soft: #E8F1F2;
 
   /* Fonts */
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Fraunces', ui-serif, 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'DM Serif Display', ui-serif, 'Iowan Old Style', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Shape */
@@ -113,17 +113,17 @@ main { flex: 1; }
 
 :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--color-primary-900);
   line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-heading);
+  letter-spacing: var(--tracking-snug);
   margin: 0;
   text-wrap: balance;
 }
 
-:where(h1) { font-size: var(--text-4xl); letter-spacing: var(--tracking-display); }
-:where(h2) { font-size: var(--text-3xl); }
-:where(h3) { font-size: var(--text-2xl); }
+:where(h1) { font-size: var(--text-4xl); letter-spacing: -0.012em; }
+:where(h2) { font-size: var(--text-3xl); letter-spacing: -0.008em; }
+:where(h3) { font-size: var(--text-2xl); letter-spacing: -0.006em; }
 :where(h4) { font-size: var(--text-xl); }
 :where(h5) { font-size: var(--text-lg); }
 :where(h6) { font-size: var(--text-base); }
@@ -161,9 +161,8 @@ main { flex: 1; }
 .display {
   font-family: var(--font-serif);
   font-size: var(--text-5xl);
-  font-weight: 600;
-  font-variation-settings: 'opsz' 144, 'SOFT' 50;
-  letter-spacing: var(--tracking-display);
+  font-weight: 400;
+  letter-spacing: -0.012em;
   line-height: 1.05;
   color: var(--color-primary-900);
 }
@@ -314,17 +313,17 @@ main { flex: 1; }
 }
 .prose a:hover { text-decoration-color: var(--color-cedar); }
 
-/* Drop cap — cedar Fraunces on opening paragraph of editorial articles */
+/* Drop cap — cedar serif on opening paragraph of editorial articles */
 .prose-dropcap > p:first-of-type::first-letter,
 .dropcap::first-letter {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 3.8em;
   line-height: 0.85;
   float: left;
   margin: 0.05em 0.08em 0 0;
   color: var(--color-cedar);
-  letter-spacing: var(--tracking-display);
+  letter-spacing: -0.012em;
 }
 
 /* ===========================================================
