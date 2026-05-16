@@ -18,7 +18,7 @@ keyFeatures:
   - Insulated cover with locking buckles
   - Integrated headrest pillows (2 included)
 pros:
-  - Best bubble coverage of any inflatable we tested
+  - Highest jet count of any inflatable in this comparison
   - Hard-water system genuinely reduces chemical demand
   - Solid-feeling Fiber-Tech beam construction
   - Quietest control panel buttons in the segment
@@ -69,6 +69,6 @@ publishedAt: 2026-04-15
 updatedAt: 2026-05-02
 ---
 
-Intex has been refining the PureSpa formula for over a decade and the Greywood Deluxe is the version where everything lines up. The Fiber-Tech sidewalls feel notably stiffer than competitor I-Beam constructions, and the integrated mineral system means hard-water households can stretch chemical doses by roughly a third.
+Intex has been refining the PureSpa formula for over a decade and the Greywood Deluxe is the version where everything lines up. Comparing the published specs side by side, the Fiber-Tech construction is rated stiffer than competitor I-Beam designs, and Intex's hard-water mineral system is positioned to let households stretch chemical doses meaningfully — owner reports on Amazon and r/hottubs consistently mention reduced sanitizer usage.
 
-We particularly like the control panel: large icons, clear backlight, and no hunt-for-the-button moments in the dark.
+The control panel is one of the most-praised details in owner reviews: large icons, clear backlight, and easy operation in the dark.

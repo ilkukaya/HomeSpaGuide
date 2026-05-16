@@ -73,6 +73,6 @@ updatedAt: 2026-05-01
 
 The Tahiti has earned its reputation by getting the basics right. Coleman uses the same TriTech 3-ply liner you'll find on the more expensive Hawaii model, the cushioned floor is genuinely comfortable for long soaks, and the bubble jets wrap fully around the perimeter rather than clustering on one side.
 
-In our testing the pump runs at a polite 70 dB at the heater housing — not silent, but you can hold a normal conversation outside the tub. Heat-up from a 60°F starting water temp to 104°F takes about 18 hours on a mild day, which is on par with every 110V inflatable on the market.
+The pump runs noticeably quieter than older Coleman inflatable models, per consistent owner feedback on Amazon and r/hottubs. Heat-up time for any 110V inflatable in this category is typically measured in hours, not minutes — plan to fill in the morning if you want to soak that evening. This is a limitation of the 110V format, not the Tahiti specifically.
 
 If you're new to hot tubs, this is one of the safest places to start.
