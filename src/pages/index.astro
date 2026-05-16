@@ -1,12 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles, Shield, BookOpen } from 'lucide-react';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProductGrid from '../components/product/ProductGrid.astro';
 import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
 import Button from '../components/ui/Button.astro';
-import heroImage from '../assets/placeholder-hero.svg';
 
 const allProducts = await getCollection('products', ({ data }) => data.status === 'active');
 const editorsPicks = allProducts.filter((p) => p.data.editorPick).slice(0, 6);
@@ -28,26 +27,56 @@ const blogPosts = (await getCollection('blog').catch(() => []))
 const guides = (await getCollection('guides').catch(() => []))
   .sort((a, b) => +b.data.updatedAt - +a.data.updatedAt)
   .slice(0, 3);
+
+const stats = {
+  products: allProducts.length,
+  guides: guides.length,
+  reviews: blogPosts.length,
+};
 ---
 
 <BaseLayout
   title="HomeSpaGuide — Honest Hot Tub Reviews & Buying Guides"
   description="Expert reviews, buying guides, and curated picks for home spas, hot tubs, chemicals, and accessories. Find the right product, then buy on Amazon."
 >
-  <section class="home-hero on-dark">
-    <div class="home-hero__bg">
-      <Image src={heroImage} alt="" loading="eager" widths={[800, 1600]} format="webp" />
-    </div>
-    <div class="container-page home-hero__inner">
-      <p class="home-hero__eyebrow">Honest reviews · Curated picks · No fluff</p>
-      <h1>Your trusted guide to <span>home spas &amp; hot tubs.</span></h1>
-      <p class="home-hero__lede">
-        We test, score, and recommend the home spa products worth your money — from $300 inflatables to chemicals that actually work.
-      </p>
-      <div class="home-hero__cta">
-        <Button href="/category/hot-tubs" variant="primary" size="lg">Shop Hot Tubs</Button>
-        <a href="/guides" class="home-hero__ghost">Buying Guides <span aria-hidden="true">→</span></a>
+  <section class="home-hero">
+    <div class="home-hero__inner container-page">
+      <div class="home-hero__copy">
+        <p class="home-hero__eyebrow"><Sparkles size={14} aria-hidden="true" /> Honest reviews · Curated picks · No fluff</p>
+        <h1 class="home-hero__title">
+          The honest guide to <em>home spas &amp; hot tubs.</em>
+        </h1>
+        <p class="home-hero__lede">
+          We test, score and recommend the home spa products worth your money — from $300 inflatables to the chemicals and filters that keep them clean.
+        </p>
+        <div class="home-hero__cta">
+          <Button href="/category/hot-tubs" variant="primary" size="lg">Browse Hot Tubs</Button>
+          <a href="/guides" class="home-hero__ghost">Read our buying guides <span aria-hidden="true">→</span></a>
+        </div>
+        <ul class="home-hero__trust">
+          <li><Shield size={14} aria-hidden="true" /> Independent · No paid placements</li>
+          <li><BookOpen size={14} aria-hidden="true" /> Editorial scoring out of 10</li>
+        </ul>
       </div>
+
+      <aside class="home-hero__card" aria-label="What we cover">
+        <p class="home-hero__card-eyebrow">What we cover</p>
+        <ul class="home-hero__stats">
+          <li><span class="home-hero__stat-num">{stats.products}</span><span class="home-hero__stat-label">products tested</span></li>
+          <li><span class="home-hero__stat-num">{stats.guides}</span><span class="home-hero__stat-label">buying guides</span></li>
+          <li><span class="home-hero__stat-num">4</span><span class="home-hero__stat-label">categories</span></li>
+        </ul>
+        <ul class="home-hero__cats">
+          {categories.slice(0, 4).map((cat) => (
+            <li>
+              <a href={`/category/${cat.slug}`}>
+                <span>{cat.data.name}</span>
+                <ArrowRight size={14} aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
     </div>
   </section>
 
@@ -138,52 +167,175 @@ const guides = (await getCollection('guides').catch(() => []))
 </BaseLayout>
 
 <style>
-  .home-hero { position: relative; isolation: isolate; padding: 5rem 0 4rem; overflow: hidden; }
-  .home-hero__bg { position: absolute; inset: 0; z-index: -1; }
-  .home-hero__bg img { width: 100%; height: 100%; object-fit: cover; }
-  .home-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8,43,53,0.7) 0%, rgba(15,76,92,0.55) 100%); }
-  .home-hero__inner { position: relative; color: var(--color-ink-on-dark); max-width: 720px; }
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(3rem, 6vw, 5rem);
+    background:
+      radial-gradient(900px 500px at 80% 10%, rgba(232, 165, 71, 0.12), transparent 60%),
+      radial-gradient(700px 400px at 0% 100%, rgba(184, 121, 74, 0.1), transparent 55%),
+      linear-gradient(180deg, #082B35 0%, #0F4C5C 100%);
+    color: var(--color-ink-on-dark);
+    overflow: hidden;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.04) 0, transparent 2px),
+      radial-gradient(circle at 75% 70%, rgba(255, 255, 255, 0.03) 0, transparent 2px);
+    background-size: 60px 60px, 80px 80px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .home-hero__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .home-hero__inner { grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); }
+  }
+  .home-hero__copy { max-width: 36em; }
   .home-hero__eyebrow {
-    color: var(--color-amber);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-meta);
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  .home-hero h1 {
-    color: var(--color-ink-on-dark);
-    font-family: var(--font-serif);
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
-    font-weight: 600;
-    letter-spacing: var(--tracking-display);
-    line-height: 1.1;
-  }
-  .home-hero h1 span {
-    color: var(--color-paper);
-    font-style: italic;
-    border-bottom: 3px solid var(--color-cedar);
-    padding-bottom: 0.05em;
-  }
-  .home-hero__lede {
-    color: rgba(250, 250, 247, 0.92);
-    font-size: var(--text-lg);
-    line-height: var(--leading-normal);
-    margin: 1rem 0 1.75rem;
-    max-width: 56ch;
-  }
-  .home-hero__cta { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
-  .home-hero__ghost {
-    color: var(--color-ink-on-dark);
-    font-weight: 600;
-    padding: 0.75rem 0.5rem;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-bottom: 1.5px solid rgba(250, 250, 247, 0.55);
+    color: var(--color-amber);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    font-weight: 600;
+    margin-bottom: 1.1rem;
+  }
+  .home-hero__title {
+    color: var(--color-ink-on-dark);
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5.4vw, 4.2rem);
+    font-weight: 400;
+    letter-spacing: -0.018em;
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .home-hero__title em {
+    font-style: italic;
+    color: var(--color-cedar-soft);
+    font-weight: 400;
+  }
+  .home-hero__lede {
+    color: rgba(250, 250, 247, 0.85);
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    line-height: 1.55;
+    margin: 1.2rem 0 2rem;
+    max-width: 38em;
+  }
+  .home-hero__cta { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.75rem; }
+  .home-hero__ghost {
+    color: var(--color-ink-on-dark);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.75rem 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1.5px solid rgba(250, 250, 247, 0.4);
     transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
   }
   .home-hero__ghost:hover { color: var(--color-amber); border-bottom-color: var(--color-amber); }
+  .home-hero__trust {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.25rem 1.75rem;
+    flex-wrap: wrap;
+    color: rgba(250, 250, 247, 0.65);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .home-hero__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .home-hero__trust svg { color: var(--color-cedar-soft); }
+
+  .home-hero__card {
+    background: rgba(250, 250, 247, 0.06);
+    border: 1px solid rgba(250, 250, 247, 0.12);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem 1.4rem;
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .home-hero__card-eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-meta);
+    font-weight: 600;
+    color: var(--color-amber);
+    margin: 0;
+  }
+  .home-hero__stats {
+    list-style: none;
+    padding: 0 0 1rem;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(250, 250, 247, 0.1);
+  }
+  .home-hero__stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .home-hero__stat-num {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--color-ink-on-dark);
+    letter-spacing: -0.018em;
+    line-height: 1;
+  }
+  .home-hero__stat-label {
+    font-size: 0.72rem;
+    color: rgba(250, 250, 247, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .home-hero__cats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .home-hero__cats a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.4rem;
+    color: var(--color-ink-on-dark);
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+  }
+  .home-hero__cats a:hover {
+    background: rgba(250, 250, 247, 0.08);
+    color: var(--color-amber);
+  }
+  .home-hero__cats svg { opacity: 0.6; transition: opacity var(--dur-base) var(--ease-out); }
+  .home-hero__cats a:hover svg { opacity: 1; }
 
   .home-stack { display: flex; flex-direction: column; gap: 4rem; padding-top: 4rem; padding-bottom: 4rem; }
 
