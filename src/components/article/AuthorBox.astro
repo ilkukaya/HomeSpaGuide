@@ -1,0 +1,25 @@
+---
+import Logo from '../ui/Logo.astro';
+---
+
+<aside class="author-box">
+  <div class="author-box__mark"><Logo /></div>
+  <div>
+    <p class="author-box__name">Written and maintained by the HomeSpaGuide editors</p>
+    <p class="author-box__bio">
+      We compare manufacturer specifications, owner manuals and published water-care guidance (CDC, CPSC and manufacturer dosing charts) with recurring owner feedback, and update articles when products or guidance change. We don’t run a testing lab and we don’t accept paid placements.
+      <a href="/editorial-policy">Editorial policy</a> · <a href="/contact">Suggest a correction</a>
+    </p>
+  </div>
+</aside>
+
+<style>
+  .author-box {
+    display: grid; gap: 1rem; grid-template-columns: 1fr;
+    padding: 1.25rem 0; border-top: 1px solid var(--color-border-strong); border-bottom: 1px solid var(--color-border);
+    max-width: 70ch;
+  }
+  .author-box__name { font-weight: 650; }
+  .author-box__bio { margin-top: 0.35rem; color: var(--color-ink-muted); font-size: 0.92rem; line-height: 1.6; }
+  .author-box__bio a { text-decoration: underline; text-underline-offset: 2px; }
+</style>

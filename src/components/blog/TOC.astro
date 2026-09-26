@@ -6,18 +6,31 @@ const h2s = headings.filter((h) => h.depth === 2);
 ---
 
 {h2s.length > 0 && (
-  <nav class="toc" aria-label="On this page">
-    <p class="toc__title">On this page</p>
+  <details class="toc" data-toc>
+    <summary class="toc__title">On this page <span aria-hidden="true">({h2s.length})</span></summary>
     <ol>
       {h2s.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
     </ol>
-  </nav>
+  </details>
 )}
 
+<script>
+  // Expanded in the desktop sidebar, collapsed on phones so the article starts above the fold.
+  const toc = document.querySelector<HTMLDetailsElement>('[data-toc]');
+  if (toc && window.matchMedia('(min-width: 1000px)').matches) toc.open = true;
+</script>
+
 <style>
-  .toc { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; font-size: 0.9rem; }
-  .toc__title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-subtle); font-weight: 600; margin-bottom: 0.65rem; }
-  .toc ol { list-style: decimal; margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; }
-  .toc a { color: var(--color-ink-muted); }
+  .toc { border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font-size: 0.9rem; }
+  .toc__title {
+    list-style: none; cursor: pointer; padding: 0.8rem 1rem;
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-ink-muted); font-weight: 700;
+  }
+  .toc__title::-webkit-details-marker { display: none; }
+  .toc__title::after { content: '▾'; float: right; color: var(--color-ink-subtle); }
+  .toc[open] .toc__title::after { content: '▴'; }
+  .toc ol { list-style: decimal; margin: 0; padding: 0 1rem 1rem 2.1rem; display: flex; flex-direction: column; gap: 0.45rem; }
+  .toc li::marker { color: var(--color-ink-subtle); font-size: 0.8rem; }
+  .toc a { color: var(--color-ink-muted); line-height: 1.4; }
   .toc a:hover { color: var(--color-primary); }
 </style>

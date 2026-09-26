@@ -110,6 +110,10 @@ const products = defineCollection({
       frequentlyBoughtWith: z.array(reference('products')).optional(),
       alternativeProducts: z.array(reference('products')).optional(),
 
+      // Answer-engine content (AEO/GEO): short, quotable, fact-dense
+      quickVerdict: z.string().max(320).optional(),
+      faqs: z.array(faqItem).optional(),
+
       // SEO
       seo: seoSchema,
 
@@ -174,6 +178,10 @@ const blog = defineCollection({
       heroImage: image(),
       heroImageAlt: z.string().default(''),
       featuredProducts: z.array(reference('products')).optional(),
+      // Answer-engine content (AEO/GEO): a 40–60 word direct answer + bullets
+      quickAnswer: z.string().max(480).optional(),
+      keyTakeaways: z.array(z.string()).optional(),
+      faqs: z.array(faqItem).optional(),
       toc: z.boolean().default(true),
       seo: seoSchema,
     }),
@@ -189,6 +197,8 @@ const guides = defineCollection({
       heroImage: image().optional(),
       heroImageAlt: z.string().optional(),
       recommendedProducts: z.array(reference('products')).default([]),
+      quickAnswer: z.string().max(480).optional(),
+      keyTakeaways: z.array(z.string()).optional(),
       sections: z
         .array(z.object({ heading: z.string(), body: z.string() }))
         .default([]),

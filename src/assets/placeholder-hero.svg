@@ -1,22 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Hero placeholder">
-  <defs>
-    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0%" stop-color="#082b35"/>
-      <stop offset="100%" stop-color="#2e6c80"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="50%" cy="60%" r="60%">
-      <stop offset="0%" stop-color="#e8c547" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#e8c547" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="1600" height="900" fill="url(#sky)"/>
-  <rect width="1600" height="900" fill="url(#glow)"/>
-  <g opacity="0.6">
-    <path d="M0 600 Q400 540 800 600 T1600 600 L1600 900 L0 900Z" fill="#0f4c5c"/>
-    <path d="M0 670 Q400 620 800 670 T1600 670 L1600 900 L0 900Z" fill="#082b35"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <rect width="1600" height="900" fill="#EFEBE3"/>
+  <rect y="0" width="1600" height="560" fill="#E9E1D3"/>
+  <circle cx="1240" cy="210" r="110" fill="#F1DCCF"/>
+  <path d="M0 520 q240 -90 520 -30 t560 -20 t520 10 v90 H0z" fill="#D9D0BE"/>
+  <rect x="0" y="560" width="1600" height="340" fill="#C9A48D"/>
+  <g stroke="#B08A72" stroke-width="4"><path d="M0 620 H1600"/><path d="M0 690 H1600"/><path d="M0 760 H1600"/><path d="M0 830 H1600"/></g>
+  <path d="M420 520 v150 a380 80 0 0 0 760 0 v-150" fill="#FFFFFF" stroke="#1B4D4B" stroke-width="7"/>
+  <ellipse cx="800" cy="520" rx="380" ry="80" fill="#FFFFFF" stroke="#1B4D4B" stroke-width="7"/>
+  <ellipse cx="800" cy="522" rx="322" ry="58" fill="#BFD9D5"/>
+  <g fill="none" stroke="#B5562E" stroke-width="7" stroke-linecap="round" opacity="0.7">
+    <path d="M700 440 c-18 -30 18 -44 0 -78"/><path d="M800 425 c-18 -30 18 -44 0 -78"/><path d="M900 440 c-18 -30 18 -44 0 -78"/>
   </g>
-  <g fill="#fafaf7" font-family="Georgia, serif" text-anchor="middle">
-    <text x="800" y="430" font-size="84" font-weight="700" letter-spacing="3">HomeSpaGuide</text>
-    <text x="800" y="490" font-size="26" opacity="0.8" font-family="Inter, sans-serif">Your trusted guide to home spas &amp; hot tubs</text>
-  </g>
+  <rect x="220" y="470" width="120" height="200" rx="12" fill="#5E958E" stroke="#1B4D4B" stroke-width="6"/>
+  <path d="M220 540 h120" stroke="#1B4D4B" stroke-width="6"/>
+  <g fill="#1B4D4B"><ellipse cx="1320" cy="600" rx="60" ry="14" opacity="0.25"/></g>
+  <path d="M1290 600 v-150 q30 -40 60 0 v150" fill="#8BB5AF" stroke="#1B4D4B" stroke-width="6"/>
 </svg>

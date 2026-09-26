@@ -8,7 +8,7 @@ const products = await getCollection('products', ({ data }) => data.status === '
 products.sort((a, b) => b.data.editorScore.overall - a.data.editorScore.overall);
 ---
 
-<BaseLayout title="All Products — HomeSpaGuide" description="Browse every home spa product we cover — hot tubs, chemicals, filters, covers and more.">
+<BaseLayout title="Hot Tubs & Spa Supplies, Compared and Scored" description="Every hot tub, chemical, filter and accessory we cover, with Editor Scores, typical price ranges and links to current prices on Amazon.">
   <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
     <Breadcrumbs items={[{ label: 'Products' }]} />
     <header style="margin: 1.5rem 0 2rem;">

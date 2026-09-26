@@ -2,24 +2,87 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
-import BlogCard from '../../components/blog/BlogCard.astro';
+import ItemListSchema from '../../components/seo/ItemListSchema.astro';
 
-const posts = (await getCollection('blog')).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+const posts = (await getCollection('blog')).sort(
+  (a, b) => +(b.data.updatedAt ?? b.data.publishedAt) - +(a.data.updatedAt ?? a.data.publishedAt) || +b.data.publishedAt - +a.data.publishedAt,
+);
+
+const TOPICS: Record<string, string> = {
+  maintenance: 'Water care & maintenance',
+  'how-to': 'How-tos & safety',
+  comparison: 'Comparisons',
+  'buying-guide': 'Buying advice & costs',
+  seasonal: 'Seasonal',
+  reviews: 'Reviews',
+  news: 'News',
+};
+const order = ['maintenance', 'how-to', 'buying-guide', 'comparison', 'seasonal', 'reviews', 'news'];
+const groups = order
+  .map((key) => ({ key, label: TOPICS[key], items: posts.filter((p) => p.data.category === key) }))
+  .filter((g) => g.items.length > 0);
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+const siteUrl = import.meta.env.SITE;
 ---
 
-<BaseLayout title="Blog — HomeSpaGuide" description="Maintenance how-tos, seasonal tips, brand comparisons and honest reviews from the HomeSpaGuide editors.">
-  <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
-    <Breadcrumbs items={[{ label: 'Blog' }]} />
-    <header style="margin: 1.5rem 0 2rem; max-width: 60ch;">
-      <h1>The HomeSpaGuide Blog</h1>
-      <p style="color: var(--color-ink-muted);">Maintenance how-tos, seasonal tips, brand comparisons and the occasional rant about cloudy water.</p>
+<BaseLayout
+  title="Hot Tub Advice: Water Care, Costs & How-To Guides"
+  description="Clear answers to common hot tub questions: cloudy water, foam, pH, bromine vs chlorine, running costs, heat-up times and safety limits."
+>
+  <div class="container-page advice">
+    <Breadcrumbs items={[{ label: 'Advice' }]} />
+    <header class="advice__head">
+      <h1>Hot tub advice</h1>
+      <p>Straight answers to the questions owners actually search for — the short answer first, the detail underneath.</p>
+      <nav class="advice__jump" aria-label="Topics">
+        {groups.map((g) => <a href={`#${g.key}`}>{g.label} <span>{g.items.length}</span></a>)}
+      </nav>
     </header>
-    {posts.length > 0 ? (
-      <div style="display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-        {posts.map((p) => <BlogCard post={p} />)}
-      </div>
-    ) : (
-      <p style="color: var(--color-ink-subtle);">No posts published yet — check back soon.</p>
-    )}
+
+    {groups.map((g) => (
+      <section class="advice__group" id={g.key}>
+        <h2>{g.label}</h2>
+        <ul>
+          {g.items.map((post) => (
+            <li>
+              <a href={`/blog/${post.slug}`}>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.quickAnswer ?? post.data.excerpt}</p>
+                <time datetime={(post.data.updatedAt ?? post.data.publishedAt).toISOString()}>
+                  Updated {fmt(post.data.updatedAt ?? post.data.publishedAt)}
+                </time>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
   </div>
+
+  <ItemListSchema slot="head" items={posts.map((p) => ({ name: p.data.title, url: new URL(`/blog/${p.slug}`, siteUrl).toString() }))} />
 </BaseLayout>
+
+<style>
+  .advice { padding-top: 1.25rem; padding-bottom: 2rem; }
+  .advice__head { margin: 1.5rem 0 2.5rem; max-width: 70ch; }
+  .advice__head h1 { font-size: clamp(2.2rem, 1.6rem + 2.6vw, 3.4rem); letter-spacing: -0.03em; }
+  .advice__head p { margin-top: 0.75rem; color: var(--color-ink-muted); font-size: 1.1rem; line-height: 1.55; }
+  .advice__jump { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .advice__jump a {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.4rem 0.85rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-full);
+    background: var(--color-surface); color: var(--color-ink); font-size: 0.875rem; font-weight: 500;
+  }
+  .advice__jump a:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .advice__jump span { color: var(--color-ink-subtle); font-size: 0.8rem; }
+  .advice__group { margin-top: 3rem; scroll-margin-top: calc(var(--header-height) + 1rem); }
+  .advice__group h2 { font-size: 0.8rem; font-family: var(--font-sans); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-cedar); padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-ink); }
+  .advice__group ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; column-gap: 3rem; }
+  @media (min-width: 860px) { .advice__group ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .advice__group li { border-bottom: 1px solid var(--color-border); }
+  .advice__group a { display: flex; flex-direction: column; gap: 0.45rem; padding: 1.25rem 0; color: var(--color-ink); height: 100%; }
+  .advice__group h3 { font-size: 1.35rem; font-weight: 550; line-height: 1.22; letter-spacing: -0.015em; }
+  .advice__group a:hover h3 { color: var(--color-primary); }
+  .advice__group p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .advice__group time { font-size: 0.8rem; color: var(--color-ink-subtle); margin-top: auto; }
+</style>

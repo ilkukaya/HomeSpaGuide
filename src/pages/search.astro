@@ -2,10 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Search — HomeSpaGuide" description="Search products, guides and blog posts on HomeSpaGuide.">
-  <div class="container-narrow" style="padding-top: 3rem; padding-bottom: 4rem;">
+<BaseLayout title="Search" description="Search HomeSpaGuide's hot tub buying guides, product picks and water-care answers." noindex>
+  <div class="container-narrow search-page">
     <h1>Search</h1>
-    <p style="color: var(--color-ink-muted); margin-bottom: 2rem;">Search across all products, guides and blog posts.</p>
+    <p class="search-page__lede">Products, buying guides and water-care answers.</p>
     <div id="search"></div>
   </div>
 
@@ -13,11 +13,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <script slot="end" src="/pagefind/pagefind-ui.js" is:inline></script>
   <script slot="end" is:inline>
     window.addEventListener('DOMContentLoaded', () => {
-      // @ts-ignore
-      if (typeof PagefindUI !== 'undefined') {
-        // @ts-ignore
-        new PagefindUI({ element: '#search', showSubResults: true, resetStyles: false });
-      }
+      if (typeof PagefindUI === 'undefined') return;
+      const ui = new PagefindUI({ element: '#search', showSubResults: true, resetStyles: false, showImages: false });
+      const q = new URLSearchParams(location.search).get('q');
+      if (q) ui.triggerSearch(q);
     });
   </script>
 </BaseLayout>
+
+<style>
+  .search-page { padding-top: 2.5rem; padding-bottom: 4rem; }
+  .search-page__lede { color: var(--color-ink-muted); margin: 0.5rem 0 1.75rem; }
+  :global(.pagefind-ui) {
+    --pagefind-ui-primary: var(--color-primary);
+    --pagefind-ui-text: var(--color-ink);
+    --pagefind-ui-background: var(--color-surface);
+    --pagefind-ui-border: var(--color-border-strong);
+    --pagefind-ui-tag: var(--color-paper-deep);
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-font: var(--font-sans);
+  }
+</style>

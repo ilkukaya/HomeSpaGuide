@@ -30,7 +30,7 @@ const priceRanges = Array.from(new Set(products.map((p) => p.data.priceRange))).
 const { Content } = await brand.render();
 ---
 
-<BaseLayout title={`${b.name} — Reviews, Products & Verdict`} description={b.description}>
+<BaseLayout title={`${b.name} Hot Tubs & Spa Products: Models Compared`} description={b.description} ogImage={`/og/brand/${brand.slug}.png`}>
   <div class="container-page brand-page">
     <Breadcrumbs items={[{ label: 'Brands', href: '/products' }, { label: b.name }]} />
 

@@ -1,78 +1,110 @@
 ---
-asin: B07PJ2RJBQ
+asin: B0C66DGL23
 slug: coleman-saluspa-tahiti-airjet
-title: Coleman SaluSpa Tahiti AirJet Inflatable Hot Tub
-shortTitle: Coleman SaluSpa Tahiti AirJet
+title: Coleman SaluSpa Tahiti EnergySense AirJet Inflatable Hot Tub (2–4 Person)
+shortTitle: Coleman SaluSpa Tahiti EnergySense AirJet
 brand: coleman
 category: inflatable-hot-tubs
 subcategories: [airjet, 4-person]
 collections: [best-under-1000]
-shortDescription: A 4-person AirJet inflatable spa with 120 bubble jets, soft TriTech 3-ply liner, and a built-in chemical floater — a reliable first hot tub for most homes.
+shortDescription: A 71-inch, 2–4 person AirJet inflatable with 120 bubble jets, Freeze Shield, and two covers — an EnergySense thermal cover plus a standard cover.
 description: |
-  The SaluSpa Tahiti has become a default first-tub recommendation for a good reason. The 3-ply TriTech liner is noticeably more rigid than the older I-Beam Coleman tubs, the 120 AirJets keep the water lively without the high power draw of HydroJet models, and the included cover, floater and filter pump make it a true unbox-and-soak product.
+  The Coleman Tahiti EnergySense is the compact entry point to the SaluSpa range. It is a 71" x 26" round tub rated for 2–4 people with 120 AirJets, DuraPlus puncture-resistant walls and Bestway's Freeze Shield function, which automatically heats the water to keep internal components from freezing. It ships with two covers: an insulated EnergySense thermal cover and a standard cover.
 keyFeatures:
-  - 4-adult capacity (71" diameter, 26" deep)
-  - 120 surrounding AirJet bubble jets
-  - TriTech 3-ply reinforced material
-  - Rapid heating system reaches 104°F
-  - Energy-saving timer with insulating cover
-  - Built-in ChemConnect chemical dispenser
+  - Seats 2–4 people (71" diameter x 26" tall)
+  - 120 AirJet bubble jets with two intensity levels
+  - EnergySense insulated cover plus a second standard cover
+  - Freeze Shield automatic anti-freeze heating
+  - DuraPlus puncture-resistant wall material
+  - About 177 gallons at 80% fill
 pros:
-  - Excellent setup-out-of-box experience
-  - Strong bubble jet coverage
-  - Quieter pump than older models
-  - Replacement parts widely available
+  - Two covers in the box is unusual at this price
+  - Freeze Shield adds margin in cold snaps
+  - Smallest water volume here, so it reaches temperature soonest
+  - Coleman/Bestway parts and filters are widely stocked
 cons:
-  - AirJets only — no rotating HydroJets
-  - Heater is 110V so heat-up is gradual in winter
-  - Liner is durable but still puncture-prone vs. hard-shell
+  - Genuinely snug with four adults
+  - AirJets only — no hydrotherapy water jets
+  - Shorter 26-inch walls mean a shallower soak
 bestFor:
-  - First-time hot tub buyers
-  - Decks and patios with 110V outlets
-  - Households wanting summer family soaking
+  - Couples and first-time buyers
+  - Smaller patios and decks
+  - Buyers who want some cold-weather protection on a budget
 specs:
   capacity: 4
-  dimensions: '71" x 71" x 26"'
-  weight: 64 lbs
-  powerRequirement: 110V – 120V
-  waterCapacity: "210 gallons"
+  dimensions: '71" diameter x 26" H'
+  powerRequirement: 110–120V, standard household GFCI outlet
+  waterCapacity: "177 gallons (80% fill)"
   jetCount: 120
-  heaterWattage: 1300
   setupType: inflatable
-  indoorOutdoor: both
+  indoorOutdoor: outdoor
   seasonality: all-season
-  materials: [TriTech 3-ply PVC]
-  warranty: "1-year limited"
-priceRange: 500-1000
-priceUpdatedAt: 2026-04-01
+  materials: [DuraPlus laminated PVC]
+  customFields:
+    - label: Covers included
+      value: EnergySense thermal cover + standard cover
+    - label: Max water temperature
+      value: 104°F
+priceRange: 250-500
+priceUpdatedAt: 2026-09-26
 editorScore:
-  overall: 8.4
-  quality: 8.5
-  value: 9
-  setup: 9
+  overall: 8.3
+  quality: 8.0
+  value: 9.0
+  setup: 9.0
   durability: 7.5
-  energyEfficiency: 7
-  notes: A reliable workhorse — the closest thing to a "default pick" in the inflatable category.
+  energyEfficiency: 8.0
+  notes: The default first tub for couples — small, efficient and well-equipped for the price.
 editorPick: false
 editorBadges: [Best Value]
 primaryImage: ../../assets/placeholder-hot-tub.svg
-imageAlt: Coleman SaluSpa Tahiti AirJet inflatable hot tub on a wooden deck
-amazonUrl: https://www.amazon.com/dp/B07PJ2RJBQ
+imageAlt: Coleman SaluSpa Tahiti EnergySense AirJet inflatable hot tub in grey
+amazonUrl: https://www.amazon.com/dp/B0C66DGL23
 relatedProducts:
+  - coleman-saluspa-atlantis-airjet
+  - bestway-saluspa-milan-airjet
+alternativeProducts:
+  - intex-purespa-bubble
   - intex-purespa-greywood
-  - bestway-saint-tropez-hydrojet
 frequentlyBoughtWith:
   - spa-choice-bromine-tablets
-alternativeProducts:
-  - intex-purespa-greywood
-  - bestway-saint-tropez-hydrojet
+quickVerdict: The Coleman SaluSpa Tahiti EnergySense is the best-value inflatable for couples, with 120 AirJets, Freeze Shield and two covers; the trade-off is a compact 71-inch tub that feels crowded with four adults.
+faqs:
+  - question: How many people fit in the Coleman Tahiti?
+    answer: Coleman rates it for 2–4 people. At 71 inches across and 26 inches tall, owner reviews consistently describe it as ideal for two adults and tight for four.
+  - question: Can the Tahiti EnergySense be used in winter?
+    answer: It includes Freeze Shield, which automatically heats the water to protect internal components from freezing. That reduces risk in cold snaps, but like any inflatable it loses heat faster than an insulated hard-shell tub, and owner reports describe slower recovery in freezing weather.
+  - question: How much water does it hold?
+    answer: The manufacturer lists about 177 gallons at 80% fill — the smallest volume among the SaluSpa tubs we cover, which also means the shortest heat-up.
+  - question: Does it come with a cover?
+    answer: Yes, two. The EnergySense thermal cover is the insulated one Coleman claims is up to 40% more energy efficient than similar inflatable spas; a second standard cover is also included.
 status: active
-publishedAt: 2026-04-12
-updatedAt: 2026-05-01
+publishedAt: 2026-09-26
+updatedAt: 2026-09-26
 ---
 
-The Tahiti has earned its reputation by getting the basics right. Coleman uses the same TriTech 3-ply liner you'll find on the more expensive Hawaii model, the cushioned floor is genuinely comfortable for long soaks, and the bubble jets wrap fully around the perimeter rather than clustering on one side.
+The Tahiti EnergySense is for couples and first-time buyers who want a compact, efficient inflatable without paying for a six-person tub they won't fill.
 
-The pump runs noticeably quieter than older Coleman inflatable models, per consistent owner feedback on Amazon and r/hottubs. Heat-up time for any 110V inflatable in this category is typically measured in hours, not minutes — plan to fill in the morning if you want to soak that evening. This is a limitation of the 110V format, not the Tahiti specifically.
+## Headline specs
 
-If you're new to hot tubs, this is one of the safest places to start.
+Per the manufacturer's published spec, the Tahiti is 71 inches across and 26 inches tall, holds about 177 gallons at 80% fill and seats 2–4 people. It uses 120 AirJets with two intensity settings, heats to 104°F on standard 110–120V power, and adds Freeze Shield anti-freeze heating. The walls use DuraPlus, which Bestway (Coleman's SaluSpa manufacturer) positions as more puncture- and stretch-resistant than standard PVC.
+
+## What owners praise
+
+- **Value.** Owner reviews on Amazon consistently highlight the two-cover bundle at an entry price.
+- **Setup.** Inflation, fill and first soak in one day is the norm in owner reports.
+- **Efficiency.** A smaller water volume plus the EnergySense cover is credited with shorter heat-ups than larger tubs.
+
+## What owners complain about
+
+- **Space.** Four adults means shoulder-to-shoulder.
+- **Depth.** The 26-inch wall is shallower than the 28-inch tubs in this category.
+- **Heat loss in freezing weather** — a category-wide issue.
+
+## Who should buy it — and who shouldn't
+
+If your priority is a warm, bubbly soak for two with minimal running cost, this is the cleanest fit because the small volume works in your favor. Families of four or more should look at the [Bestway SaluSpa Milan](/products/bestway-saluspa-milan-airjet) or [Coleman SaluSpa Atlantis](/products/coleman-saluspa-atlantis-airjet).
+
+## How it compares
+
+Based on the spec sheets, the Tahiti matches the [Intex PureSpa Bubble Massage](/products/intex-purespa-bubble) on jet count (120) but is smaller (71" x 26" vs. 77" x 28"). In exchange it adds Freeze Shield and a second cover, which neither Intex 4-person model lists.

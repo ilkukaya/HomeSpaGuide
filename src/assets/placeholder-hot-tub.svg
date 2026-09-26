@@ -1,31 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1d5a6d"/>
-      <stop offset="100%" stop-color="#0f4c5c"/>
-    </linearGradient>
-    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#7eb1bf"/>
-      <stop offset="100%" stop-color="#2e6c80"/>
-    </linearGradient>
-    <radialGradient id="steam" cx="50%" cy="55%" r="35%">
-      <stop offset="0%" stop-color="#fafaf7" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#fafaf7" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="800" height="600" fill="url(#bg)"/>
-  <ellipse cx="400" cy="430" rx="290" ry="50" fill="#082b35" opacity="0.4"/>
-  <!-- tub body -->
-  <ellipse cx="400" cy="380" rx="280" ry="80" fill="#144a5b"/>
-  <ellipse cx="400" cy="365" rx="280" ry="75" fill="#082b35"/>
-  <ellipse cx="400" cy="360" rx="260" ry="65" fill="url(#water)"/>
-  <!-- ripples -->
-  <ellipse cx="400" cy="355" rx="200" ry="14" fill="none" stroke="#fafaf7" stroke-width="1.5" opacity="0.35"/>
-  <ellipse cx="400" cy="345" rx="140" ry="10" fill="none" stroke="#fafaf7" stroke-width="1.2" opacity="0.5"/>
-  <ellipse cx="400" cy="335" rx="80" ry="6" fill="none" stroke="#fafaf7" stroke-width="1" opacity="0.6"/>
-  <!-- steam -->
-  <ellipse cx="400" cy="280" rx="260" ry="100" fill="url(#steam)"/>
-  <ellipse cx="320" cy="240" rx="36" ry="12" fill="#fafaf7" opacity="0.22"/>
-  <ellipse cx="430" cy="220" rx="48" ry="15" fill="#fafaf7" opacity="0.18"/>
-  <ellipse cx="500" cy="245" rx="32" ry="10" fill="#fafaf7" opacity="0.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#EFEBE3"/>
+  <circle cx="640" cy="120" r="54" fill="#F3DCCB"/>
+  <ellipse cx="400" cy="470" rx="290" ry="42" fill="#E2DCD0"/>
+  <path d="M130 300 v130 a270 62 0 0 0 540 0 v-130" fill="#FFFFFF" stroke="#1B4D4B" stroke-width="5"/>
+  <g stroke="#D7D0C2" stroke-width="3">
+    <path d="M190 350 v112"/><path d="M260 362 v118"/><path d="M330 367 v122"/><path d="M400 368 v124"/><path d="M470 367 v122"/><path d="M540 362 v118"/><path d="M610 350 v112"/>
+  </g>
+  <ellipse cx="400" cy="300" rx="270" ry="62" fill="#FFFFFF" stroke="#1B4D4B" stroke-width="5"/>
+  <ellipse cx="400" cy="302" rx="228" ry="44" fill="#BFD9D5"/>
+  <g fill="#FFFFFF" opacity="0.9"><circle cx="330" cy="300" r="5"/><circle cx="352" cy="312" r="3.5"/><circle cx="455" cy="296" r="4.5"/><circle cx="480" cy="310" r="3"/><circle cx="400" cy="318" r="3.5"/><circle cx="262" cy="306" r="3"/><circle cx="545" cy="302" r="3.5"/></g>
+  <path d="M300 300 q100 -18 200 0" fill="none" stroke="#8BB5AF" stroke-width="3" stroke-linecap="round"/>
+  <g fill="none" stroke="#B5562E" stroke-width="5" stroke-linecap="round" opacity="0.75">
+    <path d="M340 240 c-14 -22 14 -34 0 -58"/><path d="M400 228 c-14 -22 14 -34 0 -58"/><path d="M460 240 c-14 -22 14 -34 0 -58"/>
+  </g>
+  <rect x="660" y="380" width="70" height="84" rx="10" fill="#FFFFFF" stroke="#1B4D4B" stroke-width="5"/>
+  <rect x="676" y="398" width="38" height="16" rx="3" fill="#1B4D4B"/>
+  <circle cx="683" cy="436" r="5" fill="#B5562E"/><circle cx="707" cy="436" r="5" fill="#D7D0C2"/>
 </svg>

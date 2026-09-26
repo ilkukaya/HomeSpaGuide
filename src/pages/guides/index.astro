@@ -6,12 +6,12 @@ import Breadcrumbs from '../../components/layout/Breadcrumbs.astro';
 const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt - +a.data.updatedAt);
 ---
 
-<BaseLayout title="Buying Guides — HomeSpaGuide" description="In-depth, methodical buying guides covering hot tubs, chemicals, filters and accessories.">
+<BaseLayout title="Hot Tub Buying Guides & Owner Handbooks" description="Step-by-step guides to choosing, placing and looking after a home hot tub: first-spa buying advice, chemicals for beginners, filter cleaning and water care.">
   <div class="container-page" style="padding-top: 1.5rem; padding-bottom: 4rem;">
-    <Breadcrumbs items={[{ label: 'Buying Guides' }]} />
+    <Breadcrumbs items={[{ label: 'Guides' }]} />
     <header style="margin: 1.5rem 0 2rem; max-width: 60ch;">
-      <h1>Buying Guides</h1>
-      <p style="color: var(--color-ink-muted);">Methodical, no-fluff guides for buyers who want to choose once and choose well.</p>
+      <h1 style="font-size: clamp(2.2rem, 1.6rem + 2.6vw, 3.4rem); letter-spacing: -0.03em;">Guides</h1>
+      <p style="color: var(--color-ink-muted); font-size: 1.1rem; margin-top: 0.75rem;">Longer, step-by-step handbooks: choosing your first spa, where to put it, and the routines that keep the water clear.</p>
     </header>
     {guides.length > 0 ? (
       <ul class="guide-list">
@@ -19,8 +19,8 @@ const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt 
           <li>
             <a href={`/guides/${g.slug}`} class="guide-list__card">
               <span class="eyebrow">{g.data.topic}</span>
-              <h3>{g.data.title}</h3>
-              <p>{g.data.intro}</p>
+              <h2>{g.data.title}</h2>
+              <p>{g.data.quickAnswer ?? g.data.intro}</p>
               <span class="guide-list__cta">Read the guide <span aria-hidden="true">→</span></span>
             </a>
           </li>
@@ -38,8 +38,8 @@ const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt 
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   }
   .guide-list__card {
     display: flex;
@@ -47,14 +47,15 @@ const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt 
     gap: 0.5rem;
     padding: 1.75rem;
     background: var(--color-surface);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
+    border-top: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
     color: var(--color-ink);
     height: 100%;
-    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+    transition: border-color var(--dur-base) var(--ease-out);
   }
-  .guide-list__card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
-  .guide-list__card h3 { font-size: var(--text-xl); margin: 0.4rem 0 0.25rem; color: var(--color-primary-900); }
-  .guide-list__card p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: var(--leading-normal); flex: 1; }
+  .guide-list__card:hover { border-color: var(--color-primary); }
+  .guide-list__card h2 { font-size: 1.45rem; font-weight: 550; line-height: 1.2; margin: 0.4rem 0 0.25rem; }
+  .guide-list__card p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: var(--leading-normal); flex: 1; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
   .guide-list__cta { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.3rem; }
 </style>

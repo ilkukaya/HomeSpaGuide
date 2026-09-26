@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+---
+
+<BaseLayout
+  title="Editorial Policy: How We Choose & Score Products"
+  description="How HomeSpaGuide researches, selects and scores hot tubs and spa products, how the Editor Score works, how we handle corrections, and how affiliate links fit in."
+>
+  <div class="container-narrow legal-page">
+    <Breadcrumbs items={[{ label: 'Editorial policy' }]} />
+    <article class="prose">
+      <h1>Editorial policy</h1>
+      <p class="lede">HomeSpaGuide is a curated buying guide, not a testing lab. This page explains exactly what that means — what we do, what we don’t, and how to hold us to it.</p>
+
+      <h2 id="research">How we research a product</h2>
+      <ol>
+        <li><strong>Manufacturer data first.</strong> Capacity, dimensions, water volume, heater wattage, jet count, electrical requirements and warranty come from the manufacturer’s published specifications and manuals.</li>
+        <li><strong>Owner feedback, aggregated.</strong> We read Amazon reviews and owner communities (for example r/hottubs and brand owner forums) looking for patterns — the praise and the failure modes that show up again and again, not one-off anecdotes.</li>
+        <li><strong>Authoritative guidance for water care.</strong> Chemistry ranges and safety limits cite public sources such as the CDC’s hot tub guidance, the U.S. Consumer Product Safety Commission and manufacturer dosing charts.</li>
+        <li><strong>Side-by-side comparison.</strong> Every product is compared with close alternatives in the same size and price band.</li>
+      </ol>
+
+      <h2 id="not">What we don’t do</h2>
+      <ul>
+        <li>We don’t claim to have lab-tested or measured products. If an editor has personal hands-on experience with a product, the article will say so explicitly.</li>
+        <li>We don’t publish live prices. We show a typical price range; Amazon shows the current price.</li>
+        <li>We don’t accept payment, free products in exchange for coverage, or sponsored placements. Brands cannot buy a score or a badge.</li>
+      </ul>
+
+      <h2 id="score">How the Editor Score works</h2>
+      <p>The 0–10 Editor Score is a <em>curation index</em> — an editorial judgment that summarises the research above. It combines five sub-scores:</p>
+      <table>
+        <thead><tr><th>Sub-score</th><th>Weight</th><th>What it reflects</th></tr></thead>
+        <tbody>
+          <tr><td>Quality</td><td>30%</td><td>Materials, construction, brand track record and reliability themes in owner reports</td></tr>
+          <tr><td>Value</td><td>25%</td><td>Features and expected lifespan relative to the typical price in its category</td></tr>
+          <tr><td>Durability</td><td>20%</td><td>Longer-term owner feedback: seams, pumps, heaters, covers, fading</td></tr>
+          <tr><td>Setup</td><td>15%</td><td>How straightforward owners report setup and first use to be</td></tr>
+          <tr><td>Energy efficiency</td><td>10%</td><td>Published insulation/energy features and owner-reported running cost (where relevant)</td></tr>
+        </tbody>
+      </table>
+      <p>Scores are relative within a category (a test strip isn’t compared with a hot tub) and can differ from Amazon’s star rating because we weight things differently than the average reviewer.</p>
+
+      <h2 id="badges">Badges</h2>
+      <p><strong>Editor Pick</strong> marks the product we’d point most buyers to in its category; fewer than one in four products carries it. <strong>Best Value</strong>, <strong>Budget Pick</strong> and <strong>Premium Pick</strong> mark the best fit for those buyers. Most products carry no badge.</p>
+
+      <h2 id="updates">Updates and corrections</h2>
+      <p>Products get discontinued and specs change. We review pages regularly and whenever readers report a problem; every article and product page shows the date it was last updated. To report an error, use our <a href="/contact">contact form</a> — corrections take priority over new content.</p>
+
+      <h2 id="money">How we make money</h2>
+      <p>We earn a commission from Amazon when readers buy through our links (at no extra cost to them), and may show clearly labelled display ads. Commission rates play no part in which products we recommend or how they score. Full details: <a href="/affiliate-disclosure">affiliate disclosure</a>.</p>
+
+      <h2 id="safety">Safety note</h2>
+      <p>Our articles are general information. Follow your spa’s manual and chemical labels, hire a licensed electrician for hardwired installations, and consult a doctor about hot tub use if you are pregnant or have a medical condition.</p>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .legal-page { padding-top: 1.25rem; padding-bottom: 3rem; }
+  .legal-page .prose { margin-top: 1.5rem; }
+  .lede { font-size: 1.2rem; color: var(--color-ink-muted); }
+</style>

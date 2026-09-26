@@ -1,115 +1,156 @@
 ---
-import { Image } from 'astro:assets';
 import { getEntry, type CollectionEntry } from 'astro:content';
+import { marked } from 'marked';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
-import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
-import ProductCard from '../components/product/ProductCard.astro';
 import FAQSchema from '../components/seo/FAQSchema.astro';
 import ArticleSchema from '../components/seo/ArticleSchema.astro';
+import TOC from '../components/blog/TOC.astro';
+import QuickAnswer from '../components/article/QuickAnswer.astro';
+import AuthorBox from '../components/article/AuthorBox.astro';
+import RelatedArticles from '../components/article/RelatedArticles.astro';
+import FaqList from '../components/ui/FaqList.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
+import ProductMiniList from '../components/product/ProductMiniList.astro';
+import { slugify } from '../lib/slugify';
 
 interface Props {
   guide: CollectionEntry<'guides'>;
+  headings?: { depth: number; slug: string; text: string }[];
 }
-const { guide } = Astro.props;
+const { guide, headings = [] } = Astro.props;
 const g = guide.data;
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
-const url = new URL(`/guides/${guide.slug}`, siteUrl).toString();
-const heroSrc = g.heroImage ? new URL((g.heroImage as any).src ?? '/og-default.png', siteUrl).toString() : new URL('/og-default.png', siteUrl).toString();
+const siteUrl = import.meta.env.SITE;
+const href = `/guides/${guide.slug}`;
+const url = new URL(href, siteUrl).toString();
+const ogPath = `/og/guides/${guide.slug}.png`;
+const updated = g.updatedAt ?? g.publishedAt;
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
 const products = (
   await Promise.all((g.recommendedProducts ?? []).map((r) => getEntry('products', r.id)))
 ).filter((p): p is CollectionEntry<'products'> => Boolean(p));
+
+const sectionHeadings = g.sections.map((s) => ({ depth: 2, slug: slugify(s.heading), text: s.heading }));
+const tocHeadings = [
+  ...(products.length ? [{ depth: 2, slug: 'top-picks', text: 'Recommended products' }] : []),
+  ...sectionHeadings,
+  ...headings,
+  ...(g.faqs.length ? [{ depth: 2, slug: 'faq', text: 'FAQ' }] : []),
+];
+const words = [guide.body ?? '', ...g.sections.map((s) => s.body)].join(' ').split(/\s+/).length;
+const readMins = Math.max(2, Math.round(words / 230));
 ---
 
 <BaseLayout
   title={g.seo?.metaTitle ?? g.title}
   description={g.seo?.metaDescription ?? g.intro}
   ogType="article"
+  ogImage={ogPath}
+  ogImageAlt={g.title}
+  publishedTime={g.publishedAt.toISOString()}
+  modifiedTime={updated.toISOString()}
 >
-  <article class="container-page guide">
-    <Breadcrumbs items={[{ label: 'Buying Guides', href: '/guides' }, { label: g.title }]} />
-    <header class="guide__header">
-      <p class="guide__eyebrow">Buying Guide · {g.topic}</p>
+  <article class="container-page article">
+    <Breadcrumbs items={[{ label: 'Guides', href: '/guides' }, { label: g.title }]} />
+    <header class="article__header">
+      <p class="article__kicker">Guide · {g.topic}</p>
       <h1>{g.title}</h1>
-      <p class="guide__lede">{g.intro}</p>
-      <p class="guide__meta">
-        <span class="meta--strong">By the HomeSpaGuide Editors</span>
+      <p class="article__dek">{g.intro}</p>
+      <p class="article__meta">
+        <span>By <a href="/about">HomeSpaGuide Editors</a></span>
         <span aria-hidden="true">·</span>
-        <span>Last updated <time datetime={(g.updatedAt ?? g.publishedAt).toISOString()}>{(g.updatedAt ?? g.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+        <span>Updated <time datetime={updated.toISOString()}>{fmt(updated)}</time></span>
         <span aria-hidden="true">·</span>
-        <a href="/about#methodology">How we choose</a>
+        <span>{readMins} min read</span>
+      </p>
+      <p class="article__disclosure">
+        We may earn a commission when you buy through links on this page. <a href="/affiliate-disclosure">How we make money</a>.
       </p>
     </header>
-    {g.heroImage && (
-      <div class="guide__hero">
-        <Image src={g.heroImage} alt={g.heroImageAlt ?? g.title} widths={[640, 1280]} format="webp" />
-      </div>
-    )}
-    <AffiliateDisclosure variant="banner" />
 
-    {products.length > 0 && (
-      <section>
-        <h2>Our top picks</h2>
-        <div class="guide__picks">
-          {products.map((p) => <ProductCard product={p} campaign={`guide-${guide.slug}`} />)}
+    <div class="article__layout">
+      <div class="article__main">
+        <QuickAnswer answer={g.quickAnswer} takeaways={g.keyTakeaways} />
+
+        <ProductMiniList id="top-picks" products={products} heading="Products we recommend for this" campaign={`guide-${guide.slug}`} />
+
+        {g.sections.length > 0 && (
+          <div class="prose article__body">
+            {g.sections.map((s) => (
+              <>
+                <h2 id={slugify(s.heading)}>{s.heading}</h2>
+                <Fragment set:html={marked.parse(s.body)} />
+              </>
+            ))}
+          </div>
+        )}
+
+        <div class="prose article__body">
+          <slot />
         </div>
-      </section>
-    )}
 
-    {g.sections.length > 0 && (
-      <section class="guide__sections">
-        {g.sections.map((s, idx) => (
-          <section>
-            <h2>{s.heading}</h2>
-            <div class={`prose ${idx === 0 ? 'prose-dropcap' : ''}`} set:html={s.body} />
+        <AdSlot slot={import.meta.env.PUBLIC_ADSENSE_SLOT_INARTICLE} format="in-article" />
+
+        {g.faqs.length > 0 && (
+          <section class="article__faq" id="faq">
+            <h2>Frequently asked questions</h2>
+            <FaqList faqs={g.faqs} />
           </section>
-        ))}
-      </section>
-    )}
+        )}
 
-    <div class={`prose ${g.sections.length === 0 ? 'prose-dropcap' : ''}`}>
-      <slot />
+        <AuthorBox />
+      </div>
+
+      <aside class="article__aside">
+        <div class="article__aside-sticky">
+          <TOC headings={tocHeadings} />
+          <AdSlot slot={import.meta.env.PUBLIC_ADSENSE_SLOT_SIDEBAR} class="article__aside-ad" />
+        </div>
+      </aside>
     </div>
 
-    {g.faqs.length > 0 && (
-      <section>
-        <h2>FAQs</h2>
-        {g.faqs.map((f) => (
-          <details class="guide__faq">
-            <summary>{f.question}</summary>
-            <p>{f.answer}</p>
-          </details>
-        ))}
-      </section>
-    )}
+    <RelatedArticles currentHref={href} tags={[g.topic.toLowerCase()]} />
   </article>
 
-  <ArticleSchema slot="head"
+  <ArticleSchema
+    slot="head"
     title={g.title}
     description={g.intro}
     url={url}
-    imageUrl={heroSrc}
+    imageUrl={new URL(ogPath, siteUrl).toString()}
     publishedAt={g.publishedAt}
     updatedAt={g.updatedAt}
-    author="HomeSpaGuide Editors"
   />
   {g.faqs.length > 0 && <FAQSchema slot="head" faqs={g.faqs} />}
 </BaseLayout>
 
 <style>
-  .guide { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 2.5rem; }
-  .guide__header { max-width: 760px; }
-  .guide__eyebrow { color: var(--color-cedar); font-size: var(--text-xs); letter-spacing: var(--tracking-meta); font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; }
-  .guide__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); margin-top: 0.75rem; }
-  .guide__meta { color: var(--color-ink-muted); font-size: var(--text-sm); margin-top: 1rem; display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
-  .guide__meta .meta--strong { color: var(--color-ink); font-weight: 500; }
-  .guide__meta a { color: var(--color-primary); text-decoration: underline; text-decoration-color: var(--color-cedar-soft); text-underline-offset: 3px; }
-  .guide__meta a:hover { text-decoration-color: var(--color-cedar); }
-  .guide__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
-  .guide__picks { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin-top: 1.25rem; }
-  .guide__sections > section { margin-top: 2rem; }
-  .guide__faq { margin: 0.5rem 0; padding: 0.85rem 1rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
-  .guide__faq summary { cursor: pointer; font-weight: 600; color: var(--color-primary); }
-  .guide__faq p { margin-top: 0.5rem; color: var(--color-ink-muted); }
+  .article { padding-top: 1.25rem; padding-bottom: 2rem; display: flex; flex-direction: column; gap: 2.5rem; }
+  .article__header { max-width: 760px; }
+  .article__kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--color-cedar); margin: 1.25rem 0 0.75rem; }
+  .article__header h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem); letter-spacing: -0.028em; line-height: 1.06; }
+  .article__dek { margin-top: 1rem; font-size: clamp(1.08rem, 1rem + 0.35vw, 1.25rem); line-height: 1.55; color: var(--color-ink-muted); }
+  .article__meta { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: 0.45rem; font-size: 0.875rem; color: var(--color-ink-muted); }
+  .article__meta a { color: var(--color-ink); font-weight: 600; }
+  .article__disclosure { margin-top: 0.6rem; font-size: 0.8rem; color: var(--color-ink-subtle); }
+  .article__disclosure a { text-decoration: underline; text-underline-offset: 2px; }
+
+  .article__layout { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 1000px) { .article__layout { grid-template-columns: minmax(0, 1fr) 280px; gap: 4rem; } }
+  .article__main { display: flex; flex-direction: column; gap: 2.25rem; min-width: 0; }
+  .article__aside { order: -1; }
+  @media (min-width: 1000px) {
+    .article__aside { order: 0; }
+    .article__aside-sticky { position: sticky; top: calc(var(--header-height) + 1.5rem); display: flex; flex-direction: column; gap: 1.5rem; }
+  }
+  .article__aside-ad { display: none; }
+  @media (min-width: 1000px) { .article__aside-ad { display: flex; } }
+  .article__body { max-width: 70ch; }
+  .article__picks { scroll-margin-top: calc(var(--header-height) + 1rem); }
+  .article__picks h2, .article__faq h2 { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem); margin-bottom: 1rem; }
+  .article__picks-grid { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 640px) { .article__picks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1200px) { .article__picks-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .article__faq { scroll-margin-top: calc(var(--header-height) + 1rem); max-width: 70ch; }
 </style>

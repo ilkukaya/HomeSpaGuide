@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { Search, Heart, GitCompare, Menu, X, ChevronDown } from 'lucide-react';
 import MegaMenu from './MegaMenu.astro';
+import Logo from '../ui/Logo.astro';
 
 const categories: CollectionEntry<'categories'>[] = await getCollection('categories').catch(() => []);
 const topLevel = categories
@@ -18,16 +19,16 @@ for (const cat of categories) {
 }
 ---
 
-<header class="site-header">
+<div class="trust-strip">
+  <div class="container-page trust-strip__inner">
+    <span>Independent, reader-supported hot tub &amp; spa guides</span>
+    <a href="/affiliate-disclosure">We may earn a commission from Amazon links — here’s how that works</a>
+  </div>
+</div>
+<header class="site-header" data-pagefind-ignore>
   <div class="container-page site-header__inner">
     <a href="/" class="site-header__logo" aria-label="HomeSpaGuide home">
-      <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="14" fill="var(--color-primary)" />
-        <circle cx="32" cy="36" r="18" fill="var(--color-amber)" />
-        <path d="M14 38 Q22 32 32 38 T50 38" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
-        <path d="M14 46 Q22 40 32 46 T50 46" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
-      </svg>
-      <span class="logo-text">HomeSpaGuide</span>
+      <Logo />
     </a>
 
     <div class="site-header__nav">
@@ -35,14 +36,16 @@ for (const cat of categories) {
     </div>
 
     <div class="site-header__actions">
-      <button type="button" data-search-trigger class="icon-btn" aria-label="Search (Cmd+K)">
-        <Search size={20} aria-hidden="true" />
+      <button type="button" data-search-trigger class="search-pill" aria-label="Search (Cmd+K)">
+        <Search size={17} aria-hidden="true" />
+        <span class="search-pill__label">Search guides &amp; products</span>
+        <kbd class="search-pill__kbd">⌘K</kbd>
       </button>
-      <a href="/wishlist" class="icon-btn icon-btn--badge" aria-label="Wishlist">
+      <a href="/wishlist" class="icon-btn icon-btn--badge icon-btn--desk" aria-label="Wishlist">
         <Heart size={20} aria-hidden="true" />
         <span data-wishlist-count class="badge" hidden>0</span>
       </a>
-      <a href="/compare" class="icon-btn icon-btn--badge" aria-label="Compare">
+      <a href="/compare" class="icon-btn icon-btn--badge icon-btn--desk" aria-label="Compare">
         <GitCompare size={20} aria-hidden="true" />
         <span data-compare-count class="badge" hidden>0</span>
       </a>
@@ -54,15 +57,7 @@ for (const cat of categories) {
 
   <div class="mobile-drawer" data-mobile-drawer hidden>
     <div class="mobile-drawer__head">
-      <span class="mobile-drawer__brand">
-        <svg class="logo-mark" viewBox="0 0 64 64" aria-hidden="true">
-          <rect width="64" height="64" rx="14" fill="var(--color-primary)" />
-          <circle cx="32" cy="36" r="18" fill="var(--color-amber)" />
-          <path d="M14 38 Q22 32 32 38 T50 38" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
-          <path d="M14 46 Q22 40 32 46 T50 46" stroke="var(--color-paper)" stroke-width="2.5" fill="none" stroke-linecap="round" />
-        </svg>
-        <span class="logo-text">HomeSpaGuide</span>
-      </span>
+      <span class="mobile-drawer__brand"><Logo /></span>
       <button class="icon-btn" data-mobile-close aria-label="Close menu">
         <X size={22} aria-hidden="true" />
       </button>
@@ -97,35 +92,82 @@ for (const cat of categories) {
 </header>
 
 <style>
+  .trust-strip {
+    background: var(--color-ink);
+    color: rgba(248, 246, 241, 0.78);
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+  .trust-strip__inner { display: flex; justify-content: center; gap: 1.5rem; padding-block: 0.45rem; text-align: center; }
+  .trust-strip a { color: rgba(248, 246, 241, 0.78); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(248,246,241,0.35); }
+  .trust-strip a:hover { color: #fff; }
+  .trust-strip span { display: none; }
+  @media (min-width: 900px) {
+    .trust-strip__inner { justify-content: space-between; }
+    .trust-strip span { display: inline; }
+  }
   .site-header {
     position: sticky;
     top: 0;
     z-index: 40;
-    background: var(--color-paper);
+    background: rgba(248, 246, 241, 0.92);
+    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    backdrop-filter: saturate(1.4) blur(10px);
     border-bottom: 1px solid var(--color-border);
   }
-  .site-header__inner {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    height: var(--header-height);
-  }
-  .site-header__logo {
+  .search-pill {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    color: var(--color-primary-900);
-    font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: -0.012em;
+    height: 40px;
+    padding: 0 0.7rem;
+    border-radius: var(--radius-full);
+    color: var(--color-ink-muted);
+    transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+  }
+  .search-pill:hover { background: var(--color-paper-deep); color: var(--color-ink); }
+  .search-pill__label, .search-pill__kbd { display: none; }
+  @media (min-width: 1536px) {
+    .search-pill {
+      width: 250px;
+      padding: 0 0.6rem 0 0.9rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+    }
+    .search-pill:hover { border-color: var(--color-border-strong); background: var(--color-surface); }
+    .search-pill__label { display: inline; font-size: 0.875rem; flex: 1; text-align: left; }
+    .search-pill__kbd {
+      display: inline;
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      color: var(--color-ink-subtle);
+      background: var(--color-paper);
+    }
+  }
+  .site-header .icon-btn--desk { display: none; }
+  @media (min-width: 900px) { .site-header .icon-btn--desk { display: inline-flex; } }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: var(--header-height);
+  }
+  .site-header__logo { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .site-header__nav { min-width: 0; display: none; }
+  @media (min-width: 900px) {
+    .site-header__inner { gap: 1.75rem; }
+    .site-header__nav { display: block; }
   }
   .logo-mark { width: 28px; height: 28px; display: block; flex-shrink: 0; }
   .site-header__nav { flex: 1; }
   .site-header__actions {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    margin-left: auto;
   }
   .icon-btn {
     position: relative;

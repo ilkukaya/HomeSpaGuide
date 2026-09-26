@@ -1,33 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-  <defs>
-    <linearGradient id="bgcov" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#1d5a6d"/>
-      <stop offset="100%" stop-color="#0f4c5c"/>
-    </linearGradient>
-    <linearGradient id="covv" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#b8794a"/>
-      <stop offset="100%" stop-color="#8e5a33"/>
-    </linearGradient>
-  </defs>
-  <rect width="800" height="600" fill="url(#bgcov)"/>
-  <ellipse cx="400" cy="490" rx="240" ry="32" fill="#082b35" opacity="0.5"/>
-  <!-- cover shape (rounded square seen from angle) -->
-  <path d="M 180 340 L 260 230 L 540 230 L 620 340 L 540 470 L 260 470 Z" fill="url(#covv)"/>
-  <!-- top face -->
-  <path d="M 260 230 L 540 230 L 540 340 L 260 340 Z" fill="#b8794a"/>
-  <!-- center seam -->
-  <line x1="400" y1="230" x2="400" y2="470" stroke="#8e5a33" stroke-width="3"/>
-  <line x1="400" y1="340" x2="400" y2="340" stroke="#8e5a33"/>
-  <!-- straps -->
-  <rect x="290" y="350" width="60" height="14" fill="#e8d3bc" rx="2"/>
-  <rect x="450" y="350" width="60" height="14" fill="#e8d3bc" rx="2"/>
-  <circle cx="320" cy="357" r="3" fill="#0f1e20"/>
-  <circle cx="480" cy="357" r="3" fill="#0f1e20"/>
-  <!-- subtle quilt lines -->
-  <g stroke="#fafaf7" stroke-width="1" opacity="0.18">
-    <line x1="280" y1="270" x2="520" y2="270"/>
-    <line x1="280" y1="300" x2="520" y2="300"/>
-    <line x1="320" y1="240" x2="320" y2="335"/>
-    <line x1="480" y1="240" x2="480" y2="335"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#EFEBE3"/>
+  <ellipse cx="400" cy="440" rx="300" ry="50" fill="#E2DCD0"/>
+  <path d="M120 330 v60 a280 64 0 0 0 560 0 v-60" fill="#5E958E" stroke="#1B4D4B" stroke-width="5"/>
+  <ellipse cx="400" cy="330" rx="280" ry="64" fill="#8BB5AF" stroke="#1B4D4B" stroke-width="5"/>
+  <path d="M170 322 q230 -40 460 0" fill="none" stroke="#B8D3CF" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#1B4D4B" stroke-width="5" stroke-linecap="round"><path d="M215 372 v48"/><path d="M585 372 v48"/><path d="M400 394 v52"/></g>
+  <g fill="#B5562E"><rect x="203" y="410" width="24" height="16" rx="4"/><rect x="573" y="410" width="24" height="16" rx="4"/><rect x="388" y="436" width="24" height="16" rx="4"/></g>
+  <path d="M350 280 q50 -26 100 0" fill="none" stroke="#1B4D4B" stroke-width="7" stroke-linecap="round"/>
 </svg>

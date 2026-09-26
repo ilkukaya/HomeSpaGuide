@@ -10,48 +10,48 @@
      ============================================================ */
 
   /* Brand primary: deep teal (the spa-water voice) */
-  --color-primary:        #0F4C5C;
-  --color-primary-50:     #F0F7F9;
-  --color-primary-100:    #D9EAEF;
-  --color-primary-200:    #B3D4DC;
-  --color-primary-300:    #7EB1BF;
-  --color-primary-400:    #4D8A9D;
-  --color-primary-500:    #2E6C80;
-  --color-primary-600:    #1D5A6D;  /* hover */
-  --color-primary-700:    #144A5B;  /* press */
-  --color-primary-800:    #0C3D4A;
-  --color-primary-900:    #082B35;  /* headings ink */
+  --color-primary:        #1B4D4B;
+  --color-primary-50:     #F1F6F5;
+  --color-primary-100:    #DCE9E7;
+  --color-primary-200:    #B8D3CF;
+  --color-primary-300:    #8BB5AF;
+  --color-primary-400:    #5E958E;
+  --color-primary-500:    #3B7770;
+  --color-primary-600:    #2A625C;  /* hover */
+  --color-primary-700:    #1F5451;  /* press */
+  --color-primary-800:    #173F3D;
+  --color-primary-900:    #0F2B2A;  /* headings ink */
 
   /* Cedar — primary warm accent (drop caps, editorial rules, eyebrows) */
-  --color-cedar:          #B8794A;
-  --color-cedar-soft:     #E8D3BC;
-  --color-cedar-deep:     #8E5A33;
+  --color-cedar:          #B5562E;
+  --color-cedar-soft:     #F1DCCF;
+  --color-cedar-deep:     #8C3F1F;
 
   /* Amber — secondary highlight (badges, score chips) */
-  --color-amber:          #E8A547;
-  --color-amber-soft:     #FBE6C2;
+  --color-amber:          #D99A2B;
+  --color-amber-soft:     #F8E9C8;
 
   /* Amazon CTA orange — RESERVED for "View on Amazon" surfaces only */
-  --color-amazon:         #FF9900;
-  --color-amazon-hover:   #F08804;
-  --color-amazon-ink:     #131A22;
+  --color-amazon:         #FFD814;
+  --color-amazon-hover:   #F7CA00;
+  --color-amazon-ink:     #0F1111;
 
   /* Backgrounds (warm-tinted) */
-  --color-paper:          #FAFAF7;  /* default page bg */
-  --color-paper-deep:     #F4F2EC;  /* card-on-page, sections */
-  --color-steam:          #E8F1F2;  /* spa-cool callouts, info panels */
+  --color-paper:          #F8F6F1;  /* default page bg */
+  --color-paper-deep:     #F0ECE3;  /* card-on-page, sections */
+  --color-steam:          #EAF1EF;  /* spa-cool callouts, info panels */
   --color-surface:        #FFFFFF;  /* product card surface, sparing */
 
   /* Text */
-  --color-ink:            #0F1E20;  /* primary — teal-tinted near-black */
-  --color-ink-muted:      #6B6660;  /* secondary, meta, bylines */
-  --color-ink-subtle:     #9A958C;  /* captions, timestamps */
-  --color-ink-on-dark:    #FAFAF7;  /* text on teal / dark surfaces */
+  --color-ink:            #17191A;  /* primary — teal-tinted near-black */
+  --color-ink-muted:      #57544F;  /* secondary, meta, bylines */
+  --color-ink-subtle:     #86827A;  /* captions, timestamps */
+  --color-ink-on-dark:    #F8F6F1;  /* text on teal / dark surfaces */
 
   /* Borders & rules */
-  --color-border:         #E6E3DA;
-  --color-border-strong:  #CFC9BB;
-  --color-rule-editorial: #B8794A;  /* cedar */
+  --color-border:         #E4DFD4;
+  --color-border-strong:  #CBC3B3;
+  --color-rule-editorial: #B5562E;  /* cedar */
 
   /* Semantic */
   --color-success:        #2F7D4F;
@@ -60,31 +60,31 @@
   --color-warning-soft:   #FBF1D9;
   --color-error:          #B03A3A;
   --color-error-soft:     #F7E0E0;
-  --color-info:           #2E6C80;
-  --color-info-soft:      #E8F1F2;
+  --color-info:           #2A625C;
+  --color-info-soft:      #EAF1EF;
 
   /* Score tones */
-  --color-score-great:    #1D5A6D;
+  --color-score-great:    #1F5451;
   --color-score-good:     #2F7D4F;
   --color-score-ok:       #B87F1A;
   --color-score-low:      #B03A3A;
 
   /* ----- Backwards-compat aliases (legacy `--color-accent*`, `--color-bg`, etc.) */
-  --color-accent:         #E8A547;  /* legacy → amber */
-  --color-accent-50:      #FDF7E3;
-  --color-accent-100:     #FBE6C2;
+  --color-accent:         #D99A2B;  /* legacy → amber */
+  --color-accent-50:      #FCF6E8;
+  --color-accent-100:     #F8E9C8;
   --color-accent-300:     #F0D77A;
   --color-accent-600:     #C8A727;
   --color-accent-700:     #9C8316;
-  --color-bg:             #FAFAF7;  /* legacy → paper */
-  --color-surface-muted:  #F4F2EC;  /* legacy → paper-deep */
+  --color-bg:             #F8F6F1;  /* legacy → paper */
+  --color-surface-muted:  #F0ECE3;  /* legacy → paper-deep */
 
   /* ============================================================
      TYPOGRAPHY
      Fraunces (serif) for editorial — Inter (sans) for body / UI.
      ============================================================ */
-  --font-serif: 'DM Serif Display', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
-  --font-sans:  'DM Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono:  ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
   /* Fluid scale — clamp(min, preferred, max) */
@@ -117,19 +117,19 @@
   --radius-sm:    4px;
   --radius-md:    6px;     /* canonical button radius */
   --radius-lg:    8px;
-  --radius-xl:    12px;    /* canonical card radius */
+  --radius-xl:    10px;    /* canonical card radius */
   --radius-2xl:   22px;
   --radius-full:  999px;
 
   /* Shadows tinted with primary teal, never neutral grey. */
-  --shadow-xs:    0 1px 2px rgba(15, 76, 92, 0.06);
-  --shadow-sm:    0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
-  --shadow-md:    0 6px 16px -6px rgba(15, 76, 92, 0.18), 0 2px 4px rgba(15, 76, 92, 0.06);
-  --shadow-lg:    0 18px 36px -12px rgba(15, 76, 92, 0.22);
-  --shadow-xl:    0 30px 60px -20px rgba(15, 76, 92, 0.28);
-  --shadow-card:        0 1px 3px rgba(15, 76, 92, 0.08), 0 1px 2px rgba(15, 76, 92, 0.05);
-  --shadow-card-hover:  0 10px 24px -10px rgba(15, 76, 92, 0.22), 0 2px 4px rgba(15, 76, 92, 0.06);
-  --shadow-focus: 0 0 0 3px rgba(15, 76, 92, 0.22);
+  --shadow-xs:    0 1px 2px rgba(23, 25, 26, 0.06);
+  --shadow-sm:    0 1px 3px rgba(23, 25, 26, 0.08), 0 1px 2px rgba(23, 25, 26, 0.05);
+  --shadow-md:    0 6px 16px -6px rgba(23, 25, 26, 0.18), 0 2px 4px rgba(23, 25, 26, 0.06);
+  --shadow-lg:    0 18px 36px -12px rgba(23, 25, 26, 0.22);
+  --shadow-xl:    0 30px 60px -20px rgba(23, 25, 26, 0.28);
+  --shadow-card:        0 1px 3px rgba(23, 25, 26, 0.08), 0 1px 2px rgba(23, 25, 26, 0.05);
+  --shadow-card-hover:  0 10px 24px -10px rgba(23, 25, 26, 0.22), 0 2px 4px rgba(23, 25, 26, 0.06);
+  --shadow-focus: 0 0 0 3px rgba(23, 25, 26, 0.22);
 
   /* ============================================================
      SPACING — 4px base
@@ -153,7 +153,7 @@
   --container-max:     1280px;
   --container-narrow:  880px;
   --container-prose:   680px;
-  --header-height:     72px;
+  --header-height:     64px;
 
   /* ============================================================
      MOTION — calm, never bouncy

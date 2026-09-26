@@ -6,23 +6,91 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--no-audit --no-fund"
 
+# ---------------------------------------------------------------------------
+# Redirects
+# ---------------------------------------------------------------------------
+
 [[redirects]]
   from = "/admin/*"
   to = "/admin/index.html"
   status = 200
 
+# Products whose slugs changed when listings were re-verified (keep link equity).
+[[redirects]]
+  from = "/products/bestway-saint-tropez-hydrojet"
+  to = "/products/bestway-saluspa-santorini-hydrojet"
+  status = 301
+
+[[redirects]]
+  from = "/products/spa-choice-ph-balancer-kit"
+  to = "/products/spa-choice-ph-increaser"
+  status = 301
+
+# Nested category URLs people (and AI answers) tend to guess.
+[[redirects]]
+  from = "/category/hot-tubs/inflatable-hot-tubs"
+  to = "/category/inflatable-hot-tubs"
+  status = 301
+
+[[redirects]]
+  from = "/category/hot-tubs/plug-and-play-hot-tubs"
+  to = "/category/plug-and-play-hot-tubs"
+  status = 301
+
+[[redirects]]
+  from = "/product/*"
+  to = "/products/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/guide/*"
+  to = "/guides/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 301
+
+# ---------------------------------------------------------------------------
+# Headers
+# ---------------------------------------------------------------------------
+
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
 
 [[headers]]
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Enable Netlify Identity + Git Gateway via the Netlify dashboard:
-# Site settings → Identity → Enable → Services → Git Gateway → Enable
+[[headers]]
+  for = "/og/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/pagefind/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

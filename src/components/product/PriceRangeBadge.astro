@@ -13,9 +13,9 @@ const meta = PRICE_RANGES[range];
 ---
 
 <span class={cn(
-  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] border border-[var(--color-primary-200)] bg-white text-[var(--color-primary)] text-xs font-semibold uppercase tracking-wide',
+  'inline-flex items-center gap-1.5 text-[0.85rem] font-medium text-[var(--color-ink-muted)] tabular-nums',
   className,
 )}>
-  <span aria-hidden="true" class="opacity-80">{meta.short}</span>
-  {variant === 'full' && <span>{meta.label}</span>}
+  <span class="font-semibold text-[var(--color-ink)] tracking-wide" aria-label={meta.label}>{meta.short}</span>
+  <span>{meta.label}</span>
 </span>

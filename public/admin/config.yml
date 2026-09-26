@@ -36,6 +36,8 @@ collections:
       - { label: Pros, name: pros, widget: list, required: false }
       - { label: Cons, name: cons, widget: list, required: false }
       - { label: Best for, name: bestFor, widget: list, required: false }
+      - { label: Quick verdict (≤320, quotable by AI answers), name: quickVerdict, widget: text, required: false }
+      - { label: FAQs, name: faqs, widget: list, required: false, fields: [{ label: Question, name: question, widget: string }, { label: Answer, name: answer, widget: text }] }
       - label: Specs
         name: specs
         widget: object
@@ -141,6 +143,9 @@ collections:
       - { label: Slug, name: slug, widget: string }
       - { label: Title, name: title, widget: string }
       - { label: Excerpt, name: excerpt, widget: text }
+      - { label: Quick answer (40–60 words), name: quickAnswer, widget: text, required: false }
+      - { label: Key takeaways, name: keyTakeaways, widget: list, required: false }
+      - { label: FAQs, name: faqs, widget: list, required: false, fields: [{ label: Question, name: question, widget: string }, { label: Answer, name: answer, widget: text }] }
       - { label: Author, name: author, widget: string, default: 'HomeSpaGuide Editors' }
       - { label: Published at, name: publishedAt, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
       - { label: Updated at, name: updatedAt, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false }
@@ -165,6 +170,8 @@ collections:
       - { label: Title, name: title, widget: string }
       - { label: Topic, name: topic, widget: string }
       - { label: Intro, name: intro, widget: text }
+      - { label: Quick answer (40–60 words), name: quickAnswer, widget: text, required: false }
+      - { label: Key takeaways, name: keyTakeaways, widget: list, required: false }
       - { label: Hero image, name: heroImage, widget: image, required: false }
       - { label: Hero image alt, name: heroImageAlt, widget: string, required: false }
       - { label: Recommended products, name: recommendedProducts, widget: list, field: { label: Slug, name: slug, widget: relation, collection: products, value_field: '{{slug}}', search_fields: [title], display_fields: [shortTitle] } }

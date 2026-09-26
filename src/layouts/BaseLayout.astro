@@ -1,4 +1,9 @@
 ---
+import '@fontsource-variable/newsreader/opsz.css';
+import '@fontsource-variable/newsreader/opsz-italic.css';
+import '@fontsource-variable/inter';
+import newsreaderWoff2 from '@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import '../styles/globals.css';
 import SEO from '../components/seo/SEO.astro';
 import Header from '../components/layout/Header.astro';
@@ -10,6 +15,7 @@ interface Props {
   description: string;
   canonical?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   ogType?: 'website' | 'article' | 'product';
   noindex?: boolean;
   publishedTime?: string;
@@ -17,41 +23,89 @@ interface Props {
 }
 
 const props = Astro.props;
-const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
-const plausibleScript = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT;
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const env = import.meta.env;
+const siteUrl = env.SITE;
+const abs = (p: string) => new URL(p, siteUrl).toString();
 
-const orgJsonLd = {
+// Site-wide entity graph. Page-level schema (Product, Article, FAQPage,
+// BreadcrumbList) references these nodes by @id.
+const graph = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'HomeSpaGuide',
-  url: siteUrl,
-  logo: new URL('/favicon.svg', siteUrl).toString(),
-  sameAs: [],
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': abs('/#organization'),
+      name: 'HomeSpaGuide',
+      url: abs('/'),
+      logo: { '@type': 'ImageObject', url: abs('/logo-512.png'), width: 512, height: 512 },
+      description:
+        'Independent editorial guide to home spas, inflatable and hard-shell hot tubs, water care chemicals, filters and accessories.',
+      publishingPrinciples: abs('/editorial-policy'),
+      sameAs: [],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': abs('/#website'),
+      url: abs('/'),
+      name: 'HomeSpaGuide',
+      inLanguage: 'en-US',
+      publisher: { '@id': abs('/#organization') },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: abs('/search') + '?q={search_term_string}' },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+  ],
 };
+
+const ga4 = env.PUBLIC_GA4_ID;
+const cfBeacon = env.PUBLIC_CLOUDFLARE_BEACON_TOKEN;
+const adsense = env.PUBLIC_ADSENSE_CLIENT;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset="UTF-8" />
+    <link rel="preload" href={newsreaderWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title="HomeSpaGuide Blog" href="/rss.xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap"
-    />
+    <link rel="alternate" type="application/rss+xml" title="HomeSpaGuide" href="/rss.xml" />
     <SEO {...props} />
-    <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
-    {plausibleDomain && plausibleScript && (
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
+    {env.PUBLIC_PLAUSIBLE_DOMAIN && env.PUBLIC_PLAUSIBLE_SCRIPT && (
+      <script is:inline defer data-domain={env.PUBLIC_PLAUSIBLE_DOMAIN} src={env.PUBLIC_PLAUSIBLE_SCRIPT} />
+    )}
+    {cfBeacon && (
       <script
         is:inline
         defer
-        data-domain={plausibleDomain}
-        src={plausibleScript}
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: cfBeacon })}
+      />
+    )}
+    {ga4 && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`} />
+        <script is:inline define:vars={{ ga4 }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', ga4, { anonymize_ip: true });
+        </script>
+      </>
+    )}
+    {adsense && (
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsense}`}
+        crossorigin="anonymous"
       />
     )}
     <slot name="head" />
@@ -59,11 +113,27 @@ const orgJsonLd = {
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
     <Header />
-    <main id="main">
+    <main id="main" data-pagefind-body>
       <slot />
     </main>
     <Footer />
     <SearchOverlay />
     <slot name="end" />
+    <script>
+      // Outbound Amazon click tracking — works with whichever analytics is
+      // configured (Plausible custom event / GA4 event); no-op otherwise.
+      document.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-amazon-cta], a[href*="amazon.com/"]');
+        if (!a) return;
+        const props = {
+          asin: a.dataset.asin || '',
+          placement: a.dataset.placement || '',
+          page: location.pathname,
+        };
+        const w = window as any;
+        try { w.plausible?.('Amazon Click', { props }); } catch {}
+        try { w.gtag?.('event', 'amazon_click', props); } catch {}
+      });
+    </script>
   </body>
 </html>

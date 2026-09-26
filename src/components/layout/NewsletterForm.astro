@@ -1,0 +1,82 @@
+---
+/**
+ * Email capture via Netlify Forms (free tier, no third-party script).
+ * Netlify detects the `data-netlify` form in the static HTML at deploy time;
+ * submissions land in Netlify → Forms → "newsletter" and can be exported or
+ * piped to any ESP later. Links in emails must point to this site, never
+ * directly to Amazon (Associates rule).
+ */
+interface Props {
+  id: string;
+  tone?: 'default' | 'on-dark';
+}
+const { id, tone = 'default' } = Astro.props;
+---
+
+<form
+  name="newsletter"
+  method="POST"
+  action="/thanks"
+  data-netlify="true"
+  netlify-honeypot="company"
+  class:list={['nl-form', `nl-form--${tone}`]}
+>
+  <input type="hidden" name="form-name" value="newsletter" />
+  <input type="hidden" name="source" value={id} />
+  <p class="nl-form__hp" aria-hidden="true">
+    <label>Company <input name="company" tabindex="-1" autocomplete="off" /></label>
+  </p>
+  <label for={`nl-email-${id}`} class="nl-form__label">Email address</label>
+  <div class="nl-form__row">
+    <input
+      id={`nl-email-${id}`}
+      type="email"
+      name="email"
+      required
+      autocomplete="email"
+      inputmode="email"
+      placeholder="you@example.com"
+    />
+    <button type="submit">Subscribe</button>
+  </div>
+</form>
+
+<style>
+  .nl-form { width: 100%; }
+  .nl-form__hp { position: absolute; left: -9999px; }
+  .nl-form__label {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .nl-form__row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .nl-form input[type='email'] {
+    flex: 1 1 220px;
+    min-width: 0;
+    height: 48px;
+    padding: 0 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font: inherit;
+    font-size: 1rem;
+  }
+  .nl-form button {
+    height: 48px;
+    padding: 0 1.4rem;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: var(--color-ink-on-dark);
+    font-weight: 600;
+    flex: 0 0 auto;
+    transition: background var(--dur-base) var(--ease-out);
+  }
+  .nl-form button:hover { background: var(--color-primary-700); }
+  .nl-form--on-dark input[type='email'] {
+    background: rgba(248, 246, 241, 0.08);
+    border-color: rgba(248, 246, 241, 0.25);
+    color: var(--color-ink-on-dark);
+  }
+  .nl-form--on-dark input[type='email']::placeholder { color: rgba(248, 246, 241, 0.45); }
+  .nl-form--on-dark button { background: #E7A57F; color: var(--color-ink); }
+  .nl-form--on-dark button:hover { background: #F0B994; }
+</style>
