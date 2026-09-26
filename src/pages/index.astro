@@ -1,129 +1,181 @@
 ---
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import { ArrowRight, Sparkles, Shield, BookOpen } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProductGrid from '../components/product/ProductGrid.astro';
-import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
-import Button from '../components/ui/Button.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import ItemListSchema from '../components/seo/ItemListSchema.astro';
+import { categoryArt } from '../lib/category-art';
 
 const allProducts = await getCollection('products', ({ data }) => data.status === 'active');
-const editorsPicks = allProducts.filter((p) => p.data.editorPick).slice(0, 6);
-const bestSellers = allProducts
-  .filter((p) => p.data.editorBadges.includes('Best Seller'))
-  .concat(allProducts)
-  .filter((p, i, a) => a.findIndex((x) => x.id === p.id) === i)
-  .slice(0, 4);
+const byScore = [...allProducts].sort((a, b) => b.data.editorScore.overall - a.data.editorScore.overall);
+
+// "Top picks": editor picks first, then the highest-scored hot tubs, then the
+// rest — one product per category where possible so the row isn't all tubs.
+const topPicks: typeof allProducts = [];
+const seenCats = new Set<string>();
+for (const p of [...byScore.filter((p) => p.data.editorPick), ...byScore]) {
+  if (topPicks.length >= 4) break;
+  if (topPicks.includes(p)) continue;
+  if (seenCats.has(p.data.category.id) && topPicks.length < 3) continue;
+  topPicks.push(p);
+  seenCats.add(p.data.category.id);
+}
+for (const p of byScore) {
+  if (topPicks.length >= 4) break;
+  if (!topPicks.includes(p)) topPicks.push(p);
+}
 
 const categories = (await getCollection('categories'))
   .filter((c) => !c.data.parent)
-  .sort((a, b) => a.data.order - b.data.order)
+  .sort((a, b) => a.data.order - b.data.order);
+const allCategories = await getCollection('categories');
+const countFor = (slug: string) => {
+  const kids = new Set([slug, ...allCategories.filter((c) => c.data.parent?.id === slug).map((c) => c.slug)]);
+  return allProducts.filter((p) => kids.has(p.data.category.id)).length;
+};
+
+const blogPosts = (await getCollection('blog')).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+const guides = (await getCollection('guides')).sort((a, b) => +b.data.updatedAt - +a.data.updatedAt);
+
+// Question-led entries for the "answers" block (AEO): anything with a
+// quickAnswer, newest first.
+const answers = [
+  ...blogPosts.map((b) => ({ title: b.data.title, answer: b.data.quickAnswer, href: `/blog/${b.slug}`, date: b.data.updatedAt ?? b.data.publishedAt })),
+  ...guides.map((g) => ({ title: g.data.title, answer: g.data.quickAnswer, href: `/guides/${g.slug}`, date: g.data.updatedAt })),
+]
+  .filter((a): a is typeof a & { answer: string } => Boolean(a.answer))
+  .sort((a, b) => +b.date - +a.date)
   .slice(0, 6);
 
-const blogPosts = (await getCollection('blog').catch(() => []))
-  .sort((a, b) => +b.data.publishedAt - +a.data.publishedAt)
-  .slice(0, 3);
+// Curated beginner path; falls back to newest guides if a slug disappears.
+const START_ORDER = ['choose-first-home-spa', 'where-to-put-a-hot-tub', 'hot-tub-chemicals-beginners-guide'];
+const startHere = [
+  ...START_ORDER.map((s) => guides.find((g) => g.slug === s)).filter((g): g is (typeof guides)[number] => Boolean(g)),
+  ...guides.filter((g) => !START_ORDER.includes(g.slug)),
+].slice(0, 3);
+const latest = blogPosts.slice(0, 6);
 
-const guides = (await getCollection('guides').catch(() => []))
-  .sort((a, b) => +b.data.updatedAt - +a.data.updatedAt)
-  .slice(0, 3);
+const QUICK = [
+  { label: 'Best inflatable hot tubs', slug: 'best-inflatable-hot-tubs-2026' },
+  { label: 'Cloudy water', slug: 'cloudy-hot-tub-water-fix' },
+  { label: 'Bromine vs chlorine', slug: 'bromine-vs-chlorine-hot-tub' },
+  { label: 'Running costs', slug: 'how-much-does-it-cost-to-run-a-hot-tub' },
+  { label: 'Foam', slug: 'hot-tub-foam-causes-and-fixes' },
+];
+const quickLinks = QUICK.filter((q) => blogPosts.some((b) => b.slug === q.slug)).map((q) => ({ label: q.label, href: `/blog/${q.slug}` }));
 
-const stats = {
-  products: allProducts.length,
-  guides: guides.length,
-  reviews: blogPosts.length,
-};
+const siteUrl = import.meta.env.SITE;
+const lastUpdated = [...allProducts.map((p) => p.data.updatedAt), ...guides.map((g) => g.data.updatedAt)]
+  .sort((a, b) => +b - +a)[0];
 ---
 
 <BaseLayout
-  title="HomeSpaGuide — Honest Hot Tub Reviews & Buying Guides"
-  description="Researched buying guides and curated Amazon picks for home spas, hot tubs, chemicals, and accessories. Find the right product, then buy on Amazon."
+  title="HomeSpaGuide — Hot Tub Buying Guides, Reviews & Water Care Advice"
+  description="Independent buying guides for inflatable and plug-and-play hot tubs, plus clear answers on water chemistry, filters and running costs. Compare picks, then buy on Amazon."
 >
-  <section class="home-hero">
-    <div class="home-hero__inner container-page">
-      <div class="home-hero__copy">
-        <p class="home-hero__eyebrow"><Sparkles size={14} aria-hidden="true" /> Honest reviews · Curated picks · No fluff</p>
-        <h1 class="home-hero__title">
-          The honest guide to <em>home spas &amp; hot tubs.</em>
-        </h1>
-        <p class="home-hero__lede">
-          We research, compare and recommend the home spa products worth your money — from $300 inflatables to the chemicals and filters that keep them clean.
+  <section class="hero">
+    <div class="container-page hero__inner">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Hot tub &amp; home spa buying guides</p>
+        <h1 class="hero__title">Choose the right hot tub. <em>Keep the water perfect.</em></h1>
+        <p class="hero__lede">
+          Plain-English buying guides, spec-sheet comparisons and water-care answers for home spa owners — so you buy once, and spend your evenings soaking instead of troubleshooting.
         </p>
-        <div class="home-hero__cta">
-          <Button href="/category/hot-tubs" variant="primary" size="lg">Browse Hot Tubs</Button>
-          <a href="/guides" class="home-hero__ghost">Read our buying guides <span aria-hidden="true">→</span></a>
-        </div>
-        <ul class="home-hero__trust">
-          <li><Shield size={14} aria-hidden="true" /> Independent · No paid placements</li>
-          <li><BookOpen size={14} aria-hidden="true" /> Editorial scoring out of 10</li>
-        </ul>
+        <form class="hero__search" action="/search" method="get" role="search">
+          <label for="hero-q" class="sr-only">Search HomeSpaGuide</label>
+          <Search size={20} aria-hidden="true" />
+          <input id="hero-q" name="q" type="search" placeholder="e.g. cloudy water, 4-person tub" autocomplete="off" />
+          <button type="submit">Search</button>
+        </form>
+        {quickLinks.length > 0 && (
+          <ul class="hero__chips" aria-label="Popular topics">
+            {quickLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        )}
       </div>
 
-      <aside class="home-hero__card" aria-label="What we cover">
-        <p class="home-hero__card-eyebrow">What we cover</p>
-        <ul class="home-hero__stats">
-          <li><span class="home-hero__stat-num">{stats.products}</span><span class="home-hero__stat-label">products reviewed</span></li>
-          <li><span class="home-hero__stat-num">{stats.guides}</span><span class="home-hero__stat-label">buying guides</span></li>
-          <li><span class="home-hero__stat-num">4</span><span class="home-hero__stat-label">categories</span></li>
-        </ul>
-        <ul class="home-hero__cats">
-          {categories.slice(0, 4).map((cat) => (
-            <li>
-              <a href={`/category/${cat.slug}`}>
-                <span>{cat.data.name}</span>
-                <ArrowRight size={14} aria-hidden="true" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </aside>
+      {startHere.length > 0 && (
+        <aside class="hero__start" aria-labelledby="start-here">
+          <p id="start-here" class="hero__start-title">New to hot tubs? Start here</p>
+          <ol>
+            {startHere.map((g, i) => (
+              <li>
+                <a href={`/guides/${g.slug}`}>
+                  <span class="hero__start-num">{i + 1}</span>
+                  <span>
+                    <strong>{g.data.title}</strong>
+                    <small>{g.data.topic}</small>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <a class="hero__start-all" href="/guides">All buying guides <ArrowRight size={15} aria-hidden="true" /></a>
+        </aside>
+      )}
+    </div>
+    <div class="container-page">
+      <ul class="hero__facts">
+        <li><strong>{allProducts.length}</strong> products compared on published specs</li>
+        <li><strong>{guides.length + blogPosts.length}</strong> guides &amp; answers</li>
+        <li><strong>0</strong> paid placements — <a href="/editorial-policy">how we choose</a></li>
+        {lastUpdated && <li>Updated <time datetime={lastUpdated.toISOString()}>{lastUpdated.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time></li>}
+      </ul>
     </div>
   </section>
 
-  <div class="container-page home-stack">
-    {editorsPicks.length > 0 && (
-      <section>
-        <header class="home-section-head">
-          <div>
-            <h2>Editor's Picks</h2>
-            <p>Hand-curated by our team — the products we'd buy ourselves.</p>
-          </div>
-          <a href="/products" class="home-link">Browse all <ArrowRight size={16} aria-hidden="true" /></a>
-        </header>
-        <ProductGrid products={editorsPicks} campaign="home-picks" columns={3} />
-      </section>
-    )}
-
-    <section>
-      <header class="home-section-head">
-        <h2>Shop by Category</h2>
+  <div class="container-page home">
+    <section class="home-sec">
+      <header class="home-sec__head">
+        <div>
+          <h2>Our top picks right now</h2>
+          <p>The highest-scoring products across every category, ranked by our Editor Score. <a href="/editorial-policy#score">How the score works</a>.</p>
+        </div>
+        <a href="/products" class="home-sec__link">See all {allProducts.length} <ArrowRight size={16} aria-hidden="true" /></a>
       </header>
-      <div class="home-cats">
-        {categories.map((cat) => (
-          <a href={`/category/${cat.slug}`} class="home-cat">
-            <h3>{cat.data.name}</h3>
-            <p>{cat.data.shortDescription}</p>
-            <span class="home-cat__cta">Browse <ArrowRight size={14} aria-hidden="true" /></span>
-          </a>
-        ))}
+      <div class="home-picks">
+        {topPicks.map((p, i) => <ProductCard product={p} campaign="home-top-picks" rank={i + 1} />)}
       </div>
     </section>
 
-    {guides.length > 0 && (
-      <section>
-        <header class="home-section-head">
+    <section class="home-sec">
+      <header class="home-sec__head">
+        <h2>Shop by category</h2>
+      </header>
+      <ul class="home-cats">
+        {categories.map((cat) => (
+          <li>
+            <a href={`/category/${cat.slug}`} class="home-cat">
+              <Image src={cat.data.heroImage ?? categoryArt(cat.slug)} alt="" widths={[160, 320]} sizes="160px" class="home-cat__img" />
+              <span class="home-cat__text">
+                <span class="home-cat__name">{cat.data.name}</span>
+                <span class="home-cat__desc">{cat.data.shortDescription}</span>
+                <span class="home-cat__count">{countFor(cat.slug)} {countFor(cat.slug) === 1 ? "product" : "products"}</span>
+              </span>
+              <span class="home-cat__arrow"><ArrowRight size={18} aria-hidden="true" /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {answers.length > 0 && (
+      <section class="home-sec home-answers">
+        <header class="home-sec__head">
           <div>
-            <h2>Latest Buying Guides</h2>
-            <p>Methodical, no-fluff guides for buyers who want to choose once and choose well.</p>
+            <h2>Hot tub questions, answered</h2>
+            <p>Short answers first, the detail underneath. Written from manufacturer manuals, CDC and industry water-care guidance, and recurring owner reports.</p>
           </div>
-          <a href="/guides" class="home-link">All guides <ArrowRight size={16} aria-hidden="true" /></a>
+          <a href="/blog" class="home-sec__link">All answers <ArrowRight size={16} aria-hidden="true" /></a>
         </header>
-        <ul class="home-guides">
-          {guides.map((g) => (
+        <ul class="answers">
+          {answers.map((a) => (
             <li>
-              <a href={`/guides/${g.slug}`}>
-                <h3>{g.data.title}</h3>
-                <p>{g.data.intro}</p>
+              <a href={a.href}>
+                <h3>{a.title}</h3>
+                <p>{a.answer}</p>
+                <span class="answers__more">Read the full answer <ArrowRight size={14} aria-hidden="true" /></span>
               </a>
             </li>
           ))}
@@ -131,30 +183,35 @@ const stats = {
       </section>
     )}
 
-    {bestSellers.length > 0 && (
-      <section>
-        <header class="home-section-head">
-          <h2>Bestsellers</h2>
-        </header>
-        <ProductGrid products={bestSellers} campaign="home-bestsellers" columns={4} />
-      </section>
-    )}
+    <section class="home-method" aria-labelledby="method-title">
+      <div>
+        <p class="home-method__eyebrow">How we work</p>
+        <h2 id="method-title">We read the spec sheets and the owner complaints, so you don’t have to.</h2>
+      </div>
+      <ol class="home-method__steps">
+        <li><strong>Specs, side by side.</strong> Heater wattage, jet count, capacity, insulation and warranty from each manufacturer’s published data.</li>
+        <li><strong>Owner reports, aggregated.</strong> Recurring praise and failure patterns from Amazon reviews and owner communities like r/hottubs.</li>
+        <li><strong>A score you can audit.</strong> Quality, value, setup, durability and energy efficiency — each explained on the product page.</li>
+      </ol>
+      <a href="/editorial-policy" class="home-method__link">Read our editorial policy <ArrowRight size={16} aria-hidden="true" /></a>
+    </section>
 
-    {blogPosts.length > 0 && (
-      <section>
-        <header class="home-section-head">
-          <div>
-            <h2>From the Blog</h2>
-          </div>
-          <a href="/blog" class="home-link">All posts <ArrowRight size={16} aria-hidden="true" /></a>
+    {latest.length > 0 && (
+      <section class="home-sec">
+        <header class="home-sec__head">
+          <h2>Latest advice</h2>
+          <a href="/blog" class="home-sec__link">All articles <ArrowRight size={16} aria-hidden="true" /></a>
         </header>
-        <ul class="home-posts">
-          {blogPosts.map((post) => (
+        <ul class="latest">
+          {latest.map((post) => (
             <li>
               <a href={`/blog/${post.slug}`}>
-                <span class="home-posts__category">{post.data.category.replace('-', ' ')}</span>
+                <span class="latest__cat">{post.data.category.replace(/-/g, ' ')}</span>
                 <h3>{post.data.title}</h3>
                 <p>{post.data.excerpt}</p>
+                <time datetime={(post.data.updatedAt ?? post.data.publishedAt).toISOString()}>
+                  {(post.data.updatedAt ?? post.data.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </time>
               </a>
             </li>
           ))}
@@ -162,242 +219,172 @@ const stats = {
       </section>
     )}
 
-    <AffiliateDisclosure variant="banner" />
+    <p class="home-disclosure">
+      HomeSpaGuide is reader-supported: when you buy through links on our site, we may earn an affiliate commission from Amazon at no extra cost to you. <a href="/affiliate-disclosure">Learn more</a>.
+    </p>
   </div>
+
+  <ItemListSchema slot="head" items={topPicks.map((p) => ({ name: p.data.title, url: new URL(`/products/${p.slug}`, siteUrl).toString() }))} />
 </BaseLayout>
 
 <style>
-  .home-hero {
-    position: relative;
-    isolation: isolate;
-    padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(3rem, 6vw, 5rem);
-    background:
-      radial-gradient(900px 500px at 80% 10%, rgba(232, 165, 71, 0.12), transparent 60%),
-      radial-gradient(700px 400px at 0% 100%, rgba(184, 121, 74, 0.1), transparent 55%),
-      linear-gradient(180deg, #082B35 0%, #0F4C5C 100%);
-    color: var(--color-ink-on-dark);
-    overflow: hidden;
-  }
-  .home-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.04) 0, transparent 2px),
-      radial-gradient(circle at 75% 70%, rgba(255, 255, 255, 0.03) 0, transparent 2px);
-    background-size: 60px 60px, 80px 80px;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .home-hero__inner {
-    position: relative;
-    z-index: 1;
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Hero ---------- */
+  .hero { border-bottom: 1px solid var(--color-border); background: linear-gradient(180deg, var(--color-paper) 0%, var(--color-paper-deep) 100%); }
+  .hero__inner {
     display: grid;
-    gap: clamp(2rem, 4vw, 3.5rem);
-    grid-template-columns: 1fr;
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    padding-top: clamp(2.25rem, 5vw, 4.5rem);
+    padding-bottom: 2rem;
+    align-items: start;
   }
-  @media (min-width: 960px) {
-    .home-hero__inner { grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); }
+  @media (min-width: 1000px) { .hero__inner { grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 4rem; } }
+  .hero__eyebrow {
+    font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--color-cedar); margin-bottom: 1rem;
   }
-  .home-hero__copy { max-width: 36em; }
-  .home-hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--color-amber);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-meta);
-    font-weight: 600;
-    margin-bottom: 1.1rem;
-  }
-  .home-hero__title {
-    color: var(--color-ink-on-dark);
-    font-family: var(--font-serif);
-    font-size: clamp(2.5rem, 5.4vw, 4.2rem);
-    font-weight: 400;
-    letter-spacing: -0.018em;
-    line-height: 1.05;
-    margin: 0;
-    text-wrap: balance;
-  }
-  .home-hero__title em {
-    font-style: italic;
-    color: var(--color-cedar-soft);
-    font-weight: 400;
-  }
-  .home-hero__lede {
-    color: rgba(250, 250, 247, 0.85);
-    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height: 1.55;
-    margin: 1.2rem 0 2rem;
-    max-width: 38em;
-  }
-  .home-hero__cta { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.75rem; }
-  .home-hero__ghost {
-    color: var(--color-ink-on-dark);
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0.75rem 0.25rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    border-bottom: 1.5px solid rgba(250, 250, 247, 0.4);
-    transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
-  }
-  .home-hero__ghost:hover { color: var(--color-amber); border-bottom-color: var(--color-amber); }
-  .home-hero__trust {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 1.25rem 1.75rem;
-    flex-wrap: wrap;
-    color: rgba(250, 250, 247, 0.65);
-    font-size: 0.8rem;
+  .hero__title {
+    font-size: clamp(2.35rem, 1.6rem + 3.4vw, 4.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     font-weight: 500;
+    max-width: 16ch;
   }
-  .home-hero__trust li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
+  .hero__title em { font-style: italic; color: var(--color-primary); font-weight: 400; }
+  .hero__lede { margin-top: 1.25rem; font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem); line-height: 1.6; color: var(--color-ink-muted); max-width: 54ch; }
+  .hero__search {
+    margin-top: 1.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    padding: 0.35rem 0.35rem 0.35rem 0.9rem;
+    max-width: 560px;
+    color: var(--color-ink-subtle);
+    box-shadow: 0 1px 2px rgba(23, 25, 26, 0.05);
   }
-  .home-hero__trust svg { color: var(--color-cedar-soft); }
+  .hero__search:focus-within { border-color: var(--color-primary); box-shadow: var(--shadow-focus); }
+  .hero__search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 1rem; color: var(--color-ink); height: 44px; }
+  .hero__search button {
+    height: 44px; padding: 0 1.2rem; border-radius: var(--radius-md);
+    background: var(--color-primary); color: var(--color-ink-on-dark); font-weight: 600;
+  }
+  .hero__search button:hover { background: var(--color-primary-700); }
+  .hero__chips { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .hero__chips a {
+    display: inline-block; padding: 0.4rem 0.8rem; border-radius: var(--radius-full);
+    border: 1px solid var(--color-border-strong); background: var(--color-surface);
+    color: var(--color-ink); font-size: 0.85rem; font-weight: 500;
+  }
+  .hero__chips a:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
-  .home-hero__card {
-    background: rgba(250, 250, 247, 0.06);
-    border: 1px solid rgba(250, 250, 247, 0.12);
-    border-radius: var(--radius-xl);
-    padding: 1.5rem 1.4rem;
-    backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .hero__start {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-top: 4px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: 1.35rem 1.35rem 1.1rem;
   }
-  .home-hero__card-eyebrow {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-meta);
-    font-weight: 600;
-    color: var(--color-amber);
-    margin: 0;
+  .hero__start-title { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 550; margin-bottom: 0.75rem; }
+  .hero__start ol { list-style: none; margin: 0; padding: 0; }
+  .hero__start li + li { border-top: 1px solid var(--color-border); }
+  .hero__start ol a { display: flex; gap: 0.9rem; padding: 0.8rem 0; color: var(--color-ink); align-items: flex-start; }
+  .hero__start ol a:hover strong { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
+  .hero__start-num {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-steam); color: var(--color-primary); font-weight: 700; font-size: 0.9rem;
   }
-  .home-hero__stats {
-    list-style: none;
-    padding: 0 0 1rem;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    border-bottom: 1px solid rgba(250, 250, 247, 0.1);
-  }
-  .home-hero__stats li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-  .home-hero__stat-num {
-    font-family: var(--font-serif);
-    font-size: 2rem;
-    font-weight: 400;
-    color: var(--color-ink-on-dark);
-    letter-spacing: -0.018em;
-    line-height: 1;
-  }
-  .home-hero__stat-label {
-    font-size: 0.72rem;
-    color: rgba(250, 250, 247, 0.6);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-weight: 500;
-  }
-  .home-hero__cats {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-  }
-  .home-hero__cats a {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.55rem 0.4rem;
-    color: var(--color-ink-on-dark);
-    font-weight: 500;
-    border-radius: var(--radius-md);
-    transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
-  }
-  .home-hero__cats a:hover {
-    background: rgba(250, 250, 247, 0.08);
-    color: var(--color-amber);
-  }
-  .home-hero__cats svg { opacity: 0.6; transition: opacity var(--dur-base) var(--ease-out); }
-  .home-hero__cats a:hover svg { opacity: 1; }
+  .hero__start strong { display: block; font-weight: 600; line-height: 1.35; }
+  .hero__start small { display: block; color: var(--color-ink-subtle); font-size: 0.8rem; margin-top: 0.15rem; }
+  .hero__start-all { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem; font-weight: 600; font-size: 0.9rem; }
 
-  .home-stack { display: flex; flex-direction: column; gap: 4rem; padding-top: 4rem; padding-bottom: 4rem; }
-
-  .home-section-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.75rem;
-    padding-top: 1rem;
+  .hero__facts {
+    list-style: none; margin: 0; padding: 1.1rem 0 1.4rem;
+    display: flex; flex-wrap: wrap; gap: 0.5rem 2rem;
+    font-size: 0.875rem; color: var(--color-ink-muted);
     border-top: 1px solid var(--color-border);
-    position: relative;
   }
-  .home-section-head::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: 0;
-    width: 56px;
-    height: 3px;
-    background: var(--color-cedar);
-  }
-  .home-section-head h2 { font-size: var(--text-3xl); margin: 0.4rem 0 0.25rem; }
-  .home-section-head p { color: var(--color-ink-muted); max-width: 60ch; line-height: var(--leading-normal); }
-  .home-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-weight: 600; }
-  .home-link:hover { color: var(--color-cedar-deep); }
+  .hero__facts strong { color: var(--color-ink); font-weight: 700; }
+  .hero__facts a { text-decoration: underline; text-underline-offset: 3px; }
 
-  .home-cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  /* ---------- Sections ---------- */
+  .home { display: flex; flex-direction: column; gap: clamp(3.5rem, 6vw, 5rem); padding-top: clamp(2.5rem, 5vw, 4rem); }
+  .home-sec__head {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .home-sec__head h2 { font-size: clamp(1.7rem, 1.3rem + 1.4vw, 2.4rem); letter-spacing: -0.02em; }
+  .home-sec__head p { margin-top: 0.45rem; color: var(--color-ink-muted); max-width: 62ch; line-height: 1.55; }
+  .home-sec__head p a { text-decoration: underline; text-underline-offset: 3px; }
+  .home-sec__link { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; white-space: nowrap; }
+
+  .home-picks { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .home-picks { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } }
+  @media (min-width: 1100px) { .home-picks { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .home-cats { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: 1fr; }
+  @media (min-width: 700px) { .home-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } }
   .home-cat {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    padding: 1.5rem;
-    background: var(--color-surface);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-card);
+    display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; align-items: center; gap: 1rem;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
     color: var(--color-ink);
-    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+    transition: border-color var(--dur-base) var(--ease-out);
   }
-  .home-cat:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
-  .home-cat h3 { font-size: var(--text-xl); color: var(--color-primary-900); }
-  .home-cat p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: var(--leading-normal); flex: 1; }
-  .home-cat__cta { color: var(--color-primary); font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .home-cat:hover { border-color: var(--color-primary); }
+  .home-cat__img { width: 96px; height: 72px; object-fit: cover; border-radius: var(--radius-md); }
+  .home-cat__name { display: block; font-family: var(--font-serif); font-size: 1.25rem; font-weight: 550; line-height: 1.2; }
+  .home-cat__desc { display: block; color: var(--color-ink-muted); font-size: 0.88rem; line-height: 1.45; margin-top: 0.2rem; }
+  .home-cat__count { display: block; color: var(--color-ink-subtle); font-size: 0.75rem; margin-top: 0.3rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .home-cat__arrow { color: var(--color-ink-subtle); }
+  .home-cat:hover .home-cat__arrow { color: var(--color-primary); }
 
-  .home-guides, .home-posts { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-  .home-guides a, .home-posts a {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    padding: 1.5rem;
-    background: var(--color-surface);
+  .answers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--color-ink); }
+  @media (min-width: 800px) { .answers { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 3rem; } }
+  .answers li { border-bottom: 1px solid var(--color-border); }
+  .answers a { display: block; padding: 1.25rem 0; color: var(--color-ink); }
+  .answers h3 { font-size: 1.3rem; font-weight: 550; line-height: 1.25; }
+  .answers a:hover h3 { color: var(--color-primary); }
+  .answers p { margin-top: 0.5rem; color: var(--color-ink-muted); font-size: 0.95rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .answers__more { display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 600; color: var(--color-primary); }
+
+  .home-method {
+    display: grid; gap: 1.75rem;
+    background: var(--color-primary); color: var(--color-ink-on-dark);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-card);
-    color: var(--color-ink);
-    transition: box-shadow var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
-    height: 100%;
+    padding: clamp(1.75rem, 4vw, 3rem);
   }
-  .home-guides a:hover, .home-posts a:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-hover); }
-  .home-guides h3, .home-posts h3 { font-size: var(--text-xl); margin: 0; color: var(--color-primary-900); }
-  .home-guides p, .home-posts p { color: var(--color-ink-muted); font-size: 0.95rem; line-height: var(--leading-normal); }
-  .home-posts__category {
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-meta);
-    color: var(--color-cedar);
-    font-weight: 600;
+  @media (min-width: 1000px) { .home-method { grid-template-columns: 1fr 1.3fr; column-gap: 4rem; } }
+  .home-method__eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: #E7A57F; margin-bottom: 0.75rem; }
+  .home-method h2 { color: var(--color-ink-on-dark); font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.3rem); }
+  .home-method__steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 1.1rem; }
+  .home-method__steps li { counter-increment: step; position: relative; padding-left: 2.6rem; color: rgba(248, 246, 241, 0.8); line-height: 1.55; }
+  .home-method__steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 0;
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    border: 1.5px solid rgba(248, 246, 241, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700; color: var(--color-ink-on-dark);
   }
+  .home-method__steps strong { color: var(--color-ink-on-dark); }
+  .home-method__link { color: var(--color-ink-on-dark); font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(248,246,241,0.4); }
+  @media (min-width: 1000px) { .home-method__link { grid-column: 2; } }
+  .home-method__link:hover { color: #fff; }
+
+  .latest { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; grid-template-columns: 1fr; border-top: 1px solid var(--color-ink); }
+  @media (min-width: 700px) { .latest { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; } }
+  @media (min-width: 1100px) { .latest { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .latest li { border-bottom: 1px solid var(--color-border); }
+  .latest a { display: flex; flex-direction: column; gap: 0.4rem; padding: 1.25rem 0; color: var(--color-ink); height: 100%; }
+  .latest__cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--color-cedar); }
+  .latest h3 { font-size: 1.25rem; font-weight: 550; line-height: 1.25; }
+  .latest a:hover h3 { color: var(--color-primary); }
+  .latest p { color: var(--color-ink-muted); font-size: 0.92rem; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .latest time { font-size: 0.8rem; color: var(--color-ink-subtle); margin-top: auto; }
+
+  .home-disclosure { font-size: 0.85rem; color: var(--color-ink-subtle); max-width: 80ch; }
+  .home-disclosure a { text-decoration: underline; text-underline-offset: 3px; }
 </style>

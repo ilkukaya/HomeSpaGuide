@@ -77,7 +77,9 @@ for (const f of specs.customFields ?? []) push(f.label, f.value);
     border-bottom: 1px solid var(--color-border);
   }
   .specs-table tr:last-child th, .specs-table tr:last-child td { border-bottom: none; }
-  .specs-table tr:nth-child(odd) { background: var(--color-surface-muted); }
+  .specs-table { background: var(--color-surface); }
+  .specs-table tr:nth-child(odd) { background: var(--color-paper); }
   .specs-table th { font-weight: 500; color: var(--color-ink-muted); width: 200px; text-transform: capitalize; }
-  .specs-table td { color: var(--color-ink); text-transform: capitalize; }
+  .specs-table td { color: var(--color-ink); }
+  @media (max-width: 560px) { .specs-table th { width: 42%; } .specs-table th, .specs-table td { padding: 0.7rem 0.75rem; font-size: 0.9rem; } }
 </style>

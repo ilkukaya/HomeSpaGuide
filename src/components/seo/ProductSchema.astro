@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { PRICE_RANGES } from '../../lib/prices';
 
 interface Props {
   product: CollectionEntry<'products'>;
@@ -10,36 +9,42 @@ interface Props {
 }
 const { product, brandName, url, imageUrl } = Astro.props;
 const p = product.data;
-const range = PRICE_RANGES[p.priceRange];
+const siteUrl = import.meta.env.SITE;
+
+// Editorial product review (Google "review snippet" / pros & cons eligible).
+// No `offers`: we never publish a price, and a fabricated price range would
+// violate Google's structured-data policy and Amazon's pricing rules.
+const itemList = (items: string[]) => ({
+  '@type': 'ItemList',
+  itemListElement: items.map((name, i) => ({ '@type': 'ListItem', position: i + 1, name })),
+});
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
+  '@id': `${url}#product`,
   name: p.title,
-  description: p.shortDescription,
+  description: p.quickVerdict ?? p.shortDescription,
   image: imageUrl,
   brand: { '@type': 'Brand', name: brandName },
   sku: p.asin,
-  mpn: p.asin,
   url,
-  offers: {
-    '@type': 'AggregateOffer',
-    priceCurrency: 'USD',
-    lowPrice: range.min,
-    highPrice: range.max,
-    availability: 'https://schema.org/InStock',
-    url: p.amazonUrl,
-    seller: { '@type': 'Organization', name: 'Amazon.com' },
-  },
   review: {
     '@type': 'Review',
+    name: `${p.shortTitle} review`,
+    datePublished: p.publishedAt.toISOString().slice(0, 10),
+    dateModified: (p.updatedAt ?? p.publishedAt).toISOString().slice(0, 10),
     reviewRating: {
       '@type': 'Rating',
       ratingValue: p.editorScore.overall,
       bestRating: 10,
+      worstRating: 0,
     },
-    author: { '@type': 'Organization', name: 'HomeSpaGuide Editors' },
-    reviewBody: p.editorScore.notes || p.shortDescription,
+    author: { '@type': 'Organization', name: 'HomeSpaGuide Editors', url: new URL('/about', siteUrl).toString() },
+    publisher: { '@id': new URL('/#organization', siteUrl).toString() },
+    reviewBody: p.quickVerdict ?? p.editorScore.notes ?? p.shortDescription,
+    ...(p.pros.length ? { positiveNotes: itemList(p.pros) } : {}),
+    ...(p.cons.length ? { negativeNotes: itemList(p.cons) } : {}),
   },
 };
 ---

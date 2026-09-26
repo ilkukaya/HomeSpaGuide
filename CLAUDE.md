@@ -25,6 +25,13 @@ if banned phrases land in `src/content/**/*.md`.
 - Every blog post + guide + product page must carry the affiliate
   disclosure above the fold (the footer disclosure is necessary but not
   sufficient).
+- Every ASIN must be verified against a live amazon.com/dp/<ASIN> listing
+  before it ships — never invent one.
+- Answer-first fields drive AEO/GEO: products need `quickVerdict` + `faqs`;
+  blog/guides need `quickAnswer` (40–60 words), `keyTakeaways`, `faqs`.
+- Badges allowed: Editor Pick, Best Value, Budget Pick, Premium Pick only
+  (no "Best Seller"/"Top Rated" — we have no sales/rating data).
+- Launch/account checklist (Turkish): `docs/YAYIN-KONTROL-LISTESI.md`.
 
 ## Scripts
 

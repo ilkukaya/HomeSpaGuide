@@ -22,14 +22,26 @@ The site runs at `http://localhost:4321`.
 
 ### Environment variables
 
-Copy `.env.example` to `.env` and fill in:
+Copy `.env.example` to `.env`. Everything is optional except the Associates tag:
 
 | Variable | Description |
 |---|---|
-| `PUBLIC_SITE_URL` | Production URL (used in canonical/og/sitemap). |
-| `AMAZON_ASSOCIATE_TAG` | Your Amazon tracking ID, e.g. `homespaguide-20`. |
-| `PUBLIC_PLAUSIBLE_DOMAIN` | Your Plausible domain (optional). |
-| `PUBLIC_PLAUSIBLE_SCRIPT` | Plausible script URL (optional). |
+| `AMAZON_ASSOCIATE_TAG` | **Your** Amazon tracking ID, e.g. `yourtag-20`. |
+| `PUBLIC_SITE_URL` | Canonical origin. On Netlify it defaults to the site's primary domain. |
+| `PUBLIC_GOOGLE_SITE_VERIFICATION` / `PUBLIC_BING_SITE_VERIFICATION` / `PUBLIC_PINTEREST_VERIFICATION` | Search-console ownership meta tags. |
+| `PUBLIC_CLOUDFLARE_BEACON_TOKEN` / `PUBLIC_GA4_ID` / `PUBLIC_PLAUSIBLE_*` | Analytics (pick one). Amazon clicks are sent as an `amazon_click` / `Amazon Click` event. |
+| `PUBLIC_ADSENSE_CLIENT`, `PUBLIC_ADSENSE_SLOT_INARTICLE`, `PUBLIC_ADSENSE_SLOT_SIDEBAR` | Google AdSense. Nothing loads until set; `/ads.txt` is generated automatically. |
+
+The step-by-step launch checklist (accounts, domain, Search Console, AdSense) lives in
+[`docs/YAYIN-KONTROL-LISTESI.md`](./docs/YAYIN-KONTROL-LISTESI.md).
+
+### SEO / AEO / GEO features
+
+- Per-page canonical, Open Graph and Twitter tags; unique 1200×630 OG image per page generated at build (`src/pages/og/[...slug].png.ts`).
+- JSON-LD graph: Organization, WebSite + SearchAction, BreadcrumbList, Product with editorial Review (+ pros/cons), BlogPosting/Article, FAQPage, ItemList.
+- `quickAnswer` / `keyTakeaways` / `faqs` (articles) and `quickVerdict` / `faqs` (products) render as answer-first blocks that search and answer engines can quote.
+- `/robots.txt` explicitly allows AI search crawlers; `/llms.txt` is a generated, link-rich site summary.
+- Sitemap with per-page `lastmod` from content `updatedAt`.
 
 ## Scripts
 

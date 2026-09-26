@@ -8,11 +8,11 @@ interface Crumb {
 interface Props {
   items?: Crumb[];
 }
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const siteUrl = import.meta.env.SITE;
 
 let crumbs: Crumb[] = Astro.props.items ?? [];
 if (crumbs.length === 0) {
-  const parts = Astro.url.pathname.split('/').filter(Boolean);
+  const parts = Astro.url.pathname.replace(/\.html$/, '').split('/').filter(Boolean);
   crumbs = parts.map((part, idx) => ({
     label: part.replace(/-/g, ' ').replace(/\b\w/g, (m) => m.toUpperCase()),
     href: idx < parts.length - 1 ? '/' + parts.slice(0, idx + 1).join('/') : undefined,

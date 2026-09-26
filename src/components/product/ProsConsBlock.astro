@@ -30,9 +30,9 @@ const { pros, cons } = Astro.props;
 <style>
   .proscons { display: grid; gap: 1rem; grid-template-columns: 1fr; }
   @media (min-width: 600px) { .proscons { grid-template-columns: 1fr 1fr; } }
-  .proscons__col { padding: 1.25rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); }
-  .proscons__col--pros { background: var(--color-success-soft); border-color: rgba(47, 125, 79, 0.2); }
-  .proscons__col--cons { background: var(--color-error-soft); border-color: rgba(176, 58, 58, 0.2); }
+  .proscons__col { padding: 1.1rem 1.25rem 1.25rem; border-radius: var(--radius-lg); border: 1px solid var(--color-border); background: var(--color-surface); }
+  .proscons__col--pros { border-top: 3px solid var(--color-success); }
+  .proscons__col--cons { border-top: 3px solid var(--color-error); }
   .proscons__col h4 { font-family: var(--font-sans); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.85rem; }
   .proscons__col--pros h4 { color: var(--color-success); }
   .proscons__col--cons h4 { color: var(--color-error); }

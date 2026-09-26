@@ -1,5 +1,5 @@
 ---
-import { ExternalLink } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { buildAmazonUrl, amazonRel } from '../../lib/amazon';
 import { cn } from '../../lib/cn';
 
@@ -26,9 +26,9 @@ const {
 const href = buildAmazonUrl(asin, campaign ? { campaign } : {});
 
 const sizes: Record<Size, string> = {
-  sm: 'px-3 py-1.5 text-sm gap-1.5',
-  md: 'px-4 py-2.5 text-base gap-2',
-  lg: 'px-6 py-3.5 text-lg gap-2.5',
+  sm: 'px-3.5 h-10 text-[0.9rem] gap-1.5',
+  md: 'px-5 h-12 text-base gap-2',
+  lg: 'px-6 h-14 text-[1.05rem] gap-2',
 };
 ---
 
@@ -37,32 +37,15 @@ const sizes: Record<Size, string> = {
   rel={amazonRel()}
   target="_blank"
   class={cn(
-    'inline-flex items-center justify-center font-semibold rounded-[var(--radius-md)] bg-[var(--color-amazon)] text-[var(--color-amazon-ink)] hover:bg-[var(--color-amazon-hover)] shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amazon-ink)]',
+    'amazon-cta inline-flex items-center justify-center font-semibold whitespace-nowrap rounded-[var(--radius-md)] bg-[var(--color-amazon)] text-[var(--color-amazon-ink)] hover:bg-[var(--color-amazon-hover)] hover:text-[var(--color-amazon-ink)] border border-[#FCD200] transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amazon-ink)]',
     sizes[size],
     fullWidth && 'w-full',
     className,
   )}
   data-amazon-cta
   data-asin={asin}
+  data-placement={campaign}
 >
-  <span class="amazon-cta__mark" aria-hidden="true">a</span>
   <span>{label}</span>
-  <ExternalLink size={size === 'lg' ? 18 : 14} aria-hidden="true" />
+  <ArrowUpRight size={size === 'lg' ? 20 : 17} aria-hidden="true" />
 </a>
-
-<style>
-  .amazon-cta__mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.35em;
-    height: 1.35em;
-    border-radius: 999px;
-    background: var(--color-amazon-ink);
-    color: var(--color-amazon);
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 0.85em;
-    line-height: 1;
-  }
-</style>

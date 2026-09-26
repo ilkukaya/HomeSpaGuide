@@ -1,33 +1,53 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+const updated = 'September 26, 2026';
 ---
 
-<BaseLayout title="Privacy Policy — HomeSpaGuide" description="What HomeSpaGuide stores about you (almost nothing) and how affiliate clicks work.">
-  <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
+<BaseLayout title="Privacy Policy" description="What HomeSpaGuide collects, which third parties are involved (Amazon, Netlify, analytics and advertising partners) and the choices you have.">
+  <div class="container-narrow legal-page">
     <Breadcrumbs items={[{ label: 'Privacy' }]} />
-    <article class="prose" style="margin-top: 1.5rem;">
+    <article class="prose">
       <h1>Privacy Policy</h1>
-      <p><em>Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</em></p>
+      <p><em>Last updated: {updated}</em></p>
 
       <h2>The short version</h2>
-      <p>HomeSpaGuide does not collect personal data. We don't use cookies, we don't require sign-ups, we don't track you across the web. We use Plausible Analytics, which is cookie-free and does not store IP addresses or any identifier that could identify you personally.</p>
+      <p>You can read everything on HomeSpaGuide without an account. We collect as little as possible: your email address only if you subscribe to our newsletter or contact us, and aggregate, privacy-friendly traffic statistics. Third parties we work with — Amazon, and (where enabled) analytics and advertising partners such as Google — may use cookies under their own policies, described below.</p>
 
-      <h2>What is stored, and where</h2>
+      <h2>Information you give us</h2>
       <ul>
-        <li><strong>Your wishlist, compare list and recently-viewed list</strong> are stored entirely in your browser's localStorage. We never see them. Clearing your browser data clears them.</li>
-        <li><strong>Aggregate analytics</strong> (page views per URL, country at the country level, top referrers) are tracked by Plausible. No cookies. No PII.</li>
-        <li><strong>Contact form submissions</strong> are emailed to us via Netlify Forms. Netlify stores them in their dashboard. We delete messages after responding.</li>
+        <li><strong>Newsletter:</strong> if you subscribe, we store your email address (via Netlify Forms) to send the newsletter. Every email has an unsubscribe link, or you can <a href="/contact">ask us</a> to delete it.</li>
+        <li><strong>Contact form:</strong> your name, email and message are delivered to us via Netlify Forms. We use them only to reply and delete them once the conversation is finished.</li>
       </ul>
 
+      <h2>Information stored in your browser</h2>
+      <p>Your wishlist, compare list and recently viewed products are kept in your browser’s localStorage. They never leave your device and clearing your browser data removes them.</p>
+
+      <h2>Analytics</h2>
+      <p>We measure aggregate traffic (page views, referrers, country-level location, device type) to understand which guides are useful. We prefer cookieless analytics tools (such as Cloudflare Web Analytics or Plausible). If we use Google Analytics, it is configured with IP anonymisation and its data is governed by <a href="https://policies.google.com/privacy" rel="nofollow noopener">Google’s privacy policy</a>.</p>
+
+      <h2>Advertising</h2>
+      <p>Some pages may show ads served by Google AdSense. Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this and other websites. Google’s use of advertising cookies enables it and its partners to serve ads based on your visits to this and/or other sites. You can opt out of personalised advertising at <a href="https://adssettings.google.com" rel="nofollow noopener">Google Ads Settings</a> or <a href="https://www.aboutads.info/choices/" rel="nofollow noopener">aboutads.info</a>. Visitors in the EEA, UK and Switzerland are asked for consent through a certified consent message before personalised ads are shown.</p>
+
       <h2>Affiliate links</h2>
-      <p>HomeSpaGuide participates in the Amazon Associates program. When you click a "View on Amazon" link, Amazon sees a referral parameter (our tracking ID) so they can credit any subsequent purchase to us. Amazon's own privacy policy then applies. We do not control or have access to your activity on Amazon.com.</p>
+      <p>HomeSpaGuide participates in the Amazon Services LLC Associates Program. When you click a link to Amazon, Amazon receives our tracking ID so it can credit qualifying purchases to us, and Amazon may set cookies under <a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=468496" rel="nofollow noopener">its own privacy notice</a>. We never see what you buy or any personal information from Amazon — only aggregate commission reports.</p>
+
+      <h2>Hosting</h2>
+      <p>The site is hosted by Netlify, which processes standard server logs (such as IP address and user agent) to deliver pages securely.</p>
+
+      <h2>Children</h2>
+      <p>HomeSpaGuide is intended for adults and we do not knowingly collect information from children under 13.</p>
 
       <h2>Your rights</h2>
-      <p>Because we don't store personal data, there's nothing to request, export or delete on our end. If you'd like Amazon to forget you, manage that through your Amazon account settings.</p>
+      <p>Depending on where you live (for example under the GDPR or CCPA/CPRA) you may have the right to access, correct or delete personal information we hold about you, and to opt out of the “sale” or “sharing” of personal information for targeted advertising. We don’t sell personal information. To make a request, use our <a href="/contact">contact form</a>.</p>
 
       <h2>Changes</h2>
-      <p>If we ever change how this works, we'll update this page and the "last updated" date above.</p>
+      <p>We’ll update this page and the date above if anything changes.</p>
     </article>
   </div>
 </BaseLayout>
+
+<style>
+  .legal-page { padding-top: 1.25rem; padding-bottom: 3rem; }
+  .legal-page .prose { margin-top: 1.5rem; }
+</style>

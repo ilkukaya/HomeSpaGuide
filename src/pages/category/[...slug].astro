@@ -8,6 +8,8 @@ import FilterSidebar, { type FilterFacets } from '../../components/catalog/Filte
 import SortDropdown from '../../components/catalog/SortDropdown';
 import AffiliateDisclosure from '../../components/layout/AffiliateDisclosure.astro';
 import ItemListSchema from '../../components/seo/ItemListSchema.astro';
+import FAQSchema from '../../components/seo/FAQSchema.astro';
+import FaqList from '../../components/ui/FaqList.astro';
 import { PRICE_RANGES } from '../../lib/prices';
 
 export async function getStaticPaths() {
@@ -65,7 +67,7 @@ const facets: FilterFacets = {
   badges: Array.from(new Set(products.flatMap((p) => p.data.editorBadges))),
 };
 
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const siteUrl = import.meta.env.SITE;
 const itemListItems = products.slice(0, 20).map((p) => ({
   name: p.data.title,
   url: new URL(`/products/${p.slug}`, siteUrl).toString(),
@@ -75,8 +77,9 @@ const { Content } = await category.render();
 ---
 
 <BaseLayout
-  title={`${c.name} — HomeSpaGuide`}
-  description={c.shortDescription}
+  title={c.seo?.metaTitle ?? `Best ${c.name} (${new Date().getFullYear()}): Compared & Scored`}
+  description={c.seo?.metaDescription ?? `${c.shortDescription} Compare ${products.length} ${products.length === 1 ? 'pick' : 'picks'} by Editor Score, typical price and key specs.`}
+  ogImage={`/og/category/${category.slug}.png`}
 >
   <div class="container-page">
     <Breadcrumbs items={[{ label: c.name }]} />
@@ -115,17 +118,13 @@ const { Content } = await category.render();
     </div>
 
     <section class="catalog__about prose">
-      <h2>About {c.name}</h2>
+      <h2>About {c.name.toLowerCase()}</h2>
+      <p>{c.description}</p>
       <Content />
       {c.faqs && c.faqs.length > 0 && (
         <>
           <h3>Frequently asked questions</h3>
-          {c.faqs.map((f) => (
-            <details class="catalog__faq">
-              <summary>{f.question}</summary>
-              <p>{f.answer}</p>
-            </details>
-          ))}
+          <FaqList faqs={c.faqs} />
         </>
       )}
     </section>
@@ -134,15 +133,16 @@ const { Content } = await category.render();
   </div>
 
   <ItemListSchema slot="head" items={itemListItems} />
+  {c.faqs && c.faqs.length > 0 && <FAQSchema slot="head" faqs={c.faqs} />}
 </BaseLayout>
 
 <style is:global>
   .hsg-filter {
     background: var(--color-surface);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     padding: 1.25rem 1.4rem;
     font-size: 0.9rem;
-    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
   }
   .hsg-filter__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
   .hsg-filter__head h2 {

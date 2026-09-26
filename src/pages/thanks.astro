@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Thanks!" description="Your message has been received." noindex>
+  <div class="container-narrow thanks">
+    <p class="eyebrow">All set</p>
+    <h1>Thanks — we’ve got it.</h1>
+    <p>If you subscribed, the next HomeSpaGuide Letter will land in your inbox. If you sent a message, we usually reply within a few days.</p>
+    <p><a href="/guides">Browse the buying guides</a> · <a href="/blog">Read the latest advice</a></p>
+  </div>
+</BaseLayout>
+
+<style>
+  .thanks { padding: 5rem 0 3rem; display: flex; flex-direction: column; gap: 1rem; }
+  .thanks p { color: var(--color-ink-muted); max-width: 55ch; }
+  .thanks a { text-decoration: underline; text-underline-offset: 3px; }
+</style>

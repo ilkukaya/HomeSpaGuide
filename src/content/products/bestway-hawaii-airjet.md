@@ -1,73 +1,104 @@
 ---
-asin: B08HVZBHQN
+asin: B0CGMFJ47G
 slug: bestway-hawaii-airjet
-title: Bestway SaluSpa Hawaii AirJet Inflatable Hot Tub
-shortTitle: Bestway SaluSpa Hawaii AirJet
+title: Bestway SaluSpa Hawaii EnergySense AirJet Square Inflatable Hot Tub (4–6 Person)
+shortTitle: Bestway SaluSpa Hawaii AirJet (Square)
 brand: bestway
 category: inflatable-hot-tubs
-subcategories: [bubble-jet, 6-person]
-shortDescription: Square-cornered 6-person inflatable that fits two more shoulders than the round tubs without doubling the energy bill.
+subcategories: [airjet, square, 6-person]
+shortDescription: A square 71" x 71" x 28" inflatable for 4–6 people with 140 AirJets, an EnergySense insulated cover and Freeze Shield anti-freeze heating.
 description: |
-  The Hawaii is the only inflatable in Bestway's range with a properly square footprint, and that geometry is the reason to consider it. Two adults plus three adolescents fit comfortably across the long edges instead of orbiting a round center. AirJet bubble system, ChemConnect dispenser, and a freeze-shield mode that cycles the pump below 40°F to keep the lines from cracking.
+  The SaluSpa Hawaii is Bestway's square-format AirJet tub. The 71" x 71" footprint with 28-inch walls fits snugly into a patio corner or against a wall where a round tub wastes space, and seats 4–6 people. It pairs 140 AirJets with Bestway's EnergySense insulated cover and Freeze Shield, which automatically heats the water to keep internal components from freezing.
 keyFeatures:
-  - 6-adult capacity (71" x 71" x 26")
-  - 120 AirJets across the perimeter
-  - Built-in freeze-shield mode (operates to 39°F)
-  - ChemConnect chemical dispenser
-  - Hard side panels for extra rigidity vs. round inflatables
-  - Lay-Z-Massage system optional
+  - Seats 4–6 people in a square 71" x 71" x 28" footprint
+  - 140 AirJet bubble jets
+  - EnergySense insulated cover
+  - Freeze Shield automatic anti-freeze heating
+  - Heats to a maximum of 104°F on 110–120V power
 pros:
-  - Square footprint genuinely seats six adults
-  - Freeze-shield is rare at this price
-  - Side panels feel sturdier than round inflatables
-  - Quick 4-day fill-and-heat cycle
+  - Square shape uses corners and wall space efficiently
+  - Freeze Shield plus insulated cover for shoulder seasons
+  - More seating capacity than 4-person round tubs of similar width
+  - Widely available Bestway/Coleman parts and filters
 cons:
-  - Heavier than the 4-person Tahiti to drain and store
-  - Cover insulation is mid-tier
-  - Pump fan is louder than the Intex
+  - Six adults is a squeeze in practice
+  - AirJets only — no hydrotherapy water jets
+  - Heavier and bulkier to drain and store than 4-person tubs
 bestFor:
-  - Families of 4–6
-  - Year-round outdoor placements in mild winters
-  - Buyers who want more elbow room without going hard-shell
+  - Families of 3–5
+  - Patios where a square footprint fits better than a circle
+  - Buyers in mild-winter climates
 specs:
   capacity: 6
-  dimensions: '71" x 71" x 26"'
-  weight: 76 lbs
-  powerRequirement: 110V – 120V
-  waterCapacity: "242 gallons"
-  jetCount: 120
-  heaterWattage: 1500
+  dimensions: '71" x 71" x 28"'
+  powerRequirement: 110–120V, standard household GFCI outlet
+  jetCount: 140
   setupType: inflatable
   indoorOutdoor: outdoor
   seasonality: all-season
-  materials: [DuraPlus 3-ply laminated PVC]
-  warranty: "2-year limited"
+  customFields:
+    - label: Shape
+      value: Square
+    - label: Max water temperature
+      value: 104°F
 priceRange: 500-1000
-priceUpdatedAt: 2026-04-15
+priceUpdatedAt: 2026-09-26
 editorScore:
-  overall: 8.3
-  quality: 8.5
+  overall: 8.2
+  quality: 8.0
   value: 8.5
-  setup: 8
-  durability: 8
-  energyEfficiency: 7.5
-  notes: The right inflatable if you need to seat more than four adults without graduating to a hard-shell tub.
+  setup: 8.5
+  durability: 7.8
+  energyEfficiency: 8.0
+  notes: The square pick — better corner fit and more elbow room than a round tub of the same width.
 editorPick: false
-editorBadges: [Top Rated]
-primaryImage: ../../assets/placeholder-hot-tub.svg
-imageAlt: Bestway SaluSpa Hawaii square-format inflatable hot tub
-amazonUrl: https://www.amazon.com/dp/B08HVZBHQN
+editorBadges: []
+primaryImage: ../../assets/placeholder-hot-tub-square.svg
+imageAlt: Bestway SaluSpa Hawaii square inflatable hot tub with EnergySense cover
+amazonUrl: https://www.amazon.com/dp/B0CGMFJ47G
 relatedProducts:
-  - bestway-saint-tropez-hydrojet
-  - coleman-saluspa-tahiti
+  - coleman-saluspa-atlantis-airjet
+  - bestway-saluspa-milan-airjet
+alternativeProducts:
+  - coleman-saluspa-atlantis-airjet
+  - intex-purespa-plus-6-person
 frequentlyBoughtWith:
   - spa-choice-bromine-tablets
-alternativeProducts:
-  - intex-purespa-greywood
-  - bestway-saint-tropez-hydrojet
+quickVerdict: The Bestway SaluSpa Hawaii is the square inflatable to buy if a round tub won't fit your patio corner — 140 AirJets, Freeze Shield and an insulated cover for 4–6 people, though six adults is a tight fit.
+faqs:
+  - question: Is a square inflatable hot tub better than a round one?
+    answer: Not better, but more space-efficient in corners and against walls. Owner reviews consistently mention that corners give each person a defined seat, while round tubs of the same width waste deck space.
+  - question: How many people fit in the Bestway Hawaii?
+    answer: Bestway rates it for 4–6 people. Owner reports describe four adults as comfortable and six as a squeeze best suited to mixed adults and kids.
+  - question: Can I leave the Hawaii running in winter?
+    answer: It includes Freeze Shield, which heats the water automatically to protect internal parts from freezing. That helps in cold snaps, but inflatables lose heat faster than insulated hard-shell tubs, so expect higher running costs and slower recovery in freezing weather.
 status: active
-publishedAt: 2026-04-22
-updatedAt: 2026-05-08
+publishedAt: 2026-09-26
+updatedAt: 2026-09-26
 ---
 
-If you can't quite bring yourself to spend hard-shell money but the Tahiti's four-person ring feels too snug, the Hawaii is the obvious step up. Square-cornered, slightly stiffer walls, and freeze-shield as standard make it one of the few inflatables we'd leave outside through a Pacific Northwest winter.
+The SaluSpa Hawaii is for households that need 4–6 seats and a footprint that tucks neatly into a corner.
+
+## Headline specs
+
+Per Bestway's published spec, the Hawaii measures 71" x 71" x 28", seats 4–6 people and runs 140 AirJets. It heats to 104°F on standard 110–120V power and ships with an EnergySense insulated cover, which Bestway claims is up to 40% more energy efficient than similar inflatable spas. Freeze Shield automatically heats the water to protect internal components when temperatures drop.
+
+## What owners praise
+
+- **Shape.** Owner reviews on Amazon consistently mention the square format fits decks and corners better than a round tub.
+- **Seating.** Corners give each bather a defined spot, which owners prefer over "orbiting" in a round tub.
+- **Cold-weather features.** Freeze Shield and the insulated cover are frequently cited as reasons for choosing it.
+
+## What owners complain about
+
+- **Six is optimistic** for six full-size adults.
+- **Heat-up time** from a cold fill, as with every 110V inflatable.
+- **Storage.** Draining and folding a larger square tub is more work than a 4-person round.
+
+## Who should buy it — and who shouldn't
+
+If your priority is fitting the most seats into a square patio space, this is the cleanest fit because nothing else in Bestway's inflatable range uses corners as well. Couples should save money with the [Coleman SaluSpa Tahiti](/products/coleman-saluspa-tahiti-airjet), and large families should consider the 93-inch [Bestway SaluSpa Hawaii 6–8 Person](/products/bestway-saluspa-hawaii-8-person).
+
+## How it compares
+
+Based on the spec sheets, the [Coleman SaluSpa Atlantis](/products/coleman-saluspa-atlantis-airjet) is near-identical in size (71" x 71" x 28") and jet count (140) — pick on price and style. The round [Intex PureSpa Plus 6-Person](/products/intex-purespa-plus-6-person) is larger at 85 inches and has 170 jets, but no freeze protection listed.

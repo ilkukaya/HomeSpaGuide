@@ -1,11 +1,17 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
+import { getEntry, type CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
-import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
 import TOC from '../components/blog/TOC.astro';
 import ArticleSchema from '../components/seo/ArticleSchema.astro';
+import FAQSchema from '../components/seo/FAQSchema.astro';
+import QuickAnswer from '../components/article/QuickAnswer.astro';
+import AuthorBox from '../components/article/AuthorBox.astro';
+import RelatedArticles from '../components/article/RelatedArticles.astro';
+import FaqList from '../components/ui/FaqList.astro';
+import ProductCard from '../components/product/ProductCard.astro';
+import AdSlot from '../components/ads/AdSlot.astro';
+import ProductMiniList from '../components/product/ProductMiniList.astro';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -14,70 +20,133 @@ interface Props {
 
 const { post, headings } = Astro.props;
 const p = post.data;
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
-const url = new URL(`/blog/${post.slug}`, siteUrl).toString();
-const heroSrc = new URL((p.heroImage as any).src ?? '/og-default.png', siteUrl).toString();
+const siteUrl = import.meta.env.SITE;
+const href = `/blog/${post.slug}`;
+const url = new URL(href, siteUrl).toString();
+const ogPath = `/og/blog/${post.slug}.png`;
+const updated = p.updatedAt ?? p.publishedAt;
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const faqs = p.faqs ?? [];
+const words = (post.body ?? '').split(/\s+/).length;
+const readMins = Math.max(2, Math.round(words / 230));
+
+const products = (
+  await Promise.all((p.featuredProducts ?? []).map((r) => getEntry('products', r.id)))
+).filter((x): x is CollectionEntry<'products'> => Boolean(x));
+const picksFirst = ['buying-guide', 'comparison', 'reviews'].includes(p.category);
+const tocHeadings = [...headings, ...(faqs.length ? [{ depth: 2, slug: 'faq', text: 'FAQ' }] : [])];
 ---
 
 <BaseLayout
   title={p.seo?.metaTitle ?? p.title}
   description={p.seo?.metaDescription ?? p.excerpt}
   ogType="article"
+  ogImage={ogPath}
+  ogImageAlt={p.title}
   publishedTime={p.publishedAt.toISOString()}
-  modifiedTime={(p.updatedAt ?? p.publishedAt).toISOString()}
+  modifiedTime={updated.toISOString()}
 >
-  <article class="container-page blog-post">
-    <Breadcrumbs items={[{ label: 'Blog', href: '/blog' }, { label: p.title }]} />
-    <header class="blog-post__header">
-      <p class="blog-post__category">{p.category.replace('-', ' ')}</p>
+  <article class="container-page article">
+    <Breadcrumbs items={[{ label: 'Advice', href: '/blog' }, { label: p.title }]} />
+    <header class="article__header">
+      <p class="article__kicker">{p.category.replace(/-/g, ' ')}</p>
       <h1>{p.title}</h1>
-      <p class="blog-post__lede">{p.excerpt}</p>
-      <p class="blog-post__meta">
-        <span class="meta--strong">By {p.author}</span>
+      <p class="article__dek">{p.excerpt}</p>
+      <p class="article__meta">
+        <span>By <a href="/about">HomeSpaGuide Editors</a></span>
         <span aria-hidden="true">·</span>
-        <span>Last updated <time datetime={(p.updatedAt ?? p.publishedAt).toISOString()}>{(p.updatedAt ?? p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time></span>
+        <span>Updated <time datetime={updated.toISOString()}>{fmt(updated)}</time></span>
         <span aria-hidden="true">·</span>
-        <a href="/about#methodology">How we choose</a>
+        <span>{readMins} min read</span>
+      </p>
+      <p class="article__disclosure">
+        We may earn a commission when you buy through links on this page. <a href="/affiliate-disclosure">How we make money</a>.
       </p>
     </header>
-    <div class="blog-post__hero">
-      <Image src={p.heroImage} alt={p.heroImageAlt} widths={[640, 960, 1280]} format="webp" loading="eager" />
-    </div>
-    <AffiliateDisclosure variant="banner" />
-    <div class="blog-post__layout">
-      {p.toc && headings.length > 0 && (
-        <aside class="blog-post__aside"><TOC headings={headings} /></aside>
-      )}
-      <div class="prose prose-dropcap blog-post__body">
-        <slot />
+
+    <div class="article__layout">
+      <div class="article__main">
+        <QuickAnswer answer={p.quickAnswer} takeaways={p.keyTakeaways} />
+
+        {picksFirst && products.length > 0 && (
+          <section class="article__picks" aria-labelledby="picks-title">
+            <h2 id="picks-title">Our picks at a glance</h2>
+            <div class="article__picks-grid">
+              {products.map((prod, i) => <ProductCard product={prod} campaign={`blog-${post.slug}`} rank={i + 1} />)}
+            </div>
+          </section>
+        )}
+
+        {!picksFirst && (
+          <ProductMiniList products={products} heading="What you’ll need" campaign={`blog-${post.slug}`} />
+        )}
+
+        <div class="prose article__body">
+          <slot />
+        </div>
+
+        <AdSlot slot={import.meta.env.PUBLIC_ADSENSE_SLOT_INARTICLE} format="in-article" />
+
+        {faqs.length > 0 && (
+          <section class="article__faq" id="faq">
+            <h2>Frequently asked questions</h2>
+            <FaqList faqs={faqs} />
+          </section>
+        )}
+
+        <AuthorBox />
       </div>
+
+      <aside class="article__aside">
+        <div class="article__aside-sticky">
+          <TOC headings={tocHeadings} />
+          <AdSlot slot={import.meta.env.PUBLIC_ADSENSE_SLOT_SIDEBAR} class="article__aside-ad" />
+        </div>
+      </aside>
     </div>
+
+    <RelatedArticles currentHref={href} tags={p.tags} />
   </article>
 
-  <ArticleSchema slot="head"
+  <ArticleSchema
+    slot="head"
+    type="BlogPosting"
     title={p.title}
     description={p.excerpt}
     url={url}
-    imageUrl={heroSrc}
+    imageUrl={new URL(ogPath, siteUrl).toString()}
     publishedAt={p.publishedAt}
     updatedAt={p.updatedAt}
-    author={p.author}
+    keywords={p.tags}
   />
+  {faqs.length > 0 && <FAQSchema slot="head" faqs={faqs} />}
 </BaseLayout>
 
 <style>
-  .blog-post { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 1.5rem; }
-  .blog-post__header { max-width: 720px; }
-  .blog-post__category { color: var(--color-cedar); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: var(--tracking-meta); font-weight: 600; }
-  .blog-post__header h1 { font-size: var(--text-4xl); margin: 0.5rem 0 0.75rem; }
-  .blog-post__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); }
-  .blog-post__meta { color: var(--color-ink-muted); font-size: var(--text-sm); margin-top: 1rem; display: inline-flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
-  .blog-post__meta .meta--strong { color: var(--color-ink); font-weight: 500; }
-  .blog-post__meta a { color: var(--color-primary); text-decoration: underline; text-decoration-color: var(--color-cedar-soft); text-underline-offset: 3px; }
-  .blog-post__meta a:hover { text-decoration-color: var(--color-cedar); }
-  .blog-post__hero img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-xl); }
-  .blog-post__layout { display: grid; gap: 2rem; grid-template-columns: 1fr; }
-  @media (min-width: 900px) { .blog-post__layout { grid-template-columns: 260px 1fr; } }
-  .blog-post__aside { position: sticky; top: calc(var(--header-height) + 1rem); align-self: start; }
-  .blog-post__body { max-width: 70ch; }
+  .article { padding-top: 1.25rem; padding-bottom: 2rem; display: flex; flex-direction: column; gap: 2.5rem; }
+  .article__header { max-width: 760px; }
+  .article__kicker { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--color-cedar); margin: 1.25rem 0 0.75rem; }
+  .article__header h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem); letter-spacing: -0.028em; line-height: 1.06; }
+  .article__dek { margin-top: 1rem; font-size: clamp(1.08rem, 1rem + 0.35vw, 1.25rem); line-height: 1.55; color: var(--color-ink-muted); }
+  .article__meta { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: 0.45rem; font-size: 0.875rem; color: var(--color-ink-muted); }
+  .article__meta a { color: var(--color-ink); font-weight: 600; }
+  .article__disclosure { margin-top: 0.6rem; font-size: 0.8rem; color: var(--color-ink-subtle); }
+  .article__disclosure a { text-decoration: underline; text-underline-offset: 2px; }
+
+  .article__layout { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 1000px) { .article__layout { grid-template-columns: minmax(0, 1fr) 280px; gap: 4rem; } }
+  .article__main { display: flex; flex-direction: column; gap: 2.25rem; min-width: 0; }
+  .article__aside { order: -1; }
+  @media (min-width: 1000px) {
+    .article__aside { order: 0; }
+    .article__aside-sticky { position: sticky; top: calc(var(--header-height) + 1.5rem); display: flex; flex-direction: column; gap: 1.5rem; }
+  }
+  .article__aside-ad { display: none; }
+  @media (min-width: 1000px) { .article__aside-ad { display: flex; } }
+  .article__body { max-width: 70ch; }
+  .article__picks h2, .article__faq h2 { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem); margin-bottom: 1rem; }
+  .article__picks-grid { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 640px) { .article__picks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1200px) { .article__picks-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .article__faq { scroll-margin-top: calc(var(--header-height) + 1rem); max-width: 70ch; }
 </style>

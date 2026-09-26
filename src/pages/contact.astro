@@ -3,16 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
 ---
 
-<BaseLayout title="Contact — HomeSpaGuide" description="Get in touch with the HomeSpaGuide editorial team.">
+<BaseLayout title="Contact & Corrections" description="Contact the HomeSpaGuide editors with questions, corrections or product suggestions.">
   <div class="container-narrow" style="padding-top: 2rem; padding-bottom: 4rem;">
     <Breadcrumbs items={[{ label: 'Contact' }]} />
     <article class="prose" style="margin-top: 1.5rem; max-width: 640px;">
-      <h1>Contact us</h1>
-      <p>Questions, corrections, or product suggestions? Fill out the form below — we read every message. We don't store any of this in a database; the form posts to Netlify Forms, which emails us your message directly.</p>
+      <h1>Contact &amp; corrections</h1>
+      <p>Spotted an error, a discontinued product or a spec that changed? Have a question about your spa? Send it below — corrections are reviewed first and fixed pages show a new “Updated” date.</p>
+      <p>We can’t give medical, electrical or legal advice, and we don’t accept paid placements or sponsored reviews.</p>
 
       <form
         name="contact"
         method="POST"
+        action="/thanks"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
         class="contact-form"
@@ -30,6 +32,19 @@ import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
           <input name="email" type="email" required />
         </label>
         <label>
+          <span>Topic</span>
+          <select name="topic">
+            <option>Correction</option>
+            <option>Question about a product or guide</option>
+            <option>Product suggestion</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label>
+          <span>Page URL (optional)</span>
+          <input name="page" type="url" placeholder="https://" />
+        </label>
+        <label>
           <span>Message</span>
           <textarea name="message" rows="6" required></textarea>
         </label>
@@ -42,7 +57,7 @@ import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
 <style>
   .contact-form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
   .contact-form label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; color: var(--color-ink-muted); }
-  .contact-form input, .contact-form textarea {
+  .contact-form input, .contact-form textarea, .contact-form select {
     padding: 0.7rem 0.85rem;
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
@@ -50,7 +65,7 @@ import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
     font-size: 1rem;
     background: white;
   }
-  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--color-primary); outline: none; box-shadow: 0 0 0 3px rgba(15,76,92,0.15); }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--color-primary); outline: none; box-shadow: var(--shadow-focus); }
   .contact-form button {
     align-self: flex-start;
     background: var(--color-primary);

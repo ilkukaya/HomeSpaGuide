@@ -1,22 +1,21 @@
 ---
 import { Image } from 'astro:assets';
 import { getEntry, type CollectionEntry } from 'astro:content';
+import { Heart, GitCompare, Check, X } from 'lucide-react';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
-import AffiliateDisclosure from '../components/layout/AffiliateDisclosure.astro';
 import Badge from '../components/ui/Badge.astro';
-import PriceRangeBadge from '../components/product/PriceRangeBadge.astro';
 import EditorScore from '../components/product/EditorScore.astro';
 import AmazonCTA from '../components/product/AmazonCTA.astro';
 import ProsConsBlock from '../components/product/ProsConsBlock.astro';
 import SpecsTable from '../components/product/SpecsTable.astro';
-import FAQAccordion from '../components/product/FAQAccordion.tsx';
 import RelatedProducts from '../components/product/RelatedProducts.astro';
 import FrequentlyBoughtTogether from '../components/product/FrequentlyBoughtTogether.astro';
 import ComparisonTable from '../components/product/ComparisonTable.astro';
 import ProductSchema from '../components/seo/ProductSchema.astro';
 import FAQSchema from '../components/seo/FAQSchema.astro';
-import { Heart, GitCompare, ExternalLink } from 'lucide-react';
+import FaqList from '../components/ui/FaqList.astro';
+import { PRICE_RANGES } from '../lib/prices';
 
 interface Props {
   product: CollectionEntry<'products'>;
@@ -28,6 +27,7 @@ const brand = await getEntry('brands', p.brand.id);
 const category = await getEntry('categories', p.category.id);
 const parentCategory = category?.data.parent ? await getEntry('categories', category.data.parent.id) : null;
 const variantKey = (b: string) => b.toLowerCase().replace(/\s+/g, '-');
+const brandName = brand?.data.name ?? p.brand.id;
 
 const breadcrumbs = [
   ...(parentCategory ? [{ label: parentCategory.data.name, href: `/category/${parentCategory.slug}` }] : []),
@@ -35,18 +35,35 @@ const breadcrumbs = [
   { label: p.shortTitle },
 ];
 
-const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com';
+const siteUrl = import.meta.env.SITE;
 const pdpUrl = new URL(`/products/${product.slug}`, siteUrl).toString();
+const ogPath = `/og/products/${product.slug}.png`;
+const faqs = p.faqs ?? [];
+const updated = p.updatedAt ?? p.publishedAt;
+const fmt = (d: Date) => d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const verdict = p.quickVerdict ?? p.editorScore.notes ?? p.shortDescription;
+const badges = Array.from(new Set([...(p.editorPick ? ['Editor Pick'] : []), ...p.editorBadges]));
 
-const faqs: { question: string; answer: string }[] = [];
+const sections = [
+  { id: 'why', label: 'Why we picked it' },
+  { id: 'specs', label: 'Specs' },
+  ...(p.pros.length || p.cons.length ? [{ id: 'pros-cons', label: 'Pros & cons' }] : []),
+  { id: 'score', label: 'Score' },
+  ...(p.alternativeProducts?.length ? [{ id: 'compare', label: 'Compare' }] : []),
+  ...(faqs.length ? [{ id: 'faq', label: 'FAQ' }] : []),
+];
 
 const { Content } = await product.render();
 ---
 
 <BaseLayout
-  title={p.seo?.metaTitle ?? `${p.title} — Review & Where to Buy`}
-  description={p.seo?.metaDescription ?? p.shortDescription}
+  title={p.seo?.metaTitle ?? `${p.shortTitle} Review: Specs, Pros & Cons`}
+  description={p.seo?.metaDescription ?? `${verdict}`.slice(0, 158)}
   ogType="product"
+  ogImage={ogPath}
+  ogImageAlt={p.title}
+  publishedTime={p.publishedAt.toISOString()}
+  modifiedTime={updated.toISOString()}
 >
   <div class="container-page pdp-wrap">
     <Breadcrumbs items={breadcrumbs} />
@@ -61,209 +78,268 @@ const { Content } = await product.render();
             sizes="(min-width: 1024px) 560px, 100vw"
             format="webp"
             loading="eager"
+            fetchpriority="high"
             class="pdp__image"
           />
-          <span class="pdp__monogram" aria-hidden="true">{(brand?.data.name ?? p.brand.id).charAt(0).toUpperCase()}</span>
         </div>
+        <p class="pdp__image-note">Illustration. See the Amazon listing for current product photos.</p>
       </div>
 
       <div class="pdp__info">
-        {p.editorBadges.length > 0 && (
-          <div class="pdp__badges">
-            {p.editorBadges.map((b) => <Badge variant={variantKey(b) as any}>{b}</Badge>)}
-          </div>
-        )}
-        <p class="pdp__brand">{brand?.data.name ?? p.brand.id}</p>
+        <div class="pdp__kicker">
+          {badges.map((b) => <Badge variant={variantKey(b) as any}>{b}</Badge>)}
+          <a href={`/brand/${p.brand.id}`} class="pdp__brand">{brandName}</a>
+        </div>
         <h1>{p.title}</h1>
-        <p class="pdp__lede">{p.shortDescription}</p>
+        <p class="pdp__byline">
+          By HomeSpaGuide Editors · Updated <time datetime={updated.toISOString()}>{fmt(updated)}</time>
+        </p>
 
-        <div class="pdp__price-row">
-          <PriceRangeBadge range={p.priceRange} />
-          <span class="pdp__price-note">Live price on Amazon</span>
+        <div class="pdp__verdict">
+          <div class="pdp__score" aria-label={`Editor score ${p.editorScore.overall.toFixed(1)} out of 10`}>
+            <span class="pdp__score-num">{p.editorScore.overall.toFixed(1)}</span>
+            <span class="pdp__score-of">/10</span>
+          </div>
+          <div>
+            <p class="pdp__verdict-label">The short verdict</p>
+            <p class="pdp__verdict-text">{verdict}</p>
+          </div>
         </div>
 
-        <EditorScore score={p.editorScore} layout="compact" />
+        {p.bestFor.length > 0 && (
+          <ul class="pdp__bestfor" aria-label="Best for">
+            {p.bestFor.slice(0, 3).map((b) => <li><Check size={16} aria-hidden="true" /> {b}</li>)}
+          </ul>
+        )}
 
-        <div class="pdp__cta">
-          <AmazonCTA asin={p.asin} campaign="pdp-primary" size="lg" fullWidth label="View on Amazon" />
-          <a
-            href={p.amazonUrl}
-            rel="sponsored nofollow noopener"
-            target="_blank"
-            class="pdp__secondary-link"
-          >
-            Check current price on Amazon <ExternalLink size={14} aria-hidden="true" />
-          </a>
+        <div class="pdp__cta" data-primary-cta>
+          <div class="pdp__price">
+            <span class="pdp__price-label">Typical price</span>
+            <span class="pdp__price-value">{PRICE_RANGES[p.priceRange].label}</span>
+          </div>
+          <AmazonCTA asin={p.asin} campaign="pdp-primary" size="lg" fullWidth label="Check price on Amazon" />
+          <p class="pdp__disclosure">
+            We may earn a commission if you buy through this link, at no cost to you. Prices change often — Amazon shows the current price.
+            <a href="/affiliate-disclosure">Disclosure</a>
+          </p>
         </div>
 
         <div class="pdp__quick-actions">
-          <button class="pdp__icon-btn" data-wishlist-toggle data-asin={p.asin} data-slug={product.slug} aria-label="Save to wishlist">
-            <Heart size={18} aria-hidden="true" /> <span>Save</span>
+          <button class="pdp__icon-btn" data-wishlist-toggle data-asin={p.asin} data-slug={product.slug}>
+            <Heart size={17} aria-hidden="true" /> <span>Save</span>
           </button>
-          <button class="pdp__icon-btn" data-compare-toggle data-asin={p.asin} data-slug={product.slug} aria-label="Add to compare">
-            <GitCompare size={18} aria-hidden="true" /> <span>Compare</span>
+          <button class="pdp__icon-btn" data-compare-toggle data-asin={p.asin} data-slug={product.slug}>
+            <GitCompare size={17} aria-hidden="true" /> <span>Compare</span>
           </button>
         </div>
-
-        <AffiliateDisclosure variant="compact" class="pdp__disclosure" />
       </div>
     </section>
 
-    <section class="pdp__section">
-      <h2>Why we picked this</h2>
-      {p.editorScore.notes && <p class="pdp__notes">{p.editorScore.notes}</p>}
-      <div class="prose pdp__description">
-        <Content />
-      </div>
-    </section>
+    <nav class="pdp__jump" aria-label="On this page">
+      {sections.map((s) => <a href={`#${s.id}`}>{s.label}</a>)}
+    </nav>
 
-    {p.keyFeatures.length > 0 && (
-      <section class="pdp__section">
-        <h2>Key features</h2>
-        <ul class="pdp__feature-list">
-          {p.keyFeatures.map((f) => <li>{f}</li>)}
-        </ul>
+    <div class="pdp__body">
+      <section class="pdp__section" id="why">
+        <h2>Why we picked it</h2>
+        <div class="prose pdp__description">
+          <Content />
+        </div>
+        {p.keyFeatures.length > 0 && (
+          <>
+            <h3 class="pdp__h3">Key features</h3>
+            <ul class="pdp__feature-list">
+              {p.keyFeatures.map((f) => <li><Check size={16} aria-hidden="true" /><span>{f}</span></li>)}
+            </ul>
+          </>
+        )}
       </section>
-    )}
 
-    <section class="pdp__section">
-      <h2>Specifications</h2>
-      <SpecsTable specs={p.specs} />
-    </section>
-
-    {(p.pros.length > 0 || p.cons.length > 0) && (
-      <section class="pdp__section">
-        <h2>Pros &amp; cons</h2>
-        <ProsConsBlock pros={p.pros} cons={p.cons} />
+      <section class="pdp__section" id="specs">
+        <h2>Specifications</h2>
+        <SpecsTable specs={p.specs} />
+        <p class="pdp__fineprint">From the manufacturer’s published specifications. Confirm details on the product listing before buying.</p>
       </section>
-    )}
 
-    {p.alternativeProducts && p.alternativeProducts.length > 0 && (
-      <section class="pdp__section">
-        <ComparisonTable current={product} alternativeRefs={p.alternativeProducts} />
+      {(p.pros.length > 0 || p.cons.length > 0) && (
+        <section class="pdp__section" id="pros-cons">
+          <h2>Pros &amp; cons</h2>
+          <ProsConsBlock pros={p.pros} cons={p.cons} />
+        </section>
+      )}
+
+      <section class="pdp__section" id="score">
+        <h2>How it scores</h2>
+        <EditorScore score={p.editorScore} layout="full" />
+        {p.editorScore.notes && <p class="pdp__notes">“{p.editorScore.notes}”</p>}
       </section>
-    )}
 
-    {p.frequentlyBoughtWith && p.frequentlyBoughtWith.length > 0 && (
-      <section class="pdp__section">
-        <FrequentlyBoughtTogether current={product} refs={p.frequentlyBoughtWith} />
+      {p.alternativeProducts && p.alternativeProducts.length > 0 && (
+        <section class="pdp__section" id="compare">
+          <ComparisonTable current={product} alternativeRefs={p.alternativeProducts} />
+        </section>
+      )}
+
+      {p.frequentlyBoughtWith && p.frequentlyBoughtWith.length > 0 && (
+        <section class="pdp__section">
+          <FrequentlyBoughtTogether current={product} refs={p.frequentlyBoughtWith} />
+        </section>
+      )}
+
+      {faqs.length > 0 && (
+        <section class="pdp__section" id="faq">
+          <h2>{p.shortTitle}: common questions</h2>
+          <FaqList faqs={faqs} />
+        </section>
+      )}
+
+      <section class="pdp__final-cta">
+        <div>
+          <p class="pdp__final-eyebrow">Ready to decide?</p>
+          <h2>{p.shortTitle}</h2>
+          <p>{PRICE_RANGES[p.priceRange].label} · Editor Score {p.editorScore.overall.toFixed(1)}/10</p>
+        </div>
+        <AmazonCTA asin={p.asin} campaign="pdp-bottom" size="lg" label="See today’s price on Amazon" />
       </section>
-    )}
 
-    <section class="pdp__section pdp__final-cta">
-      <h2>Ready to buy?</h2>
-      <p>Click below to see the current price and reviews on Amazon.</p>
-      <AmazonCTA asin={p.asin} campaign="pdp-bottom" size="lg" label="Check Price on Amazon" />
-    </section>
-
-    {p.relatedProducts && p.relatedProducts.length > 0 && (
-      <section class="pdp__section">
-        <RelatedProducts refs={p.relatedProducts} campaign="related" />
-      </section>
-    )}
+      {p.relatedProducts && p.relatedProducts.length > 0 && (
+        <section class="pdp__section">
+          <RelatedProducts refs={p.relatedProducts} campaign="related" heading="Also worth a look" />
+        </section>
+      )}
+    </div>
   </div>
 
-  <ProductSchema slot="head" product={product} brandName={brand?.data.name ?? p.brand.id} url={pdpUrl} imageUrl={new URL((p.primaryImage as any).src ?? '/og-default.png', siteUrl).toString()} />
+  <div class="pdp-sticky" data-sticky-cta aria-hidden="true">
+    <div class="pdp-sticky__text">
+      <strong>{p.shortTitle}</strong>
+      <span>{PRICE_RANGES[p.priceRange].label} · {p.editorScore.overall.toFixed(1)}/10</span>
+    </div>
+    <AmazonCTA asin={p.asin} campaign="pdp-sticky" size="sm" label="Check price" />
+  </div>
+
+  <ProductSchema
+    slot="head"
+    product={product}
+    brandName={brandName}
+    url={pdpUrl}
+    imageUrl={new URL(ogPath, siteUrl).toString()}
+  />
   {faqs.length > 0 && <FAQSchema slot="head" faqs={faqs} />}
 </BaseLayout>
 
 <style>
-  .pdp-wrap { padding-top: 1.5rem; padding-bottom: 4rem; display: flex; flex-direction: column; gap: 3rem; }
-  .pdp { display: grid; gap: 2rem; grid-template-columns: 1fr; }
-  @media (min-width: 900px) { .pdp { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 3rem; } }
-  .pdp__gallery { position: sticky; top: calc(var(--header-height) + 1rem); align-self: start; }
-  .pdp__image-wrap {
-    position: relative;
-    border-radius: var(--radius-xl);
-    background: var(--color-paper-deep);
-    overflow: hidden;
-    box-shadow: var(--shadow-card);
+  .pdp-wrap { padding-top: 1.25rem; padding-bottom: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+  .pdp { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) { .pdp { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3.5rem; } }
+  @media (min-width: 900px) { .pdp__gallery { position: sticky; top: calc(var(--header-height) + 1.5rem); align-self: start; } }
+  .pdp__image-wrap { border-radius: var(--radius-lg); background: var(--color-paper-deep); overflow: hidden; border: 1px solid var(--color-border); }
+  .pdp__image { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+  .pdp__image-note { font-size: 0.75rem; color: var(--color-ink-subtle); margin-top: 0.5rem; }
+  @media (max-width: 899px) { .pdp__image { aspect-ratio: 16 / 10; } }
+
+  .pdp__info { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+  .pdp__kicker { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+  .pdp__brand { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; color: var(--color-ink-subtle); }
+  .pdp__brand:hover { color: var(--color-primary); }
+  .pdp__info h1 { font-size: clamp(1.9rem, 1.4rem + 2vw, 2.75rem); letter-spacing: -0.025em; line-height: 1.08; }
+  .pdp__byline { font-size: 0.85rem; color: var(--color-ink-subtle); margin-top: -0.25rem; }
+
+  .pdp__verdict {
+    display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: start;
+    padding: 1rem 1.1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-md);
   }
-  .pdp__image { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; }
-  .pdp__monogram {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-serif);
-    font-size: clamp(7rem, 14vw, 11rem);
-    font-weight: 400;
-    color: var(--color-paper);
-    mix-blend-mode: soft-light;
-    letter-spacing: -0.02em;
-    pointer-events: none;
-    opacity: 0.85;
-  }
-  .pdp__info { display: flex; flex-direction: column; gap: 1.1rem; }
-  .pdp__badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .pdp__brand {
-    color: var(--color-cedar);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-meta);
-    font-weight: 600;
-    margin: 0;
-  }
-  .pdp__info h1 { font-size: var(--text-4xl); }
-  .pdp__lede { color: var(--color-ink); font-size: var(--text-lg); line-height: var(--leading-normal); }
-  .pdp__price-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-  .pdp__price-note { color: var(--color-ink-subtle); font-size: 0.85rem; }
+  .pdp__score { display: flex; align-items: baseline; gap: 0.1rem; color: var(--color-primary); }
+  .pdp__score-num { font-family: var(--font-serif); font-size: 2.6rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; }
+  .pdp__score-of { font-size: 0.9rem; color: var(--color-ink-subtle); font-weight: 600; }
+  .pdp__verdict-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--color-cedar); }
+  .pdp__verdict-text { margin-top: 0.25rem; font-size: 1rem; line-height: 1.55; color: var(--color-ink); }
+
+  .pdp__bestfor { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+  .pdp__bestfor li { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.95rem; color: var(--color-ink-muted); }
+  .pdp__bestfor svg { color: var(--color-success); margin-top: 3px; flex-shrink: 0; }
+
   .pdp__cta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
     padding: 1.1rem;
     background: var(--color-steam);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
   }
-  .pdp__secondary-link { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-primary); font-size: 0.9rem; text-align: center; justify-content: center; }
+  .pdp__price { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .pdp__price-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; color: var(--color-ink-muted); }
+  .pdp__price-value { font-size: 1.15rem; font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .pdp__disclosure { font-size: 0.78rem; color: var(--color-ink-muted); line-height: 1.5; }
+  .pdp__disclosure a { text-decoration: underline; text-underline-offset: 2px; }
+
   .pdp__quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .pdp__icon-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 0.95rem;
-    border: 1px solid var(--color-border);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    height: 40px; padding: 0 0.95rem;
+    border: 1px solid var(--color-border-strong);
     border-radius: var(--radius-md);
     background: var(--color-surface);
-    color: var(--color-ink-muted);
-    font-size: 0.9rem;
-    transition: border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
+    color: var(--color-ink);
+    font-size: 0.9rem; font-weight: 500;
   }
-  .pdp__icon-btn[data-active='true'] {
-    background: var(--color-cedar-soft);
-    color: var(--color-cedar-deep);
-    border-color: var(--color-cedar);
-  }
+  .pdp__icon-btn[data-active='true'] { background: var(--color-cedar-soft); color: var(--color-cedar-deep); border-color: var(--color-cedar); }
   .pdp__icon-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
-  .pdp__disclosure { margin-top: 0.5rem; }
-  .pdp__section h2 { font-size: var(--text-2xl); margin-bottom: 1rem; }
-  .pdp__feature-list { columns: 1; column-gap: 2rem; padding-left: 1.2rem; color: var(--color-ink); line-height: var(--leading-normal); }
-  @media (min-width: 700px) { .pdp__feature-list { columns: 2; } }
-  .pdp__feature-list li { break-inside: avoid; margin-bottom: 0.55rem; }
+
+  .pdp__jump {
+    position: sticky; top: var(--header-height); z-index: 30;
+    display: flex; gap: 0.25rem; overflow-x: auto; scrollbar-width: none;
+    background: rgba(248, 246, 241, 0.96);
+    border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);
+    margin-inline: calc(-1 * clamp(1rem, 3vw, 2rem)); padding-inline: clamp(1rem, 3vw, 2rem);
+  }
+  .pdp__jump::-webkit-scrollbar { display: none; }
+  .pdp__jump a { flex: 0 0 auto; padding: 0.8rem 0.75rem; font-size: 0.9rem; font-weight: 500; color: var(--color-ink-muted); white-space: nowrap; }
+  .pdp__jump a:hover { color: var(--color-primary); }
+
+  .pdp__body { display: flex; flex-direction: column; gap: 3rem; max-width: 880px; }
+  .pdp__section { scroll-margin-top: calc(var(--header-height) + 3.5rem); }
+  .pdp__section h2 { font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem); margin-bottom: 1rem; letter-spacing: -0.02em; }
+  .pdp__h3 { font-size: 1.25rem; margin: 2rem 0 0.75rem; }
+  .pdp__feature-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; grid-template-columns: 1fr; }
+  @media (min-width: 700px) { .pdp__feature-list { grid-template-columns: 1fr 1fr; column-gap: 2rem; } }
+  .pdp__feature-list li { display: flex; gap: 0.55rem; align-items: flex-start; line-height: 1.5; }
+  .pdp__feature-list svg { color: var(--color-primary); margin-top: 4px; flex-shrink: 0; }
+  .pdp__fineprint { font-size: 0.8rem; color: var(--color-ink-subtle); margin-top: 0.6rem; }
   .pdp__notes {
-    color: var(--color-ink-muted);
-    font-style: italic;
-    font-family: var(--font-serif);
-    font-size: var(--text-lg);
-    line-height: var(--leading-normal);
-    max-width: 70ch;
-    margin-bottom: 1rem;
-    padding: 0.2em 1.2em;
-    border-left: 3px solid var(--color-cedar);
+    margin-top: 1rem; font-family: var(--font-serif); font-style: italic; font-size: 1.2rem; line-height: 1.5;
+    color: var(--color-ink); padding-left: 1rem; border-left: 3px solid var(--color-cedar);
   }
+
   .pdp__final-cta {
-    text-align: center;
-    background: var(--color-steam);
-    border-radius: var(--radius-xl);
-    padding: 2.5rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    display: flex; flex-direction: column; gap: 1.25rem; align-items: flex-start;
+    background: var(--color-primary-900); color: var(--color-ink-on-dark);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
   }
-  .pdp__final-cta p { color: var(--color-ink-muted); }
+  @media (min-width: 700px) { .pdp__final-cta { flex-direction: row; justify-content: space-between; align-items: center; } }
+  .pdp__final-eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #E7A57F; font-weight: 600; }
+  .pdp__final-cta h2 { color: var(--color-ink-on-dark); font-size: 1.6rem; margin: 0.3rem 0; }
+  .pdp__final-cta p { color: rgba(248, 246, 241, 0.7); font-size: 0.9rem; }
+
+  /* Mobile sticky CTA — appears once the primary CTA scrolls out of view. */
+  .pdp-sticky {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+    display: flex; align-items: center; gap: 0.75rem; justify-content: space-between;
+    padding: 0.65rem clamp(1rem, 3vw, 2rem) calc(0.65rem + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.97);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -8px 24px -16px rgba(23, 25, 26, 0.35);
+    transform: translateY(110%);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .pdp-sticky[data-visible='true'] { transform: translateY(0); }
+  .pdp-sticky__text { min-width: 0; display: flex; flex-direction: column; }
+  .pdp-sticky__text strong { font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pdp-sticky__text span { font-size: 0.78rem; color: var(--color-ink-muted); }
+  @media (min-width: 900px) { .pdp-sticky { display: none; } }
 </style>
 
 <script>
@@ -282,6 +358,19 @@ const { Content } = await product.render();
   refresh();
   window.addEventListener('hsg:wishlist:change', refresh);
   window.addEventListener('hsg:compare:change', refresh);
+
+  // Sticky mobile CTA: visible only after the primary CTA leaves the viewport.
+  const primary = document.querySelector('[data-primary-cta]');
+  const sticky = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  if (primary && sticky && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const past = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      sticky.dataset.visible = past ? 'true' : 'false';
+      sticky.setAttribute('aria-hidden', past ? 'false' : 'true');
+    }).observe(primary);
+  }
 
   // Track recently viewed
   const asin = document.querySelector<HTMLElement>('[data-asin]')?.dataset.asin;

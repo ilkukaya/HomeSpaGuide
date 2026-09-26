@@ -6,25 +6,28 @@ interface Props {
   imageUrl: string;
   publishedAt: Date;
   updatedAt?: Date;
-  author: string;
+  type?: 'Article' | 'BlogPosting';
+  keywords?: string[];
 }
-const { title, description, url, imageUrl, publishedAt, updatedAt, author } = Astro.props;
+const { title, description, url, imageUrl, publishedAt, updatedAt, type = 'Article', keywords = [] } = Astro.props;
+const siteUrl = import.meta.env.SITE;
+const org = new URL('/#organization', siteUrl).toString();
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'Article',
+  '@type': type,
+  '@id': `${url}#article`,
   headline: title,
   description,
-  image: imageUrl,
+  image: [imageUrl],
   url,
+  inLanguage: 'en-US',
   datePublished: publishedAt.toISOString(),
   dateModified: (updatedAt ?? publishedAt).toISOString(),
-  author: { '@type': 'Person', name: author },
-  publisher: {
-    '@type': 'Organization',
-    name: 'HomeSpaGuide',
-    logo: { '@type': 'ImageObject', url: new URL('/favicon.svg', import.meta.env.PUBLIC_SITE_URL || 'https://homespaguide.com').toString() },
-  },
-  mainEntityOfPage: url,
+  author: { '@type': 'Organization', name: 'HomeSpaGuide Editors', url: new URL('/about', siteUrl).toString() },
+  publisher: { '@id': org },
+  isPartOf: { '@id': new URL('/#website', siteUrl).toString() },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  ...(keywords.length ? { keywords: keywords.join(', ') } : {}),
 };
 ---
 

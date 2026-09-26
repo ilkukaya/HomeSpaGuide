@@ -1,0 +1,32 @@
+---
+interface Props {
+  tone?: 'default' | 'on-dark';
+  class?: string;
+}
+const { tone = 'default', class: className = '' } = Astro.props;
+---
+
+<span class:list={['hsg-logo', `hsg-logo--${tone}`, className]}>
+  <svg class="hsg-logo__mark" viewBox="0 0 64 64" aria-hidden="true">
+    <rect width="64" height="64" rx="14" fill={tone === 'on-dark' ? '#F8F6F1' : '#1B4D4B'} />
+    <ellipse cx="32" cy="40" rx="20" ry="9" fill="none" stroke={tone === 'on-dark' ? '#1B4D4B' : '#F8F6F1'} stroke-width="3.5" />
+    <path d="M25 28c-3-4 3-6 0-10M34 28c-3-4 3-6 0-10" fill="none" stroke={tone === 'on-dark' ? '#B5562E' : '#E7A57F'} stroke-width="3.5" stroke-linecap="round" />
+  </svg>
+  <span class="hsg-logo__word">HomeSpa<span>Guide</span></span>
+</span>
+
+<style>
+  .hsg-logo { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .hsg-logo__mark { width: 30px; height: 30px; flex-shrink: 0; }
+  .hsg-logo__word {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    line-height: 1;
+  }
+  .hsg-logo__word span { color: var(--color-primary); font-style: italic; font-weight: 500; }
+  .hsg-logo--on-dark .hsg-logo__word { color: var(--color-ink-on-dark); }
+  .hsg-logo--on-dark .hsg-logo__word span { color: #E7A57F; }
+</style>

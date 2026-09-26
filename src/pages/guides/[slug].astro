@@ -10,9 +10,9 @@ export async function getStaticPaths() {
   }));
 }
 const { guide } = Astro.props;
-const { Content } = await guide.render();
+const { Content, headings } = await guide.render();
 ---
 
-<GuideLayout guide={guide}>
+<GuideLayout guide={guide} headings={headings}>
   <Content />
 </GuideLayout>

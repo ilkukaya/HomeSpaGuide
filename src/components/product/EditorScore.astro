@@ -67,14 +67,14 @@ const bars = [
   <div class={cn('hsg-editor-score', className)}>
     <div class="hsg-editor-score__head">
       <div class={cn(
-        'inline-flex items-center justify-center w-16 h-16 rounded-full border-[3px] font-serif font-bold text-xl bg-white',
+        'inline-flex items-center justify-center w-16 h-16 rounded-full border-[3px] font-serif font-semibold text-2xl bg-white shrink-0',
         toneStyles[tone],
       )}>
         {score.overall.toFixed(1)}
       </div>
       <div>
         <p class="text-xs uppercase tracking-wider text-[var(--color-ink-subtle)] font-semibold">Editor's Score</p>
-        <p class="text-sm text-[var(--color-ink-muted)]">Independent assessment by our editors. <a href="/about" class="underline">How we score</a>.</p>
+        <p class="text-sm text-[var(--color-ink-muted)]">A curation index from published specs and owner feedback — not a lab test. <a href="/editorial-policy#score" class="underline">How we score</a>.</p>
       </div>
     </div>
     <dl class="hsg-editor-score__bars">
@@ -97,9 +97,9 @@ const bars = [
   .hsg-editor-score {
     display: flex; flex-direction: column; gap: 1rem;
     padding: 1.25rem;
-    border-radius: var(--radius-xl);
-    background: var(--color-paper-deep);
-    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
   }
   .hsg-editor-score__head { display: flex; gap: 1rem; align-items: center; }
   .hsg-editor-score__bars { display: grid; gap: 0.65rem; margin: 0; }
@@ -107,6 +107,6 @@ const bars = [
   .hsg-editor-score__row dt { color: var(--color-ink-muted); font-weight: 500; }
   .hsg-editor-score__row dd { display: flex; align-items: center; gap: 0.6rem; margin: 0; color: var(--color-ink-muted); }
   .hsg-editor-score__bar { flex: 1; height: 6px; background: var(--color-border); border-radius: var(--radius-full); overflow: hidden; }
-  .hsg-editor-score__fill { height: 100%; background: var(--color-cedar); border-radius: var(--radius-full); }
+  .hsg-editor-score__fill { height: 100%; background: var(--color-primary); border-radius: var(--radius-full); }
   .hsg-editor-score__row dd span { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--color-primary); min-width: 30px; text-align: right; }
 </style>
